@@ -1,5 +1,5 @@
-import { users } from './users'
+import { account } from './account'
 
 export const Api = {
-  users,
+  account
 }

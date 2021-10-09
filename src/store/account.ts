@@ -1,17 +1,17 @@
 import { Api } from '@/api'
-import { LoginReq, RegisterTeacherReq } from '@/interfaces/api/user'
+import { LoginReq, RegisterTeacherReq } from '@/interfaces/api/account'
 import { User } from '@/interfaces/user'
 import { loadAccessToken, loadRefreshToken, setAccessToken, setRefreshToken } from '@/utils/auth'
 import { Module } from 'vuex'
 import { RootState } from './index'
 
-declare interface UsersState {
+declare interface AccountState {
   loggedInUser?: User;
   accessToken: string;
   refreshToken: string;
 }
 
-export const users: Module<UsersState, RootState> = {
+export const account: Module<AccountState, RootState> = {
   namespaced: true,
 
   state: {
@@ -44,13 +44,13 @@ export const users: Module<UsersState, RootState> = {
   },
 
   actions: {
+    // eslint-disable-next-line
     async registerTeacher ({ commit }, payload: RegisterTeacherReq): Promise<void> {
-      const data = await Api.users.registerTeacher(payload)
-      commit('SET_LOGGED_IN_USER', data)
+      await Api.account.registerTeacher(payload)
     },
 
     async login ({ commit }, payload: LoginReq): Promise<void> {
-      const data = await Api.users.login(payload)
+      const data = await Api.account.login(payload)
       commit('SET_ACCESS_TOKEN', data.access)
       commit('SET_REFRESH_TOKEN', data.refresh)
     },
@@ -65,9 +65,14 @@ export const users: Module<UsersState, RootState> = {
       const payload = {
         refresh: loadRefreshToken()
       }
-      const data = await Api.users.tokenRefresh(payload)
+      const data = await Api.account.tokenRefresh(payload)
       commit('SET_ACCESS_TOKEN', data.access)
       commit('SET_REFRESH_TOKEN', data.refresh)
+    },
+
+    async getInfo ({ commit }): Promise<void> {
+      const data = await Api.account.getMyInfo()
+      commit('SET_LOGGED_IN_USER', data)
     }
   }
 }

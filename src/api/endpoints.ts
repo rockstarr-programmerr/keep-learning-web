@@ -1,8 +1,13 @@
 export const endpoints = {
-  users: {
-    login: '/users/login/',
-    tokenRefresh: '/users/token-refresh/',
-    registerTeacher: '/users/register-teacher/'
+  account: {
+    users: {
+      login: '/account/users/login/',
+      tokenRefresh: '/account/users/token-refresh/',
+      registerTeacher: '/account/users/register-teacher/'
+    },
+    me: {
+      myInfo: '/account/users/me/'
+    }
   }
 }
 

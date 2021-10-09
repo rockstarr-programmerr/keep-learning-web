@@ -4,7 +4,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import Store from '@/store'
 import router from '@/router'
-import { getAuthorizationHeaderValue } from '@/utils/auth'
+import { getAuthorizationHeaderValue, loadRefreshToken } from '@/utils/auth'
 import { status, assertErrCode } from '@/utils/status-codes'
 
 // Full config:  https://github.com/axios/axios#request-config
@@ -68,7 +68,7 @@ Vue.use(Plugin)
 export default Plugin
 
 function setAuthenticationHeader (headers) {
-  const accessToken = Store.getters['users/accessToken']
+  const accessToken = Store.getters['account/accessToken']
   if (accessToken !== '') {
     headers.Authorization = getAuthorizationHeaderValue(accessToken)
   } else {
@@ -83,13 +83,13 @@ function handleResponseError (error) {
 
   if (isUnauthorized(error)) {
     /* eslint-disable brace-style */
+    /* eslint-disable prefer-promise-reject-errors */
 
     if (refreshTokenNotValid(error)) {
-      Store.dispatch('users/logout')
+      Store.dispatch('account/logout')
       goToLogin()
       const isExpectedError = assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
       if (isExpectedError) {
-        // eslint-disable-next-line prefer-promise-reject-errors
         return Promise.reject() // Will not display unexpected error message to user
       }
       else {
@@ -98,13 +98,18 @@ function handleResponseError (error) {
     }
 
     else if (userInactiveOrNotFound(error)) {
-      Store.dispatch('users/logout')
+      Store.dispatch('account/logout')
       goToLogin()
       return Promise.reject(error)
     }
 
     else if (isLoginRoute()) {
       return Promise.reject(error)
+    }
+
+    else if (noRefreshToken()) {
+      goToLogin()
+      return Promise.reject() // Will not display unexpected error message to user
     }
 
     else {
@@ -161,8 +166,12 @@ function userInactiveOrNotFound (error) {
   )
 }
 
+function noRefreshToken () {
+  return loadRefreshToken() === ''
+}
+
 async function tryAgainAfterRefreshingToken (error) {
-  await Store.dispatch('users/refreshToken')
+  await Store.dispatch('account/refreshToken')
   setAuthenticationHeader(error.config.headers)
   const response = await _axios.request(error.config)
   return response
