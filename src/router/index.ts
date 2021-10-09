@@ -2,12 +2,13 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 
 import LayoutNoAppbar from '../layouts/LayoutNoAppbar.vue'
+import LayoutClassroomTeacher from '../layouts/LayoutClassroomTeacher.vue'
 
 import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
 import ClassroomList from '../views/classroom/ClassroomList.vue'
-import ClassroomDetail from '../views/classroom/ClassroomDetail.vue'
+import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
 
 import { castToNumber, prefixWith } from './utils'
@@ -35,10 +36,13 @@ const routes: Array<RouteConfig> = [
       component: ClassroomList
     },
     {
-      path: '/:pk',
-      name: 'ClassroomDetail',
-      component: ClassroomDetail,
-      props: castToNumber('pk')
+      path: '/:pk/overview',
+      name: 'ClassroomOverview',
+      component: ClassroomOverview,
+      props: castToNumber('pk'),
+      meta: {
+        teacherLayout: LayoutClassroomTeacher
+      }
     },
     {
       path: '/new',

@@ -27,7 +27,9 @@
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <slot>
+        <router-view/>
+      </slot>
     </v-main>
 
     <!--  TODO: is this needed?

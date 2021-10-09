@@ -1,15 +1,19 @@
 <template>
-  <v-container>
-    <v-progress-circular
-      v-if="loading"
-      indeterminate
-      color="primary"
-    ></v-progress-circular>
-    <div v-else>
-      <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-      <h1 v-text="classroom.name"></h1>
-    </div>
-  </v-container>
+  <LayoutDefault>
+    <v-container>
+      <v-progress-circular
+        v-if="loading"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+      <div v-else>
+        <!-- <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs> -->
+        <h1 v-text="classroom.name"></h1>
+        <p v-text="classroom.description"></p>  <!-- TODO: multiline -->
+        <router-view></router-view>
+      </div>
+    </v-container>
+  </LayoutDefault>
 </template>
 
 <script lang="ts">
@@ -17,8 +21,12 @@ import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapMutations, mapState } from 'vuex'
+import LayoutDefault from './LayoutDefault.vue'
 
 @Component({
+  components: {
+    LayoutDefault
+  },
   computed: {
     ...mapState('classroom', {
       classroom: 'currentClassroom'
@@ -30,22 +38,15 @@ import { mapMutations, mapState } from 'vuex'
     })
   }
 })
-export default class ClassroomDetail extends Vue {
-  @Prop(Number) readonly pk!: number
-
+export default class LayoutClassroomTeacher extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
   classroom!: Classroom
   setCurrentClassroom!: CallableFunction
 
-  get breadcrumbs (): unknown[] {
-    if (this.classroom === undefined) return []
-    return [
-      { text: 'Home', to: { name: 'Home' }, exact: true },
-      { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true },
-      { text: this.classroom.name, disabled: true }
-    ]
+  get pk (): string {
+    return this.$route.params.pk
   }
 
   get loading (): boolean {

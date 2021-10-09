@@ -64,7 +64,7 @@ export default class ClassroomCreate extends Vue {
     this.$store.dispatch('classroom/create', payload)
       .then(pk => {
         this.$router.push({
-          name: 'ClassroomDetail',
+          name: 'ClassroomOverview',
           params: { pk }
         })
       })

@@ -8,7 +8,7 @@
         :key="classroom.pk"
         link
         :to="{
-          name: 'ClassroomDetail',
+          name: 'ClassroomOverview',
           params: {
             pk: classroom.pk
           }
