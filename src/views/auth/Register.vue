@@ -9,7 +9,7 @@
     </v-card-subtitle>
 
     <v-card-text>
-      <v-form>
+      <v-form v-on:keyup.native.enter="register">
         <v-text-field
           v-model="email"
           label="Email"

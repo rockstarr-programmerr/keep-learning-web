@@ -1,4 +1,4 @@
-# kl_web
+# Keep learning
 
 ## Project setup
 ```

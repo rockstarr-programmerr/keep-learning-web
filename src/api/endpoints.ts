@@ -6,7 +6,7 @@ export const endpoints = {
       registerTeacher: '/account/users/register-teacher/'
     },
     me: {
-      myInfo: '/account/users/me/'
+      myInfo: '/account/me/'
     }
   }
 }
