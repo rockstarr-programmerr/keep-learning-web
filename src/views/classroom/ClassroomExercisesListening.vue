@@ -1,6 +1,6 @@
 <template>
   <div>
-    ClassroomOverview
+    ClassroomExercisesListening
   </div>
 </template>
 
@@ -8,9 +8,8 @@
 import { Vue, Component } from 'vue-property-decorator'
 
 @Component
-export default class ClassroomOverview extends Vue {
-  // eslint-disable-next-line no-undef
-  [key: string]: unknown
+export default class ClassroomExercisesListening extends Vue {
+
 }
 </script>
 

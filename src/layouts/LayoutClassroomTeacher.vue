@@ -6,11 +6,24 @@
         indeterminate
         color="primary"
       ></v-progress-circular>
+
       <div v-else>
-        <!-- <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs> -->
+        <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+
         <h1 v-text="classroom.name"></h1>
         <p v-text="classroom.description"></p>  <!-- TODO: multiline -->
-        <router-view></router-view>
+
+        <v-tabs>
+          <v-tab
+            v-for="tab of tabs"
+            :key="tab.text"
+            v-text="tab.text"
+            link
+            :to="tab.to"
+          ></v-tab>
+        </v-tabs>
+
+        <router-view class="mt-5"></router-view>
       </div>
     </v-container>
   </LayoutDefault>
@@ -45,6 +58,15 @@ export default class LayoutClassroomTeacher extends Vue {
   classroom!: Classroom
   setCurrentClassroom!: CallableFunction
 
+  get breadcrumbs (): unknown[] {
+    if (this.classroom === undefined) return []
+    return [
+      { text: 'Home', to: { name: 'Home' }, exact: true },
+      { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true },
+      { text: this.classroom.name, disabled: true }
+    ]
+  }
+
   get pk (): string {
     return this.$route.params.pk
   }
@@ -61,6 +83,13 @@ export default class LayoutClassroomTeacher extends Vue {
     this.$store.dispatch('classroom/detail', this.pk)
       .catch(unexpectedExc)
   }
+
+  tabs = [
+    { text: 'Overview', to: { name: 'ClassroomOverview' } },
+    { text: 'Students', to: { name: 'ClassroomStudents' } },
+    { text: 'Reading exercises', to: { name: 'ClassroomExercisesReading' } },
+    { text: 'Listening exercises', to: { name: 'ClassroomExercisesListening' } }
+  ]
 
   // @ts-expect-error: don't care
   // eslint-disable-next-line

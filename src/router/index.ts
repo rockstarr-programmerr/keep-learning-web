@@ -8,8 +8,11 @@ import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
 import ClassroomList from '../views/classroom/ClassroomList.vue'
-import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
+import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
+import ClassroomStudents from '../views/classroom/ClassroomStudents.vue'
+import ClassroomExercisesReading from '../views/classroom/ClassroomExercisesReading.vue'
+import ClassroomExercisesListening from '../views/classroom/ClassroomExercisesListening.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -39,6 +42,33 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/overview',
       name: 'ClassroomOverview',
       component: ClassroomOverview,
+      props: castToNumber('pk'),
+      meta: {
+        teacherLayout: LayoutClassroomTeacher
+      }
+    },
+    {
+      path: '/:pk/students',
+      name: 'ClassroomStudents',
+      component: ClassroomStudents,
+      props: castToNumber('pk'),
+      meta: {
+        teacherLayout: LayoutClassroomTeacher
+      }
+    },
+    {
+      path: '/:pk/reading-exercises',
+      name: 'ClassroomExercisesReading',
+      component: ClassroomExercisesReading,
+      props: castToNumber('pk'),
+      meta: {
+        teacherLayout: LayoutClassroomTeacher
+      }
+    },
+    {
+      path: '/:pk/listening-exercises',
+      name: 'ClassroomExercisesListening',
+      component: ClassroomExercisesListening,
       props: castToNumber('pk'),
       meta: {
         teacherLayout: LayoutClassroomTeacher
