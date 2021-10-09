@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { ClassroomCreateReq } from '@/interfaces/api/classroom'
+import { AddStudentReq, ClassroomCreateReq } from '@/interfaces/api/classroom'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
@@ -35,6 +35,12 @@ export const classroom: Module<ClassroomState, RootState> = {
 
     ADD_CLASSROOM (state, classroom) {
       state.classrooms.splice(0, 0, classroom)
+    },
+
+    ADD_STUDENT_TO_CURRENT_CLASSROOM (state, student) {
+      if (state.currentClassroom !== undefined) {
+        state.currentClassroom.students.push(student)
+      }
     }
   },
 
@@ -57,6 +63,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       const data = await Api.classroom.create(payload)
       commit('ADD_CLASSROOM', data)
       return data.pk
+    },
+
+    async addStudents ({ state, commit }, payload: AddStudentReq[]): Promise<void> {
+      if (state.currentClassroom === undefined) return
+      await Api.classroom.addStudents(state.currentClassroom.pk, payload)
+      payload.forEach(student => {
+        commit('ADD_STUDENT_TO_CURRENT_CLASSROOM', student)
+      })
     }
   }
 }

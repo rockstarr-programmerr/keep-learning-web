@@ -20,11 +20,12 @@
     </v-form>
 
     <v-btn
-      v-text="'Create'"
       color="primary"
       @click="submit"
       :loading="loading"
-    ></v-btn>
+    >
+      Create
+    </v-btn>
   </v-container>
 </template>
 

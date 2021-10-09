@@ -23,7 +23,7 @@
           ></v-tab>
         </v-tabs>
 
-        <router-view class="mt-5"></router-view>
+        <router-view v-if="classroom !== undefined" class="mt-5"></router-view>
       </div>
     </v-container>
   </LayoutDefault>
@@ -32,7 +32,7 @@
 <script lang="ts">
 import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import { mapMutations, mapState } from 'vuex'
 import LayoutDefault from './LayoutDefault.vue'
 

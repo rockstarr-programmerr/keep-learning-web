@@ -20,11 +20,12 @@
     <p v-if="!loading & noClassrooms" v-text="'You don\'t have any classroom yet.'" />
 
     <v-btn
-      v-text="'New classroom'"
       color="primary"
       link
       :to="{ name: 'ClassroomCreate' }"
-    />
+    >
+      New classroom
+    </v-btn>
   </v-container>
 </template>
 

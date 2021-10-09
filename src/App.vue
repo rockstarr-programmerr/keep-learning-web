@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import LayoutDefault from '@/layouts/LayoutDefault.vue'
 import { mapGetters } from 'vuex'
 import { User } from './interfaces/user'
@@ -50,3 +50,9 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.cursor-pointer {
+  cursor: pointer;
+}
+</style>
