@@ -1,11 +1,10 @@
 <template>
-  <v-app>
+  <v-app id="keep-learning-app">
     <v-app-bar
       app
       color="primary"
       dark
-      dense
-      flat
+      clipped-left
     >
       <router-link
         :to="{ name: 'Home' }"
@@ -31,6 +30,7 @@
       <router-view/>
     </v-main>
 
+    <!--  TODO: is this needed?
     <v-bottom-navigation
       app
       background-color="secondary"
@@ -42,6 +42,7 @@
       </v-btn>
       <v-spacer></v-spacer>
     </v-bottom-navigation>
+    -->
   </v-app>
 </template>
 
@@ -63,6 +64,7 @@ export default class LayoutDefault extends Vue {
   user!: User
   hasUserInfo!: boolean
   loading = false
+  drawer = null
 
   created (): void {
     this.setUserInfo()

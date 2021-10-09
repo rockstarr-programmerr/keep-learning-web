@@ -82,7 +82,7 @@ export default class Login extends Vue {
     this.$store.dispatch('account/login', payload)
       .then(() => {
         // TODO: implement ?next
-        this.$router.push({ name: 'GroupList' })
+        this.$router.push({ name: 'Home' })
       })
       .catch(error => {
         if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {

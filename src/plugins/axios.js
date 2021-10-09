@@ -4,7 +4,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import Store from '@/store'
 import router from '@/router'
-import { getAuthorizationHeaderValue, loadRefreshToken } from '@/utils/auth'
+import { getAuthorizationHeaderValue, loadAccessToken, loadRefreshToken } from '@/utils/auth'
 import { status, assertErrCode } from '@/utils/status-codes'
 
 // Full config:  https://github.com/axios/axios#request-config
@@ -85,7 +85,12 @@ function handleResponseError (error) {
     /* eslint-disable brace-style */
     /* eslint-disable prefer-promise-reject-errors */
 
-    if (refreshTokenNotValid(error)) {
+    if (noToken()) {
+      goToLogin()
+      return Promise.reject() // Will not display unexpected error message to user
+    }
+
+    else if (refreshTokenNotValid(error)) {
       Store.dispatch('account/logout')
       goToLogin()
       const isExpectedError = assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
@@ -105,11 +110,6 @@ function handleResponseError (error) {
 
     else if (isLoginRoute()) {
       return Promise.reject(error)
-    }
-
-    else if (noRefreshToken()) {
-      goToLogin()
-      return Promise.reject() // Will not display unexpected error message to user
     }
 
     else {
@@ -166,8 +166,8 @@ function userInactiveOrNotFound (error) {
   )
 }
 
-function noRefreshToken () {
-  return loadRefreshToken() === ''
+function noToken () {
+  return loadAccessToken() === '' || loadRefreshToken() === ''
 }
 
 async function tryAgainAfterRefreshingToken (error) {

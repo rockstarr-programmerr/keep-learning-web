@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <v-breadcrumbs :items="breadcrumbs" />
+
     <v-list v-if="!loadingList">
       <v-list-item
         v-for="classroom of classrooms"
@@ -8,6 +10,12 @@
         <v-list-item-content v-text="classroom.name" />
       </v-list-item>
     </v-list>
+    <p v-if="!loadingList & noClassrooms" v-text="'You don\'t have any classroom yet.'" />
+
+    <v-btn
+      v-text="'New classroom'"
+      color="primary"
+    />
   </v-container>
 </template>
 
@@ -27,6 +35,11 @@ import { mapState } from 'vuex'
 export default class ClassroomList extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
+
+  breadcrumbs = [
+    { text: 'Home', to: { name: 'Home' }, exact: true },
+    { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true }
+  ]
 
   /**
    * Init classrooms
