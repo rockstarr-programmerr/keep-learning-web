@@ -9,40 +9,21 @@ import {
 export const account = {
   async registerTeacher (reqBody: RegisterTeacherReq): Promise<RegisterTeacherRes> {
     const res = await Vue.axios.post(endpoints.account.users.registerTeacher, reqBody)
-    return {
-      name: res.data.name,
-      email: res.data.email,
-      phoneNumber: res.data.phone_number
-    }
+    return res.data
   },
 
   async login (reqBody: LoginReq): Promise<LoginRes> {
     const res = await Vue.axios.post(endpoints.account.users.login, reqBody)
-    return {
-      access: res.data.access,
-      refresh: res.data.refresh
-    }
+    return res.data
   },
 
   async tokenRefresh (reqBody: TokenRefreshReq): Promise<TokenRefreshRes> {
     const res = await Vue.axios.post(endpoints.account.users.tokenRefresh, reqBody)
-    return {
-      access: res.data.access,
-      refresh: res.data.refresh
-    }
+    return res.data
   },
 
   async getMyInfo (): Promise<MyInfoRes> {
     const res = await Vue.axios.get(endpoints.account.me.myInfo)
-    return {
-      pk: res.data.pk,
-      url: res.data.url,
-      name: res.data.name,
-      email: res.data.email,
-      phoneNumber: res.data.phone_number,
-      userType: res.data.user_type,
-      avatar: res.data.avatar,
-      avatarThumbnail: res.data.avatar_thumbnail
-    }
+    return res.data
   }
 }

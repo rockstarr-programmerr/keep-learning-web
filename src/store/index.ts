@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { account } from './account'
+import { classroom } from './classroom'
 
 Vue.use(Vuex)
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
   actions: {
   },
   modules: {
-    account
+    account,
+    classroom
   }
 })

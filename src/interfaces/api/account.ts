@@ -1,3 +1,5 @@
+import { User } from '../user'
+
 export declare interface LoginReq {
   email: string;
   password: string;
@@ -21,22 +23,13 @@ export declare interface RegisterTeacherReq {
   email: string;
   password: string;
   name?: string;
-  phoneNumber?: string;
+  phone_number?: string;
 }
 
 export declare interface RegisterTeacherRes {
   email: string;
   name: string;
-  phoneNumber: string;
+  phone_number: string;
 }
 
-export declare interface MyInfoRes {
-  pk: number;
-  url: string;
-  name: string;
-  email: string;
-  phoneNumber: string;
-  userType: string;
-  avatar: string;
-  avatarThumbnail: string;
-}
+export declare interface MyInfoRes extends User {}

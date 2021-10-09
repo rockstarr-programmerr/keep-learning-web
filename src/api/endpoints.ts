@@ -8,6 +8,10 @@ export const endpoints = {
     me: {
       myInfo: '/account/me/'
     }
+  },
+  classroom: {
+    classroomList: '/classroom/classrooms/',
+    classroomDetail: '/classroom/classrooms/<pk>/'
   }
 }
 

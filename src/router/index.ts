@@ -3,9 +3,11 @@ import VueRouter, { RouteConfig } from 'vue-router'
 
 import LayoutNoAppbar from '../layouts/LayoutNoAppbar.vue'
 
-import Home from '../views/Home.vue'
+// import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
+import ClassroomList from '../views/classroom/ClassroomList.vue'
+
 import { prefixWith } from './utils'
 
 Vue.use(VueRouter)
@@ -14,7 +16,9 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    redirect: {
+      name: 'ClassroomList'
+    }
   },
   {
     path: '/auth',
@@ -24,13 +28,18 @@ const routes: Array<RouteConfig> = [
       layout: LayoutNoAppbar
     }
   },
-  ...prefixWith('/http', [
+  ...prefixWith('/classrooms', [
     {
-      path: '/404',
-      name: 'Http404',
-      component: Http404
+      path: '',
+      name: 'ClassroomList',
+      component: ClassroomList
     }
-  ])
+  ]),
+  {
+    path: '*',
+    name: 'Http404',
+    component: Http404
+  }
 ]
 
 const router = new VueRouter({
