@@ -11,7 +11,8 @@ export const endpoints = {
   },
   classroom: {
     classroomList: '/classroom/classrooms/',
-    classroomDetail: '/classroom/classrooms/<pk>/'
+    classroomDetail: '/classroom/classrooms/<pk>/',
+    classroomCreate: '/classroom/classrooms/'
   }
 }
 

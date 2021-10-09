@@ -2,7 +2,7 @@
   <v-container>
     <v-breadcrumbs :items="breadcrumbs" />
 
-    <v-list v-if="!loadingList">
+    <v-list v-if="!loading">
       <v-list-item
         v-for="classroom of classrooms"
         :key="classroom.pk"
@@ -10,11 +10,13 @@
         <v-list-item-content v-text="classroom.name" />
       </v-list-item>
     </v-list>
-    <p v-if="!loadingList & noClassrooms" v-text="'You don\'t have any classroom yet.'" />
+    <p v-if="!loading & noClassrooms" v-text="'You don\'t have any classroom yet.'" />
 
     <v-btn
       v-text="'New classroom'"
       color="primary"
+      link
+      :to="{ name: 'ClassroomCreate' }"
     />
   </v-container>
 </template>
@@ -57,15 +59,15 @@ export default class ClassroomList extends Vue {
   /**
    * List
    */
-  loadingList = true
+  loading = true
 
   listClassroom (): void {
-    this.loadingList = true
+    this.loading = true
 
     this.$store.dispatch('classroom/list')
       .catch(unexpectedExc)
       .finally(() => {
-        this.loadingList = false
+        this.loading = false
       })
   }
 }
