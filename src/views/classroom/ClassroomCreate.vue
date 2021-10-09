@@ -8,8 +8,10 @@
       <v-text-field
         v-model="name"
         label="Name *"
+        autofocus
         :error-messages="nameErrs"
         :error-count="nameErrs.length"
+        @keydown.prevent
       ></v-text-field>
       <v-textarea
         v-model="description"
@@ -28,7 +30,6 @@
 
 <script lang="ts">
 import { ClassroomCreateReq } from '@/interfaces/api/classroom'
-import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
@@ -61,8 +62,11 @@ export default class ClassroomCreate extends Vue {
     }
 
     this.$store.dispatch('classroom/create', payload)
-      .then((pk: Classroom['pk']) => {
-        console.log(pk)
+      .then(pk => {
+        this.$router.push({
+          name: 'ClassroomDetail',
+          params: { pk }
+        })
       })
       .catch(err => {
         if (assertErrCode(err, status.HTTP_400_BAD_REQUEST)) {

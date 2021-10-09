@@ -7,9 +7,10 @@ import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
 import ClassroomList from '../views/classroom/ClassroomList.vue'
+import ClassroomDetail from '../views/classroom/ClassroomDetail.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
 
-import { prefixWith } from './utils'
+import { castToNumber, prefixWith } from './utils'
 
 Vue.use(VueRouter)
 
@@ -32,6 +33,12 @@ const routes: Array<RouteConfig> = [
       path: '',
       name: 'ClassroomList',
       component: ClassroomList
+    },
+    {
+      path: '/:pk',
+      name: 'ClassroomDetail',
+      component: ClassroomDetail,
+      props: castToNumber('pk')
     },
     {
       path: '/new',

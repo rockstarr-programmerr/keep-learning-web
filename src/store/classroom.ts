@@ -15,7 +15,9 @@ export const classroom: Module<ClassroomState, RootState> = {
   namespaced: true,
 
   state: {
-    classrooms: []
+    classrooms: [],
+    currentClassroom: undefined,
+    pagination: undefined
   },
 
   mutations: {
@@ -44,6 +46,11 @@ export const classroom: Module<ClassroomState, RootState> = {
       delete pagination.results
       commit('SET_CLASSROOMS', classrooms)
       commit('SET_PAGINATION', pagination)
+    },
+
+    async detail ({ commit }, pk: Classroom['pk']) {
+      const data = await Api.classroom.detail(pk)
+      commit('SET_CURRENT_CLASSROOM', data)
     },
 
     async create ({ commit }, payload: ClassroomCreateReq): Promise<Classroom['pk']> {

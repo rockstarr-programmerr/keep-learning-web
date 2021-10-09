@@ -77,13 +77,19 @@ function setAuthenticationHeader (headers) {
 }
 
 function handleResponseError (error) {
+  /* eslint-disable prefer-promise-reject-errors */
+
   if (error.response === undefined) {
     return Promise.reject(error)
   }
 
+  if (isNotFound(error)) {
+    router.push({ name: 'Http404' })
+    return Promise.reject() // Will not display unexpected error message to user
+  }
+
   if (isUnauthorized(error)) {
     /* eslint-disable brace-style */
-    /* eslint-disable prefer-promise-reject-errors */
 
     if (noToken()) {
       goToLogin()
@@ -150,6 +156,10 @@ function goToLogin () {
 
 function isUnauthorized (error) {
   return assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
+}
+
+function isNotFound (error) {
+  return assertErrCode(error, status.HTTP_404_NOT_FOUND)
 }
 
 function refreshTokenNotValid (error) {

@@ -6,6 +6,13 @@
       <v-list-item
         v-for="classroom of classrooms"
         :key="classroom.pk"
+        link
+        :to="{
+          name: 'ClassroomDetail',
+          params: {
+            pk: classroom.pk
+          }
+        }"
       >
         <v-list-item-content v-text="classroom.name" />
       </v-list-item>
