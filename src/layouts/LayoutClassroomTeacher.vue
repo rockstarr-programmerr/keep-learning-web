@@ -7,7 +7,7 @@
         color="primary"
       ></v-progress-circular>
 
-      <div v-else>
+      <div v-else-if="classroom !== undefined">
         <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
         <h1 v-text="classroom.name"></h1>
