@@ -918,6 +918,13 @@
   dependencies:
     ckeditor5 "^30.0.0"
 
+"@ckeditor/ckeditor5-alignment@^30.0.0":
+  version "30.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-alignment/-/ckeditor5-alignment-30.0.0.tgz#ed5007cf72e8dd6800d44945be38f632d235a525"
+  integrity sha512-q48Rm+FUBs7GdHsSBJk9030yT0i3p8InlY5ja9KlUaEqztSpfYe5OsAxpzshpmIT26MO+BvnDFfzHapdJNWnJw==
+  dependencies:
+    ckeditor5 "^30.0.0"
+
 "@ckeditor/ckeditor5-autoformat@^30.0.0":
   version "30.0.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-autoformat/-/ckeditor5-autoformat-30.0.0.tgz#71d5e95e83d08d7481b0a1c51db281cace298ce4"
@@ -939,20 +946,22 @@
   dependencies:
     ckeditor5 "^30.0.0"
 
-"@ckeditor/ckeditor5-build-classic@^30.0.0":
+"@ckeditor/ckeditor5-build-decoupled-document@^30.0.0":
   version "30.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-build-classic/-/ckeditor5-build-classic-30.0.0.tgz#70d978c6d343ca5f5b8f04bf46c9225fe127edcd"
-  integrity sha512-HsZ1LUsFzNzBur59kZkZrX5kgSw9uq1t8M8Shqn14Yu9rbM0Ne7OMD9I+Ig04TguPCZZczUBrSewHx9nV0X+0w==
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-build-decoupled-document/-/ckeditor5-build-decoupled-document-30.0.0.tgz#46b510e2f2ac225031ccfbc62f1731da94e6570c"
+  integrity sha512-02R1iZWdKsms0KtZknc63z5ZxhRu5dMRljr5miwmOBeEohrlpCItaDxEeIvgTqqrdUPcPtknHCeMvL9u7vJTmA==
   dependencies:
     "@ckeditor/ckeditor5-adapter-ckfinder" "^30.0.0"
+    "@ckeditor/ckeditor5-alignment" "^30.0.0"
     "@ckeditor/ckeditor5-autoformat" "^30.0.0"
     "@ckeditor/ckeditor5-basic-styles" "^30.0.0"
     "@ckeditor/ckeditor5-block-quote" "^30.0.0"
     "@ckeditor/ckeditor5-ckfinder" "^30.0.0"
     "@ckeditor/ckeditor5-cloud-services" "^30.0.0"
     "@ckeditor/ckeditor5-easy-image" "^30.0.0"
-    "@ckeditor/ckeditor5-editor-classic" "^30.0.0"
+    "@ckeditor/ckeditor5-editor-decoupled" "^30.0.0"
     "@ckeditor/ckeditor5-essentials" "^30.0.0"
+    "@ckeditor/ckeditor5-font" "^30.0.0"
     "@ckeditor/ckeditor5-heading" "^30.0.0"
     "@ckeditor/ckeditor5-image" "^30.0.0"
     "@ckeditor/ckeditor5-indent" "^30.0.0"
@@ -1006,10 +1015,10 @@
   dependencies:
     ckeditor5 "^30.0.0"
 
-"@ckeditor/ckeditor5-editor-classic@^30.0.0":
+"@ckeditor/ckeditor5-editor-decoupled@^30.0.0":
   version "30.0.0"
-  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-editor-classic/-/ckeditor5-editor-classic-30.0.0.tgz#ed195693b09d4d1b5d5ce9072603da8a2b2b3d6f"
-  integrity sha512-xVK5N6Bd5LXyoQT/ep8MD42UsUzQS+qoTkp0qaj2ZDxthx8W6yRRsJdVnRrkZfiD4e/y42BLfRAhPt6xYg8xdw==
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-editor-decoupled/-/ckeditor5-editor-decoupled-30.0.0.tgz#3c2743126422299e2207a2014f9421ed1b160326"
+  integrity sha512-tKmZFy8P4AQmP9wC+m4R86jyFYJflU21KGxn7/tiRG8Vdfcj4VxgQS5MCRwvnNBKoiK76+3RvGOA9DvyCQ+dUA==
   dependencies:
     ckeditor5 "^30.0.0"
     lodash-es "^4.17.15"
@@ -1035,6 +1044,13 @@
   version "30.0.0"
   resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-essentials/-/ckeditor5-essentials-30.0.0.tgz#279b658e71de9933669da09fca7668f6029109ff"
   integrity sha512-Va3SMa8AB+KR3TU+teNJY1SxvZvQEVQEtNOr8CGcHWe0j7c9nQJaJdwJLfOCKYH5jjiKQixNrdnmN+14BxSwPw==
+  dependencies:
+    ckeditor5 "^30.0.0"
+
+"@ckeditor/ckeditor5-font@^30.0.0":
+  version "30.0.0"
+  resolved "https://registry.yarnpkg.com/@ckeditor/ckeditor5-font/-/ckeditor5-font-30.0.0.tgz#4750fe3370badf1336c93a8da0578da24e085f7c"
+  integrity sha512-5auZ8ZSFlBcPG6JPvk8x9niZjixU7tzP+QteejVhseEOeiNfev1A6Y1V2rWDBm9F+NNA1I5fyH9hw8/pbpyk/Q==
   dependencies:
     ckeditor5 "^30.0.0"
 

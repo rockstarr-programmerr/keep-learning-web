@@ -44,6 +44,11 @@ const routes: Array<RouteConfig> = [
       component: ClassroomList
     },
     {
+      path: '/new',
+      name: 'ClassroomCreate',
+      component: ClassroomCreate
+    },
+    {
       path: '/:pk/overview',
       name: 'ClassroomOverview',
       component: ClassroomOverview,
@@ -78,11 +83,6 @@ const routes: Array<RouteConfig> = [
       meta: {
         teacherLayout: LayoutClassroomTeacher
       }
-    },
-    {
-      path: '/new',
-      name: 'ClassroomCreate',
-      component: ClassroomCreate
     }
   ]),
   ...prefixWith('/reading-exercises', [
@@ -92,15 +92,15 @@ const routes: Array<RouteConfig> = [
       component: ReadingExerciseList
     },
     {
+      path: '/new',
+      name: 'ReadingExerciseCreate',
+      component: ReadingExerciseCreate
+    },
+    {
       path: '/:pk',
       name: 'ReadingExerciseDetail',
       component: ReadingExerciseDetail,
       props: true
-    },
-    {
-      path: '/new',
-      name: 'ReadingExerciseCreate',
-      component: ReadingExerciseCreate
     }
   ]),
   {

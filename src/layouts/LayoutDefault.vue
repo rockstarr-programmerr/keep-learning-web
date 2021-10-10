@@ -4,7 +4,7 @@
       app
       color="primary"
       dark
-      clipped-left
+      hide-on-scroll
     >
       <router-link
         :to="{ name: 'Home' }"
