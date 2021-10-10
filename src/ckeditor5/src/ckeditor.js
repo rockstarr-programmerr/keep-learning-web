@@ -28,7 +28,7 @@ import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle.js';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
-import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter.js';
+// import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter.js';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
@@ -37,6 +37,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar.js';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline.js';
+import CustomUploadAdapter from './custom-upload-adapter.js'
 
 class Editor extends DecoupledDocumentEditor {}
 
@@ -67,7 +68,8 @@ Editor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
-	SimpleUploadAdapter,
+	// SimpleUploadAdapter,
+  CustomUploadAdapter,
 	Strikethrough,
 	Table,
 	TableCellProperties,

@@ -19,7 +19,8 @@ export const endpoints = {
   readingExercise: {
     list: '/classroom/reading-exercises/',
     detail: '/classroom/reading-exercises/<pk>/',
-    create: '/classroom/reading-exercises/'
+    create: '/classroom/reading-exercises/',
+    uploadImage: '/classroom/reading-exercises/upload-image/'
   }
 }
 

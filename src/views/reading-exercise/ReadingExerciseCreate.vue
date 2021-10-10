@@ -51,6 +51,7 @@ import { unexpectedExc } from '@/utils'
 // @ts-expect-error no need typescript for CKEditor
 import CKEditor from '@ckeditor/ckeditor5-vue2'; import DecoupledEditor from '@/ckeditor5/build/ckeditor'
 import { getAuthorizationHeaderValue } from '@/utils/auth'
+import { endpoints } from '@/api/endpoints'
 
 @Component({
   components: {
@@ -73,10 +74,62 @@ export default class ReadingExerciseCreate extends Vue {
   editor = DecoupledEditor
   editorConfig = {
     simpleUpload: {
-      uploadUrl: 'http://127.0.0.1:8000/classroom/reading-exercises/upload-image/',
+      axios: this.$axios,
+      uploadUrl: endpoints.readingExercise.uploadImage,
       headers: {
         Authorization: getAuthorizationHeaderValue()
       }
+    },
+    toolbar: {
+      items: [
+        'heading',
+        '|',
+        'fontSize',
+        'fontFamily',
+        '|',
+        'fontColor',
+        'fontBackgroundColor',
+        '|',
+        'bold',
+        'italic',
+        'underline',
+        'strikethrough',
+        '|',
+        'alignment',
+        '|',
+        'numberedList',
+        'bulletedList',
+        '|',
+        'outdent',
+        'indent',
+        '|',
+        'todoList',
+        'link',
+        'blockQuote',
+        'imageUpload',
+        'insertTable',
+        'mediaEmbed',
+        '|',
+        'undo',
+        'redo'
+      ]
+    },
+    image: {
+      toolbar: [
+        'imageTextAlternative',
+        'imageStyle:inline',
+        'imageStyle:block',
+        'imageStyle:side'
+      ]
+    },
+    table: {
+      contentToolbar: [
+        'tableColumn',
+        'tableRow',
+        'mergeTableCells',
+        'tableCellProperties',
+        'tableProperties'
+      ]
     }
   }
 
