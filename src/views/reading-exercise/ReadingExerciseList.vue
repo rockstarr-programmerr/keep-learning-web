@@ -38,6 +38,11 @@
           <v-list-item
             v-for="exercise of exercises"
             :key="exercise.pk"
+            link
+            :to="{
+              name: 'ReadingExerciseDetail',
+              params: { pk: exercise.pk }
+            }"
           >
             <v-list-item-content v-text="exercise.identifier" />
           </v-list-item>

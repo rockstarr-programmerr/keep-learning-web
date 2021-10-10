@@ -48,10 +48,10 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       commit('SET_PAGINATION', pagination)
     },
 
-    // async detail ({ commit }, pk: ReadingExercise['pk']) {
-    //   const data = await Api.readingExercise.detail(pk)
-    //   commit('SET_CURRENT_READING_EXERCISE', data)
-    // },
+    async detail ({ commit }, pk: ReadingExercise['pk']) {
+      const data = await Api.readingExercise.detail(pk)
+      commit('SET_CURRENT_READING_EXERCISE', data)
+    },
 
     async create ({ commit }, payload: ReadingExerciseCreateReq): Promise<ReadingExercise['pk']> {
       const data = await Api.readingExercise.create(payload)
