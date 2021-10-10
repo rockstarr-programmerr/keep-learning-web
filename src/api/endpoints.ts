@@ -17,7 +17,8 @@ export const endpoints = {
     removeStudents: '/classroom/classrooms/<pk>/remove-students/'
   },
   readingExercise: {
-    list: '/classroom/reading-exercises/'
+    list: '/classroom/reading-exercises/',
+    create: '/classroom/reading-exercises/'
   }
 }
 

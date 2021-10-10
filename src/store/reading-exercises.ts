@@ -1,5 +1,6 @@
 import { Api } from '@/api'
 import { PaginatedRes } from '@/interfaces/api/common'
+import { ReadingExerciseCreateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { Module } from 'vuex'
 import { RootState } from './index'
@@ -45,17 +46,17 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       delete pagination.results
       commit('SET_READING_EXERCISES', readingExercises)
       commit('SET_PAGINATION', pagination)
-    }
+    },
 
     // async detail ({ commit }, pk: ReadingExercise['pk']) {
     //   const data = await Api.readingExercise.detail(pk)
     //   commit('SET_CURRENT_READING_EXERCISE', data)
     // },
 
-    // async create ({ commit }, payload: ClassroomCreateReq): Promise<ReadingExercise['pk']> {
-    //   const data = await Api.readingExercise.create(payload)
-    //   commit('ADD_READING_EXERCISE', data)
-    //   return data.pk
-    // }
+    async create ({ commit }, payload: ReadingExerciseCreateReq): Promise<ReadingExercise['pk']> {
+      const data = await Api.readingExercise.create(payload)
+      commit('ADD_READING_EXERCISE', data)
+      return data.pk
+    }
   }
 }
