@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { AddStudentReq, ClassroomCreateReq } from '@/interfaces/api/classroom'
+import { AddStudentReq, ClassroomCreateReq, RemoveStudentReq } from '@/interfaces/api/classroom'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
@@ -41,6 +41,16 @@ export const classroom: Module<ClassroomState, RootState> = {
       if (state.currentClassroom !== undefined) {
         state.currentClassroom.students.push(student)
       }
+    },
+
+    REMOVE_STUDENT_TO_CURRENT_CLASSROOM (state, studentToRemove) {
+      if (state.currentClassroom === undefined) return
+      let index = 0
+      for (const student of state.currentClassroom.students) {
+        if (student.email === studentToRemove.email) break
+        index++
+      }
+      state.currentClassroom.students.splice(index, 1)
     }
   },
 
@@ -70,6 +80,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       await Api.classroom.addStudents(state.currentClassroom.pk, payload)
       payload.forEach(student => {
         commit('ADD_STUDENT_TO_CURRENT_CLASSROOM', student)
+      })
+    },
+
+    async removeStudents ({ state, commit }, payload: RemoveStudentReq[]): Promise<void> {
+      if (state.currentClassroom === undefined) return
+      await Api.classroom.removeStudents(state.currentClassroom.pk, payload)
+      payload.forEach(student => {
+        commit('REMOVE_STUDENT_TO_CURRENT_CLASSROOM', student)
       })
     }
   }

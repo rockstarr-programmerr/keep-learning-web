@@ -17,3 +17,7 @@ export declare interface AddStudentReq {
   email: string;
   phone_number?: string;
 }
+
+export declare interface RemoveStudentReq {
+  email: string;
+}
