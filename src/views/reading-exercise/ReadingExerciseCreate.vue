@@ -11,9 +11,7 @@
           <v-text-field
             label="Identifier"
           ></v-text-field>
-          <v-textarea
-            label="Content"
-          ></v-textarea>
+          <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -31,8 +29,16 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+// @ts-expect-error no need typescript for CKEditor
+import CKEditor from '@ckeditor/ckeditor5-vue2'
+// @ts-expect-error no need typescript for CKEditor
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
-@Component
+@Component({
+  components: {
+    ckeditor: CKEditor.component
+  }
+})
 export default class ReadingExerciseCreate extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
@@ -42,6 +48,13 @@ export default class ReadingExerciseCreate extends Vue {
     { text: 'Reading exercises', to: { name: 'ReadingExerciseList' }, exact: true },
     { text: 'New', to: { name: 'ReadingExerciseCreate' }, exact: true }
   ]
+
+  /**
+   * CKEditor
+   */
+  editor = ClassicEditor
+  editorData = ''
+  editorConfig = {}
 
   /**
    * Create
