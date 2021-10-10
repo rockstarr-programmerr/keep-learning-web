@@ -17,8 +17,12 @@ export function loadRefreshToken (): string {
   return localStorage.getItem(refreshTokenKey) || ''
 }
 
-export function getAuthorizationHeaderValue (accessToken: string): string {
-  return `Bearer ${accessToken}`
+export function getAuthorizationHeaderValue (accessToken?: string): string {
+  if (accessToken !== undefined) {
+    return `Bearer ${accessToken}`
+  } else {
+    return `Bearer ${loadAccessToken()}`
+  }
 }
 
 export function deleteAccessToken (): void {

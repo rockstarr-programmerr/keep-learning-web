@@ -47,10 +47,10 @@ import { ReadingExerciseCreateReq } from '@/interfaces/api/reading-exercise'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { unexpectedExc } from '@/utils'
 
+// 2 imports in the same line to work around some dumb vetur warning
 // @ts-expect-error no need typescript for CKEditor
-import CKEditor from '@ckeditor/ckeditor5-vue2'
-// @ts-expect-error no need typescript for CKEditor
-import DecoupledEditor from '@/ckeditor5/build/ckeditor'
+import CKEditor from '@ckeditor/ckeditor5-vue2'; import DecoupledEditor from '@/ckeditor5/build/ckeditor'
+import { getAuthorizationHeaderValue } from '@/utils/auth'
 
 @Component({
   components: {
@@ -75,7 +75,7 @@ export default class ReadingExerciseCreate extends Vue {
     simpleUpload: {
       uploadUrl: 'http://127.0.0.1:8000/classroom/reading-exercises/upload-image/',
       headers: {
-        hello: 'world'
+        Authorization: getAuthorizationHeaderValue()
       }
     }
   }
