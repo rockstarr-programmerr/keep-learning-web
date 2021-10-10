@@ -11,6 +11,7 @@
           <v-text-field
             v-model="identifier"
             label="Identifier"
+            autofocus
             :error-messages="identifierErrs"
             :error-count="identifierErrs.length"
           ></v-text-field>
@@ -73,6 +74,7 @@ export default class ReadingExerciseCreate extends Vue {
    */
   editor = DecoupledEditor
   editorConfig = {
+    placeholder: 'You can paste your Word document here.',
     simpleUpload: {
       axios: this.$axios,
       uploadUrl: endpoints.readingExercise.uploadImage,
@@ -195,5 +197,11 @@ export default class ReadingExerciseCreate extends Vue {
   border-bottom: 1px solid rgb(196, 196, 196);
   border-left: 1px solid rgb(196, 196, 196);
   border-right: 1px solid rgb(196, 196, 196);
+  min-height: 300px;
+}
+
+.ckeditor-input ::v-deep .ck-toolbar {
+  position: sticky;
+  top: 0;
 }
 </style>

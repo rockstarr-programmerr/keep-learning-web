@@ -30,11 +30,11 @@
       class="mt-5"
     >
       <v-card-subtitle>
-        Your exercises
+        Your reading exercises
         <v-divider class="mt-3"></v-divider>
       </v-card-subtitle>
       <v-card-text>
-        <v-list>
+        <v-list dense>
           <v-list-item
             v-for="exercise of exercises"
             :key="exercise.pk"

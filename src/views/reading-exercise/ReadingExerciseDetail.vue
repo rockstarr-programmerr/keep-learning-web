@@ -7,7 +7,7 @@
         {{ exercise.identifier }}
       </v-card-title>
       <v-divider></v-divider>
-      <v-card-text>
+      <v-card-text class="exercise-content">
         <div v-html="exercise.content"></div>
       </v-card-text>
     </v-card>
@@ -73,5 +73,7 @@ export default class ReadingExerciseDetail extends Vue {
 </script>
 
 <style scoped lang="scss">
-
+.exercise-content.v-card__text {
+  color: rgba(0, 0, 0, 1);
+}
 </style>
