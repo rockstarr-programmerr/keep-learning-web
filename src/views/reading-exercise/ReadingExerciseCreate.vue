@@ -50,7 +50,7 @@ import { unexpectedExc } from '@/utils'
 // @ts-expect-error no need typescript for CKEditor
 import CKEditor from '@ckeditor/ckeditor5-vue2'
 // @ts-expect-error no need typescript for CKEditor
-import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document'
+import DecoupledEditor from '@/ckeditor5/build/ckeditor'
 
 @Component({
   components: {
@@ -72,8 +72,11 @@ export default class ReadingExerciseCreate extends Vue {
    */
   editor = DecoupledEditor
   editorConfig = {
-    ckfinder: {
-      uploadUrl: 'http://example.com'
+    simpleUpload: {
+      uploadUrl: 'http://127.0.0.1:8000/classroom/reading-exercises/upload-image/',
+      headers: {
+        hello: 'world'
+      }
     }
   }
 
