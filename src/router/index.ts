@@ -7,12 +7,16 @@ import LayoutClassroomTeacher from '../layouts/LayoutClassroomTeacher.vue'
 import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
+
 import ClassroomList from '../views/classroom/ClassroomList.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
 import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
 import ClassroomStudents from '../views/classroom/ClassroomStudents.vue'
 import ClassroomExercisesReading from '../views/classroom/ClassroomExercisesReading.vue'
 import ClassroomExercisesListening from '../views/classroom/ClassroomExercisesListening.vue'
+
+import ReadingExerciseList from '../views/reading-exercise/ReadingExerciseList.vue'
+import ReadingExerciseCreate from '../views/reading-exercise/ReadingExerciseCreate.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -78,6 +82,18 @@ const routes: Array<RouteConfig> = [
       path: '/new',
       name: 'ClassroomCreate',
       component: ClassroomCreate
+    }
+  ]),
+  ...prefixWith('/reading-exercises', [
+    {
+      path: '',
+      name: 'ReadingExerciseList',
+      component: ReadingExerciseList
+    },
+    {
+      path: '/new',
+      name: 'ReadingExerciseCreate',
+      component: ReadingExerciseCreate
     }
   ]),
   {

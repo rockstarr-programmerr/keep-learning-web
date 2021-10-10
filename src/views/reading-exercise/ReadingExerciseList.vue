@@ -1,19 +1,19 @@
 <template>
   <v-container>
-    <v-breadcrumbs :items="breadcrumbs" />
+    <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
-    <h1>Manage classrooms</h1>
+    <h1>Manage reading exercises</h1>
     <v-divider></v-divider>
 
     <span
       class="cursor-pointer d-inline-flex mt-5"
-      @click="$router.push({ name: 'ClassroomCreate' })"
+      @click="goToNewExercise"
     >
       <v-icon>
         mdi-plus-circle-outline
       </v-icon>
       <span
-        v-text="'New classroom'"
+        v-text="'Add exercise'"
         class="ml-3"
       ></span>
     </span>
@@ -23,30 +23,23 @@
       indeterminate
     ></v-progress-circular>
 
-    <p v-else-if="noClassrooms" v-text="'You don\'t have any classroom yet.'" />
+    <p v-else-if="noExercises" v-text="'You don\'t have any exercises yet.'" />
 
     <v-card
       v-else
       class="mt-5"
     >
       <v-card-subtitle>
-        Your classrooms
+        Your exercises
         <v-divider class="mt-3"></v-divider>
       </v-card-subtitle>
       <v-card-text>
         <v-list>
           <v-list-item
-            v-for="classroom of classrooms"
-            :key="classroom.pk"
-            link
-            :to="{
-              name: 'ClassroomOverview',
-              params: {
-                pk: classroom.pk
-              }
-            }"
+            v-for="exercise of exercises"
+            :key="exercise.pk"
           >
-            <v-list-item-content v-text="classroom.name" />
+            <v-list-item-content v-text="exercise.identifier" />
           </v-list-item>
         </v-list>
       </v-card-text>
@@ -55,53 +48,60 @@
 </template>
 
 <script lang="ts">
-import { Classroom } from '@/interfaces/classroom'
+import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 @Component({
   computed: {
-    ...mapState('classroom', [
-      'classrooms'
-    ])
+    ...mapState('readingExercise', {
+      exercises: 'readingExercises'
+    })
   }
 })
-export default class ClassroomList extends Vue {
+export default class ReadingExerciseList extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
   breadcrumbs = [
     { text: 'Home', to: { name: 'Home' }, exact: true },
-    { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true }
+    { text: 'Reading exercises', to: { name: 'ReadingExerciseList' }, exact: true }
   ]
 
   /**
-   * Init classrooms
+   * Init exercises
    */
-  classrooms!: Classroom[]
+  exercises!: ReadingExercise[]
 
-  get noClassrooms (): boolean {
-    return this.classrooms.length === 0
+  get noExercises (): boolean {
+    return this.exercises.length === 0
   }
 
   created (): void {
-    this.listClassroom()
+    this.listExercise()
   }
 
   /**
    * List
    */
-  loading = true
+  loading = false
 
-  listClassroom (): void {
+  listExercise (): void {
     this.loading = true
 
-    this.$store.dispatch('classroom/list')
+    this.$store.dispatch('readingExercise/list')
       .catch(unexpectedExc)
       .finally(() => {
         this.loading = false
       })
+  }
+
+  /**
+   * Create
+   */
+  goToNewExercise (): void {
+    this.$router.push({ name: 'ReadingExerciseCreate' })
   }
 }
 </script>

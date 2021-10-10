@@ -11,6 +11,7 @@
         <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
         <h1 v-text="classroom.name"></h1>
+        <v-divider></v-divider>
         <p v-text="classroom.description"></p>  <!-- TODO: multiline -->
 
         <v-tabs>

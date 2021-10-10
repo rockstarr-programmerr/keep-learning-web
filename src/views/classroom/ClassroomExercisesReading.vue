@@ -1,6 +1,8 @@
 <template>
   <div>
-    ClassroomExercisesReading
+    <p>
+      Choose the exercises you want to use in this class.
+    </p>
   </div>
 </template>
 
