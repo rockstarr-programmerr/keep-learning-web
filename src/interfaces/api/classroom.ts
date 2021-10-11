@@ -25,3 +25,7 @@ export declare interface RemoveStudentReq {
 export declare interface AddReadingExercisesReq {
   pk: number;
 }
+
+export declare interface RemoveReadingExercisesReq {
+  pk: number;
+}

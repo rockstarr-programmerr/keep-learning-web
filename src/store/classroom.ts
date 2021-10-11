@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, RemoveStudentReq } from '@/interfaces/api/classroom'
+import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, RemoveReadingExercisesReq, RemoveStudentReq } from '@/interfaces/api/classroom'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
@@ -43,7 +43,7 @@ export const classroom: Module<ClassroomState, RootState> = {
       }
     },
 
-    REMOVE_STUDENT_TO_CURRENT_CLASSROOM (state, studentToRemove) {
+    REMOVE_STUDENT_FROM_CURRENT_CLASSROOM (state, studentToRemove) {
       if (state.currentClassroom === undefined) return
       let index = 0
       for (const student of state.currentClassroom.students) {
@@ -59,6 +59,16 @@ export const classroom: Module<ClassroomState, RootState> = {
           state.currentClassroom.reading_exercises.push(exercisePk)
         }
       }
+    },
+
+    REMOVE_READING_EXERCISES_FROM_CURRENT_CLASSROOM (state, pkToRemove) {
+      if (state.currentClassroom === undefined) return
+      let index = 0
+      for (const pk of state.currentClassroom.reading_exercises) {
+        if (pk === pkToRemove) break
+        index++
+      }
+      state.currentClassroom.reading_exercises.splice(index, 1)
     }
   },
 
@@ -95,7 +105,7 @@ export const classroom: Module<ClassroomState, RootState> = {
       if (state.currentClassroom === undefined) return
       await Api.classroom.removeStudents(state.currentClassroom.pk, payload)
       payload.forEach(student => {
-        commit('REMOVE_STUDENT_TO_CURRENT_CLASSROOM', student)
+        commit('REMOVE_STUDENT_FROM_CURRENT_CLASSROOM', student)
       })
     },
 
@@ -104,6 +114,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       await Api.classroom.addReadingExercises(state.currentClassroom.pk, payload)
       payload.forEach(exercise => {
         commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise.pk)
+      })
+    },
+
+    async removeReadingExercises ({ state, commit }, payload: RemoveReadingExercisesReq[]): Promise<void> {
+      if (state.currentClassroom === undefined) return
+      await Api.classroom.removeReadingExercises(state.currentClassroom.pk, payload)
+      payload.forEach(exercise => {
+        commit('REMOVE_READING_EXERCISES_FROM_CURRENT_CLASSROOM', exercise.pk)
       })
     }
   }

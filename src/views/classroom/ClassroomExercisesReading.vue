@@ -17,34 +17,54 @@
       </router-link>
     </p>
 
-    <v-row v-else no-gutters>
-      <v-col
-        v-for="exercise of exercises"
-        :key="exercise.pk"
-        cols="3"
-      >
-        <v-checkbox
-          v-model="exercise.isChosen"
-          :label="exercise.identifier"
-          dense
-          hide-details
-        ></v-checkbox>
-      </v-col>
-    </v-row>
+    <div v-else>
+      <v-btn-toggle>
+        <v-btn
+          small
+          @click="selectAll"
+        >
+          Select all
+        </v-btn>
+        <v-btn
+          small
+          @click="unselectAll"
+        >
+          Unselect all
+        </v-btn>
+      </v-btn-toggle>
 
-    <v-btn
-      color="primary"
-      class="mt-5"
-      :loading="saving"
-      @click="save"
-    >
-      Save
-    </v-btn>
+      <v-row
+        no-gutters
+        class="mt-3"
+      >
+        <v-col
+          v-for="exercise of exercises"
+          :key="exercise.pk"
+          cols="3"
+        >
+          <v-checkbox
+            v-model="exercise.isChosen"
+            :label="exercise.identifier"
+            dense
+            hide-details
+          ></v-checkbox>
+        </v-col>
+      </v-row>
+
+      <v-btn
+        color="primary"
+        class="mt-5"
+        :loading="saving"
+        @click="save"
+      >
+        Save
+      </v-btn>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { AddReadingExercisesReq } from '@/interfaces/api/classroom'
+import { AddReadingExercisesReq, RemoveReadingExercisesReq } from '@/interfaces/api/classroom'
 import { Classroom } from '@/interfaces/classroom'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
@@ -99,15 +119,49 @@ export default class ClassroomExercisesReading extends Vue {
     if (this.saving) return
     this.saving = true
 
-    const payload: AddReadingExercisesReq[] = this.exercises
-      .filter(exercise => exercise.isChosen && !this.classroom.reading_exercises.includes(exercise.pk))
-      .map(exercise => ({ pk: exercise.pk }))
+    let promises = [
+      this.addReadingExercise(),
+      this.removeReadingExercise()
+    ]
+    promises = promises.filter(promise => promise !== null)
 
-    this.$store.dispatch('classroom/addReadingExercises', payload)
+    Promise.all(promises)
       .catch(unexpectedExc)
       .finally(() => {
         this.saving = false
       })
+  }
+
+  addReadingExercise (): Promise<unknown> | null {
+    const pksToAdd: AddReadingExercisesReq[] = this.exercises
+      .filter(exercise => exercise.isChosen && !this.classroom.reading_exercises.includes(exercise.pk))
+      .map(exercise => ({ pk: exercise.pk }))
+
+    if (pksToAdd.length === 0) return null
+
+    return this.$store.dispatch('classroom/addReadingExercises', pksToAdd)
+  }
+
+  removeReadingExercise (): Promise<unknown> | null {
+    const pksToRemove: RemoveReadingExercisesReq[] = this.exercises
+      .filter(exercise => !exercise.isChosen && this.classroom.reading_exercises.includes(exercise.pk))
+      .map(exercise => ({ pk: exercise.pk }))
+
+    if (pksToRemove.length === 0) return null
+
+    return this.$store.dispatch('classroom/removeReadingExercises', pksToRemove)
+  }
+
+  selectAll (): void {
+    this.exercises.forEach(exercise => {
+      exercise.isChosen = true
+    })
+  }
+
+  unselectAll (): void {
+    this.exercises.forEach(exercise => {
+      exercise.isChosen = false
+    })
   }
 }
 </script>
