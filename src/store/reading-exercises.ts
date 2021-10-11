@@ -1,6 +1,6 @@
 import { Api } from '@/api'
 import { PaginatedRes } from '@/interfaces/api/common'
-import { ReadingExerciseCreateReq } from '@/interfaces/api/reading-exercise'
+import { ReadingExerciseCreateReq, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { Module } from 'vuex'
 import { RootState } from './index'
@@ -55,6 +55,15 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
 
     async create ({ commit }, payload: ReadingExerciseCreateReq): Promise<ReadingExercise['pk']> {
       const data = await Api.readingExercise.create(payload)
+      commit('ADD_READING_EXERCISE', data)
+      return data.pk
+    },
+
+    async update (
+      { commit },
+      { pk, payload }: { pk: ReadingExercise['pk']; payload: ReadingExerciseUpdateReq }
+    ): Promise<ReadingExercise['pk']> {
+      const data = await Api.readingExercise.update(pk, payload)
       commit('ADD_READING_EXERCISE', data)
       return data.pk
     }

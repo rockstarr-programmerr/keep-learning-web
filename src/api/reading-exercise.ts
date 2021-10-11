@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ReadingExerciseCreateReq, ReadingExerciseDetailRes, ReadingExerciseListRes } from '@/interfaces/api/reading-exercise'
+import { ReadingExerciseCreateReq, ReadingExerciseDetailRes, ReadingExerciseListRes, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { endpoints, replacePk } from './endpoints'
 
@@ -17,6 +17,12 @@ export const readingExercise = {
 
   async create (payload: ReadingExerciseCreateReq): Promise<ReadingExerciseDetailRes> {
     const res = await Vue.axios.post(endpoints.readingExercise.create, payload)
+    return res.data
+  },
+
+  async update (pk: ReadingExercise['pk'], payload: ReadingExerciseUpdateReq): Promise<ReadingExerciseDetailRes> {
+    const endpoint = replacePk(endpoints.readingExercise.update, pk)
+    const res = await Vue.axios.patch(endpoint, payload)
     return res.data
   }
 }

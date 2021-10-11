@@ -18,6 +18,7 @@ import ClassroomExercisesListening from '../views/classroom/ClassroomExercisesLi
 import ReadingExerciseList from '../views/reading-exercise/ReadingExerciseList.vue'
 import ReadingExerciseDetail from '../views/reading-exercise/ReadingExerciseDetail.vue'
 import ReadingExerciseCreate from '../views/reading-exercise/ReadingExerciseCreate.vue'
+import ReadingExerciseUpdate from '../views/reading-exercise/ReadingExerciseUpdate.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -97,10 +98,16 @@ const routes: Array<RouteConfig> = [
       component: ReadingExerciseCreate
     },
     {
+      path: '/:pk/update',
+      name: 'ReadingExerciseUpdate',
+      component: ReadingExerciseUpdate,
+      props: castToNumber('pk')
+    },
+    {
       path: '/:pk',
       name: 'ReadingExerciseDetail',
       component: ReadingExerciseDetail,
-      props: true
+      props: castToNumber('pk')
     }
   ]),
   {

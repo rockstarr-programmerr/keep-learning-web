@@ -19,6 +19,7 @@
         <v-progress-circular
           v-if="loading"
           indeterminate
+          color="primary"
         ></v-progress-circular>
         <span v-else>
           {{ user.name }}

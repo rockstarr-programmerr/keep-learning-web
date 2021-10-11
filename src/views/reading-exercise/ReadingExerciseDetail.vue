@@ -2,9 +2,58 @@
   <v-container>
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
+    <v-progress-circular
+      v-if="loading"
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
+
     <v-card v-if="exercise !== undefined">
       <v-card-title>
         {{ exercise.identifier }}
+        <v-spacer></v-spacer>
+        <v-menu
+          offset-x
+          left
+          nudge-left="12"
+        >
+          <template #activator="{ on, attrs }">
+            <v-icon
+              v-on="on"
+              v-bind="attrs"
+            >
+              mdi-dots-vertical
+            </v-icon>
+          </template>
+          <v-list dense>
+            <v-list-item
+              link
+              :to="{
+                name: 'ReadingExerciseUpdate',
+                params: { pk }
+              }"
+            >
+              <v-list-item-icon class="mr-5">
+                <v-icon>
+                  mdi-pencil-outline
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Edit
+              </v-list-item-title>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon class="mr-5">
+                <v-icon>
+                  mdi-delete-outline
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Delete
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text class="exercise-content">
@@ -27,7 +76,7 @@ import { mapMutations, mapState } from 'vuex'
     })
   },
   methods: {
-    ...mapMutations('classroom', {
+    ...mapMutations('readingExercise', {
       setCurrentExercise: 'SET_CURRENT_READING_EXERCISE'
     })
   }
@@ -51,7 +100,7 @@ export default class ReadingExerciseDetail extends Vue {
   }
 
   get loading (): boolean {
-    return this.classroom === undefined
+    return this.exercise === undefined
   }
 
   created (): void {

@@ -51,8 +51,7 @@ import { unexpectedExc } from '@/utils'
 // 2 imports in the same line to work around some dumb vetur warning
 // @ts-expect-error no need typescript for CKEditor
 import CKEditor from '@ckeditor/ckeditor5-vue2'; import DecoupledEditor from '@/ckeditor5/build/ckeditor'
-import { getAuthorizationHeaderValue } from '@/utils/auth'
-import { endpoints } from '@/api/endpoints'
+import { CKEditorConfig } from '@/utils/ckeditor-config'
 
 @Component({
   components: {
@@ -73,67 +72,7 @@ export default class ReadingExerciseCreate extends Vue {
    * CKEditor
    */
   editor = DecoupledEditor
-  editorConfig = {
-    placeholder: 'You can paste your Word document here.',
-    simpleUpload: {
-      axios: this.$axios,
-      uploadUrl: endpoints.readingExercise.uploadImage,
-      headers: {
-        Authorization: getAuthorizationHeaderValue()
-      }
-    },
-    toolbar: {
-      items: [
-        'heading',
-        '|',
-        'fontSize',
-        'fontFamily',
-        '|',
-        'fontColor',
-        'fontBackgroundColor',
-        '|',
-        'bold',
-        'italic',
-        'underline',
-        'strikethrough',
-        '|',
-        'alignment',
-        '|',
-        'numberedList',
-        'bulletedList',
-        '|',
-        'outdent',
-        'indent',
-        '|',
-        'todoList',
-        'link',
-        'blockQuote',
-        'imageUpload',
-        'insertTable',
-        'mediaEmbed',
-        '|',
-        'undo',
-        'redo'
-      ]
-    },
-    image: {
-      toolbar: [
-        'imageTextAlternative',
-        'imageStyle:inline',
-        'imageStyle:block',
-        'imageStyle:side'
-      ]
-    },
-    table: {
-      contentToolbar: [
-        'tableColumn',
-        'tableRow',
-        'mergeTableCells',
-        'tableCellProperties',
-        'tableProperties'
-      ]
-    }
-  }
+  editorConfig = CKEditorConfig()
 
   // @ts-expect-error no need typescript for CKEditor
   // eslint-disable-next-line

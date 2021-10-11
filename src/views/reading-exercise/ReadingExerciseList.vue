@@ -21,6 +21,7 @@
     <v-progress-circular
       v-if="loading"
       indeterminate
+      color="primary"
     ></v-progress-circular>
 
     <p v-else-if="noExercises" v-text="'You don\'t have any exercises yet.'" />

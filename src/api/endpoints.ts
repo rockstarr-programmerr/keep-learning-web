@@ -20,6 +20,7 @@ export const endpoints = {
     list: '/classroom/reading-exercises/',
     detail: '/classroom/reading-exercises/<pk>/',
     create: '/classroom/reading-exercises/',
+    update: '/classroom/reading-exercises/<pk>/',
     uploadImage: '/classroom/reading-exercises/upload-image/'
   }
 }

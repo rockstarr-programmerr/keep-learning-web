@@ -21,6 +21,7 @@
     <v-progress-circular
       v-if="loading"
       indeterminate
+      color="primary"
     ></v-progress-circular>
 
     <p v-else-if="noClassrooms" v-text="'You don\'t have any classroom yet.'" />
