@@ -21,3 +21,7 @@ export declare interface AddStudentReq {
 export declare interface RemoveStudentReq {
   email: string;
 }
+
+export declare interface AddReadingExercisesReq {
+  pk: number;
+}

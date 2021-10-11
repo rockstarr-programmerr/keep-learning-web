@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { AddStudentReq, ClassroomCreateReq, RemoveStudentReq } from '@/interfaces/api/classroom'
+import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, RemoveStudentReq } from '@/interfaces/api/classroom'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
@@ -51,6 +51,14 @@ export const classroom: Module<ClassroomState, RootState> = {
         index++
       }
       state.currentClassroom.students.splice(index, 1)
+    },
+
+    ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM (state, exercisePk) {
+      if (state.currentClassroom !== undefined) {
+        if (!state.currentClassroom.reading_exercises.includes(exercisePk)) {
+          state.currentClassroom.reading_exercises.push(exercisePk)
+        }
+      }
     }
   },
 
@@ -88,6 +96,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       await Api.classroom.removeStudents(state.currentClassroom.pk, payload)
       payload.forEach(student => {
         commit('REMOVE_STUDENT_TO_CURRENT_CLASSROOM', student)
+      })
+    },
+
+    async addReadingExercises ({ state, commit }, payload: AddReadingExercisesReq[]): Promise<void> {
+      if (state.currentClassroom === undefined) return
+      await Api.classroom.addReadingExercises(state.currentClassroom.pk, payload)
+      payload.forEach(exercise => {
+        commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise.pk)
       })
     }
   }

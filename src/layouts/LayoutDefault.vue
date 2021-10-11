@@ -17,7 +17,7 @@
 
       <div>
         <v-progress-circular
-          v-if="loading"
+          v-if="user === undefined"
           indeterminate
           color="primary"
         ></v-progress-circular>
@@ -51,37 +51,17 @@
 
 <script lang="ts">
 import { User } from '@/interfaces/user'
-import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
 
 @Component({
   computed: {
     ...mapGetters({
-      user: 'account/loggedInUser',
-      hasUserInfo: 'account/hasUserInfo'
+      user: 'account/loggedInUser'
     })
   }
 })
 export default class LayoutDefault extends Vue {
   user!: User
-  hasUserInfo!: boolean
-  loading = false
-  drawer = null
-
-  created (): void {
-    this.setUserInfo()
-  }
-
-  setUserInfo (): void {
-    if (!this.hasUserInfo) {
-      this.loading = true
-      this.$store.dispatch('account/getInfo')
-        .catch(unexpectedExc)
-        .finally(() => {
-          this.loading = false
-        })
-    }
-  }
 }
 </script>

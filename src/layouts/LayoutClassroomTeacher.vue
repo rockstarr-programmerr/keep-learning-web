@@ -24,7 +24,7 @@
           ></v-tab>
         </v-tabs>
 
-        <router-view v-if="classroom !== undefined" class="mt-5"></router-view>
+        <router-view v-if="classroomFound" class="mt-5"></router-view>
       </div>
     </v-container>
   </LayoutDefault>
@@ -80,8 +80,13 @@ export default class LayoutClassroomTeacher extends Vue {
     this.setClassroom()
   }
 
+  classroomFound = false
+
   setClassroom (): void {
     this.$store.dispatch('classroom/detail', this.pk)
+      .then(() => {
+        this.classroomFound = true
+      })
       .catch(unexpectedExc)
   }
 

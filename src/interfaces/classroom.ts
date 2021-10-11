@@ -7,5 +7,5 @@ export declare interface Classroom {
   description: string;
   teacher: User;
   students: User[];
-  reading_exercises: string[];
+  reading_exercises: number[];
 }
