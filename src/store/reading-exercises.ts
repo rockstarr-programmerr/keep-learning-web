@@ -62,6 +62,10 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
         index++
       }
       state.currentQuestions.splice(index, 1, question)
+    },
+
+    DELETE_QUESTION (state, pk) {
+      state.currentQuestions = state.currentQuestions.filter(question => question.pk !== pk)
     }
   },
 
@@ -119,6 +123,11 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
     ): Promise<void> {
       const data = await Api.readingQuestion.update(pk, payload)
       commit('UPDATE_QUESTION', data)
+    },
+
+    async deleteQuestion ({ commit }, pk: ReadingQuestion['pk']) {
+      await Api.readingQuestion.delete(pk)
+      commit('DELETE_QUESTION', pk)
     }
   }
 }

@@ -28,7 +28,8 @@ export const endpoints = {
   readingQuestion: {
     list: '/classroom/reading-questions/',
     create: '/classroom/reading-questions/',
-    update: '/classroom/reading-questions/<pk>/'
+    update: '/classroom/reading-questions/<pk>/',
+    delete: '/classroom/reading-questions/<pk>/'
   }
 }
 

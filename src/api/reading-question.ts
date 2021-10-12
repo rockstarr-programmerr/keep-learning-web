@@ -22,5 +22,10 @@ export const readingQuestion = {
     const endpoint = replacePk(endpoints.readingQuestion.update, pk)
     const res = await Vue.axios.patch(endpoint, payload)
     return res.data
+  },
+
+  async delete (pk: ReadingQuestion['pk']): Promise<void> {
+    const endpoint = replacePk(endpoints.readingQuestion.delete, pk)
+    await Vue.axios.delete(endpoint)
   }
 }

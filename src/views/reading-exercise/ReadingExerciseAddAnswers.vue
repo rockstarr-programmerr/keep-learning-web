@@ -27,7 +27,10 @@
             <v-list-item-content>
               <v-list-item-title>
                 <span class="font-weight-bold mr-3">Question: {{ question.number }}</span>
-                <v-icon @click="removeQuestion(question.number)">
+                <v-icon
+                  v-if="index === overrideQuestions.length - 1"
+                  @click="deleteQuestion(question)"
+                >
                   mdi-close-circle-outline
                 </v-icon>
               </v-list-item-title>
@@ -156,13 +159,6 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     this.overrideQuestions.push(this.newQuestion())
   }
 
-  removeQuestion (number: ReadingQuestion['number']): void {
-    this.overrideQuestions = this.overrideQuestions.filter(question => question.number !== number)
-    this.overrideQuestions.forEach((question, index) => {
-      question.number = index + 1
-    })
-  }
-
   /**
    * Call API
    */
@@ -187,6 +183,17 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
       payload: question
     })
       .catch(unexpectedExc)
+  }
+
+  deleteQuestion (question: ReadingQuestionCreateReq): void {
+    const existingQuestion = this.questions.find(q => q.number === question.number)
+    if (existingQuestion !== undefined) {
+      this.$store.dispatch('readingExercise/deleteQuestion', existingQuestion.pk)
+        .then(() => {
+          this.overrideQuestions = this.overrideQuestions.filter(q => q.number !== question.number)
+        })
+        .catch(unexpectedExc)
+    }
   }
 }
 </script>
