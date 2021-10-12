@@ -15,18 +15,25 @@
       <v-divider></v-divider>
 
       <v-card-text>
-        <span v-if="overrideQuestions.length === 0">
-          You haven't created any answers for this exercise yet.
-        </span>
+        <p>
+          This exercise has <strong>{{ questions.length }}</strong> answers.
+        </p>
 
-        <v-list v-else>
+        <v-list>
           <v-list-item
             v-for="(question, index) of overrideQuestions"
             :key="index"
           >
             <v-list-item-content>
               <v-list-item-title>
-                <span class="font-weight-bold mr-3">Question: {{ question.number }}</span>
+                <span class="font-weight-bold mr-3">
+                  <span v-if="index === overrideQuestions.length - 1">
+                    New question:
+                  </span>
+                  <span v-else>
+                    Question: {{ question.number }}
+                  </span>
+                </span>
                 <v-icon
                   v-if="index === overrideQuestions.length - 1"
                   @click="deleteQuestion(question)"
@@ -76,6 +83,7 @@
             </v-list-item-content>
             <v-list-item-action>
               <v-btn
+                v-if="showSaveBtn(question)"
                 fab
                 depressed
                 @click="saveQuestion(question)"
@@ -86,18 +94,6 @@
           </v-list-item>
         </v-list>
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn
-          text
-          @click="addQuestion"
-        >
-          <v-icon class="mr-3 ml-1">
-            mdi-plus-circle-outline
-          </v-icon>
-          Add answer
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -139,6 +135,7 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
 
   initSuccessHook (): void {
     this.overrideQuestions = this.questions.map(question => this.newQuestion(question))
+    this.addEmptyQuestion()
   }
 
   newQuestion (question?: ReadingQuestion): ReadingQuestionCreateReq {
@@ -155,8 +152,14 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     }
   }
 
-  addQuestion (): void {
+  addEmptyQuestion (): void {
     this.overrideQuestions.push(this.newQuestion())
+  }
+
+  showSaveBtn (question: ReadingQuestionCreateReq): boolean {
+    const maxNumber = Math.max(...this.overrideQuestions.map(question => question.number))
+    const isEmptyQuestion = question.number === maxNumber
+    return isEmptyQuestion
   }
 
   /**
@@ -167,6 +170,7 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     const existingQuestion = this.questions.find(q => q.number === question.number)
     if (existingQuestion === undefined) {
       this.createQuestion(question)
+      this.addEmptyQuestion()
     } else {
       this.updateQuestion(question, existingQuestion)
     }
@@ -189,11 +193,9 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     const existingQuestion = this.questions.find(q => q.number === question.number)
     if (existingQuestion !== undefined) {
       this.$store.dispatch('readingExercise/deleteQuestion', existingQuestion.pk)
-        .then(() => {
-          this.overrideQuestions = this.overrideQuestions.filter(q => q.number !== question.number)
-        })
         .catch(unexpectedExc)
     }
+    this.overrideQuestions = this.overrideQuestions.filter(q => q.number !== question.number)
   }
 }
 </script>
