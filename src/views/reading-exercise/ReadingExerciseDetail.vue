@@ -45,7 +45,7 @@
             <v-list-item
               link
               :to="{
-                name: 'ReadingExerciseUpdate',
+                name: 'ReadingExerciseAddAnswers',
                 params: { pk }
               }"
             >
@@ -55,7 +55,7 @@
                 </v-icon>
               </v-list-item-icon>
               <v-list-item-title>
-                Add answers
+                Edit answers
               </v-list-item-title>
             </v-list-item>
             <v-list-item>
@@ -100,7 +100,12 @@
       <v-card-text>
         <span v-if="questions.length === 0">
           No answers yet.
-          <router-link :to="{ name: 'Home' }">
+          <router-link
+            :to="{
+              name: 'ReadingExerciseAddAnswers',
+              params: { pk }
+            }"
+          >
             Add answers
           </router-link>
         </span>
@@ -151,32 +156,12 @@
 </template>
 
 <script lang="ts">
-import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { ReadingQuestion } from '@/interfaces/reading-question'
-import { unexpectedExc } from '@/utils'
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { mapMutations, mapState } from 'vuex'
+import { Mixins, Component } from 'vue-property-decorator'
+import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 
-@Component({
-  computed: {
-    ...mapState('readingExercise', {
-      exercise: 'currentReadingExercise',
-      questions: 'currentQuestions'
-    })
-  },
-  methods: {
-    ...mapMutations('readingExercise', {
-      setCurrentExercise: 'SET_CURRENT_READING_EXERCISE',
-      setCurrentQuestions: 'SET_CURRENT_QUESTIONS'
-    })
-  }
-})
-export default class ReadingExerciseDetail extends Vue {
-  @Prop(Number) readonly pk!: number
-
-  // eslint-disable-next-line no-undef
-  [key: string]: unknown
-
+@Component
+export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) {
   get breadcrumbs (): unknown[] {
     if (this.exercise === undefined) return []
     return [
@@ -184,26 +169,6 @@ export default class ReadingExerciseDetail extends Vue {
       { text: 'Reading exercises', to: { name: 'ReadingExerciseList' }, exact: true },
       { text: this.exercise.identifier, disabled: true }
     ]
-  }
-
-  /**
-   * Exercise detail
-   */
-  exercise!: ReadingExercise
-  setCurrentExercise!: CallableFunction
-
-  get loading (): boolean {
-    return this.exercise === undefined
-  }
-
-  created (): void {
-    this.setExercise()
-      .then(this.setQuestions)
-      .catch(unexpectedExc)
-  }
-
-  setExercise (): Promise<void> {
-    return this.$store.dispatch('readingExercise/detail', this.pk)
   }
 
   expand = false
@@ -214,16 +179,6 @@ export default class ReadingExerciseDetail extends Vue {
     } else {
       return 'unset'
     }
-  }
-
-  /**
-   * Questions list
-   */
-  questions!: ReadingQuestion[]
-  setCurrentQuestions!: CallableFunction
-
-  setQuestions (): Promise<void> {
-    return this.$store.dispatch('readingExercise/getQuestions')
   }
 
   get passage1Questions (): ReadingQuestion[] {
@@ -240,14 +195,6 @@ export default class ReadingExerciseDetail extends Vue {
 
   formatAnswers (answers: ReadingQuestion['answers']): string {
     return answers.join(' / ')
-  }
-
-  // @ts-expect-error: don't care
-  // eslint-disable-next-line
-  beforeRouteLeave (to, from, next): void {
-    this.setCurrentExercise(undefined)
-    this.setCurrentQuestions([])
-    next()
   }
 }
 </script>

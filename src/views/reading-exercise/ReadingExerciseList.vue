@@ -17,6 +17,7 @@
         class="ml-3"
       ></span>
     </span>
+    <br>
 
     <v-progress-circular
       v-if="loading"

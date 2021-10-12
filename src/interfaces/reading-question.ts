@@ -5,6 +5,6 @@ export declare interface ReadingQuestion {
   passage: number;
   number: number;
   question_type: 'multiple_choice' | 'true_false' | 'yes_no' | 'fill_blank',
-  choices: string;
+  choices: string[];
   answers: string[];
 }
