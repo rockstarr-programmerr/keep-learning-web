@@ -26,7 +26,9 @@ export const endpoints = {
     uploadImage: '/classroom/reading-exercises/upload-image/'
   },
   readingQuestion: {
-    list: '/classroom/reading-questions/'
+    list: '/classroom/reading-questions/',
+    create: '/classroom/reading-questions/',
+    update: '/classroom/reading-questions/<pk>/'
   }
 }
 

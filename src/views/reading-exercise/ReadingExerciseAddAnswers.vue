@@ -26,7 +26,10 @@
           >
             <v-list-item-content>
               <v-list-item-title>
-                Question number: {{ question.number }}
+                <span class="font-weight-bold mr-3">Question: {{ question.number }}</span>
+                <v-icon @click="removeQuestion(question.number)">
+                  mdi-close-circle-outline
+                </v-icon>
               </v-list-item-title>
               <v-form>
                 <v-row no-gutters>
@@ -68,6 +71,15 @@
                 </v-row>
               </v-form>
             </v-list-item-content>
+            <v-list-item-action>
+              <v-btn
+                fab
+                depressed
+                @click="saveQuestion(question)"
+              >
+                Save
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
         </v-list>
       </v-card-text>
@@ -88,13 +100,16 @@
 </template>
 
 <script lang="ts">
-import { ReadingQuestionCreateReq } from '@/interfaces/api/reading-question'
+import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
+import { unexpectedExc } from '@/utils'
 import { Mixins, Component } from 'vue-property-decorator'
 
 @Component
 export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMixin) {
+  // TODO: make convenient
+
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
@@ -125,11 +140,11 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
 
   newQuestion (question?: ReadingQuestion): ReadingQuestionCreateReq {
     const number = Math.max(...this.overrideQuestions.map(question => question.number), 0)
-    const passage = Math.max(...this.overrideQuestions.map(question => question.passage), 0)
+    const passage = Math.max(...this.overrideQuestions.map(question => question.passage), 1)
 
     return {
       exercise: question !== undefined ? question.exercise : '',
-      passage: question !== undefined ? question.passage : passage + 1,
+      passage: question !== undefined ? question.passage : passage,
       number: question !== undefined ? question.number : number + 1,
       question_type: question !== undefined ? question.question_type : 'multiple_choice',
       choices: question !== undefined ? question.choices : [],
@@ -139,6 +154,39 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
 
   addQuestion (): void {
     this.overrideQuestions.push(this.newQuestion())
+  }
+
+  removeQuestion (number: ReadingQuestion['number']): void {
+    this.overrideQuestions = this.overrideQuestions.filter(question => question.number !== number)
+    this.overrideQuestions.forEach((question, index) => {
+      question.number = index + 1
+    })
+  }
+
+  /**
+   * Call API
+   */
+  saveQuestion (question: ReadingQuestionCreateReq): void {
+    // TODO: loading
+    const existingQuestion = this.questions.find(q => q.number === question.number)
+    if (existingQuestion === undefined) {
+      this.createQuestion(question)
+    } else {
+      this.updateQuestion(question, existingQuestion)
+    }
+  }
+
+  createQuestion (question: ReadingQuestionCreateReq): void {
+    this.$store.dispatch('readingExercise/createQuestion', question)
+      .catch(unexpectedExc)
+  }
+
+  updateQuestion (question: ReadingQuestionUpdateReq, existingQuestion: ReadingQuestion): void {
+    this.$store.dispatch('readingExercise/updateQuestion', {
+      pk: existingQuestion.pk,
+      payload: question
+    })
+      .catch(unexpectedExc)
   }
 }
 </script>

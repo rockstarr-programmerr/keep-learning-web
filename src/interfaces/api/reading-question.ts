@@ -15,3 +15,5 @@ export declare interface ReadingQuestionCreateReq {
   choices: ReadingQuestion['choices'];
   answers: ReadingQuestion['answers'];
 }
+
+export declare interface ReadingQuestionUpdateReq extends ReadingQuestionCreateReq {}

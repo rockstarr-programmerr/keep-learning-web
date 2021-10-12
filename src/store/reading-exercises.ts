@@ -1,6 +1,7 @@
 import { Api } from '@/api'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { ReadingExerciseCreateReq, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
+import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { Module } from 'vuex'
@@ -48,6 +49,19 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
 
     SET_QUESTION_PAGINATION (state, pagination) {
       state.questionPagination = pagination
+    },
+
+    ADD_QUESTION (state, question) {
+      state.currentQuestions.push(question)
+    },
+
+    UPDATE_QUESTION (state, question) {
+      let index = 0
+      for (const q of state.currentQuestions) {
+        if (q.pk === question.pk) break
+        index++
+      }
+      state.currentQuestions.splice(index, 1, question)
     }
   },
 
@@ -90,6 +104,21 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       delete pagination.results
       commit('SET_CURRENT_QUESTIONS', questions)
       commit('SET_QUESTION_PAGINATION', pagination)
+    },
+
+    async createQuestion ({ state, commit }, payload: ReadingQuestionCreateReq): Promise<void> {
+      if (state.currentReadingExercise === undefined) return
+      payload.exercise = state.currentReadingExercise.url
+      const data = await Api.readingQuestion.create(payload)
+      commit('ADD_QUESTION', data)
+    },
+
+    async updateQuestion (
+      { commit },
+      { pk, payload }: { pk: ReadingQuestion['pk']; payload: ReadingQuestionUpdateReq }
+    ): Promise<void> {
+      const data = await Api.readingQuestion.update(pk, payload)
+      commit('UPDATE_QUESTION', data)
     }
   }
 }
