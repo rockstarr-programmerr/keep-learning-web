@@ -24,6 +24,9 @@ export const endpoints = {
     create: '/classroom/reading-exercises/',
     update: '/classroom/reading-exercises/<pk>/',
     uploadImage: '/classroom/reading-exercises/upload-image/'
+  },
+  readingQuestion: {
+    list: '/classroom/reading-questions/'
   }
 }
 

@@ -2,13 +2,16 @@ import { Api } from '@/api'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { ReadingExerciseCreateReq, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
+import { ReadingQuestion } from '@/interfaces/reading-question'
 import { Module } from 'vuex'
 import { RootState } from './index'
 
 declare interface ReadingExerciseState {
   readingExercises: ReadingExercise[],
   currentReadingExercise?: ReadingExercise,
-  pagination?: PaginatedRes
+  exercisePagination?: PaginatedRes,
+  currentQuestions: ReadingQuestion[],
+  questionPagination?: PaginatedRes
 }
 
 export const readingExercise: Module<ReadingExerciseState, RootState> = {
@@ -17,7 +20,9 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
   state: {
     readingExercises: [],
     currentReadingExercise: undefined,
-    pagination: undefined
+    exercisePagination: undefined,
+    currentQuestions: [],
+    questionPagination: undefined
   },
 
   mutations: {
@@ -25,8 +30,8 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       state.readingExercises = readingExercises
     },
 
-    SET_PAGINATION (state, pagination) {
-      state.pagination = pagination
+    SET_EXERCISE_PAGINATION (state, pagination) {
+      state.exercisePagination = pagination
     },
 
     SET_CURRENT_READING_EXERCISE (state, readingExercise) {
@@ -35,6 +40,14 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
 
     ADD_READING_EXERCISE (state, readingExercise) {
       state.readingExercises.splice(0, 0, readingExercise)
+    },
+
+    SET_CURRENT_QUESTIONS (state, questions) {
+      state.currentQuestions = questions
+    },
+
+    SET_QUESTION_PAGINATION (state, pagination) {
+      state.questionPagination = pagination
     }
   },
 
@@ -45,7 +58,7 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       const pagination: PaginatedRes = { ...data }
       delete pagination.results
       commit('SET_READING_EXERCISES', readingExercises)
-      commit('SET_PAGINATION', pagination)
+      commit('SET_EXERCISE_PAGINATION', pagination)
     },
 
     async detail ({ commit }, pk: ReadingExercise['pk']) {
@@ -66,6 +79,17 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       const data = await Api.readingExercise.update(pk, payload)
       commit('ADD_READING_EXERCISE', data)
       return data.pk
+    },
+
+    async getQuestions ({ state, commit }): Promise<void> {
+      if (state.currentReadingExercise === undefined) return
+      const exercisePk = state.currentReadingExercise.pk
+      const data = await Api.readingQuestion.list(exercisePk)
+      const questions = data.results
+      const pagination: PaginatedRes = { ...data }
+      delete pagination.results
+      commit('SET_CURRENT_QUESTIONS', questions)
+      commit('SET_QUESTION_PAGINATION', pagination)
     }
   }
 }

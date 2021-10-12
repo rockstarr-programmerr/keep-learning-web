@@ -44,10 +44,20 @@
         >
           <v-checkbox
             v-model="exercise.isChosen"
-            :label="exercise.identifier"
             dense
             hide-details
-          ></v-checkbox>
+          >
+            <template #label>
+              <router-link
+                :to="{
+                  name: 'ReadingExerciseDetail',
+                  params: { pk: exercise.pk }
+                }"
+              >
+                {{ exercise.identifier }}
+              </router-link>
+            </template>
+          </v-checkbox>
         </v-col>
       </v-row>
 
