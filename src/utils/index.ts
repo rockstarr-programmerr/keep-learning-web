@@ -22,3 +22,13 @@ export function snakeCaseToCamelCase (text: string): string {
   })
   return words.join('')
 }
+
+export function toTitleCase (text: string, separator?: string): string {
+  if (separator === undefined) separator = ' '
+  let words = text.split(separator)
+  words = words.map(word => {
+    word = word.toLowerCase()
+    return word.slice(0, 1).toUpperCase() + word.slice(1)
+  })
+  return words.join(' ')
+}

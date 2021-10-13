@@ -56,7 +56,8 @@
                   </template>
                   <v-select
                     v-else
-                    v-model="question.question_type"
+                    :value="question.question_type"
+                    @change="onChangeQuestionType(question, $event)"
                     :items="questionTypes"
                     hide-details
                     outlined
@@ -76,32 +77,39 @@
                       hide-details
                       outlined
                       dense
-                    >
-                      <template #prepend-item>
-                        <v-list>
-                          <v-subheader>
-                            Common choices
-                          </v-subheader>
-                          <v-list-item
-                            v-for="(value, key) in commonChoices"
-                            :key="key"
-                            @click="question.choices = value"
-                          >
-                            <v-list-item-title>
-                              {{ key }}
-                            </v-list-item-title>
-                          </v-list-item>
-                        </v-list>
-                      </template>
-                    </v-select>
+                    ></v-select>
                   </template>
                 </td>
                 <td>
                   <template v-if="!question.editing">
-                    {{ formatList(question.answers, ' / ') }}
+                    <span v-if="question.question_type === 'true_false' || question.question_type === 'yes_no'">
+                      {{ toTitleCase(question.answers[0], '_') }}
+                    </span>
+                    <span v-else>
+                      {{ formatList(question.answers, ' / ') }}
+                    </span>
                   </template>
+                  <v-select
+                    v-else-if="question.question_type === 'multiple_choice'"
+                    v-model="question.answers"
+                    :items="getChoicesItems(question)"
+                    multiple
+                    hide-details
+                    outlined
+                    dense
+                  ></v-select>
+                  <v-select
+                    v-else-if="question.question_type === 'true_false' || question.question_type === 'yes_no'"
+                    :value="question.answers[0]"
+                    @input="question.answers = [$event]"
+                    :items="getChoicesItems(question)"
+                    hide-details
+                    outlined
+                    dense
+                  ></v-select>
                   <v-text-field
                     v-else
+                    v-model="question.answers"
                     :value="formatList(question.answers, ' / ')"
                     @input="question.answers = parseList($event, ' / ')"
                     hide-details
@@ -188,7 +196,7 @@ import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
-import { unexpectedExc } from '@/utils'
+import { toTitleCase, unexpectedExc } from '@/utils'
 
 declare interface LocalQuestion extends ReadingQuestion {
   editing: boolean;
@@ -312,13 +320,39 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
 
   allNextPassageIsEmpty (passage: LocalQuestion['passage']): boolean {
     if (passage === 3) return true
-    for (let i = passage; i <= 3; i++) {
+    for (let i = passage + 1; i <= 3; i++) {
       const questions = (this[`passage${i}Questions`] as LocalQuestion[])
       if (questions.length > 0) {
         return false
       }
     }
     return true
+  }
+
+  getChoicesItems (question: LocalQuestion): { text: string; value: string }[] | string[] {
+    if (question.question_type === 'true_false') {
+      return [
+        { text: 'True', value: 'TRUE' },
+        { text: 'False', value: 'FALSE' },
+        { text: 'Not Given', value: 'NOT_GIVEN' }
+      ]
+    } else if (question.question_type === 'yes_no') {
+      return [
+        { text: 'Yes', value: 'YES' },
+        { text: 'No', value: 'NO' },
+        { text: 'Not Given', value: 'NOT_GIVEN' }
+      ]
+    } else {
+      return question.choices
+    }
+  }
+
+  toTitleCase = toTitleCase
+
+  onChangeQuestionType (question: LocalQuestion, value: LocalQuestion['question_type']): void {
+    question.question_type = value
+    question.choices = []
+    question.answers = []
   }
 
   /**
