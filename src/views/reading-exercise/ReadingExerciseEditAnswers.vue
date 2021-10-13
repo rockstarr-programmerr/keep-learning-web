@@ -24,10 +24,17 @@
         </v-card-title>
 
         <v-card-text>
-          <v-simple-table fixed-header>
+          <v-simple-table class="passage-table">
+            <colgroup>
+              <col span="1" style="width: 10%">
+              <col span="1" style="width: 20%">
+              <col span="1" style="width: 20%">
+              <col span="1" style="width: 35%">
+              <col span="1" style="width: 15%">
+            </colgroup>
             <thead>
               <tr>
-                <th>Question No.</th>
+                <th>No.</th>
                 <th>Type</th>
                 <th>Choices</th>
                 <th>Possible answers</th>
@@ -47,9 +54,10 @@
                   <v-select
                     v-else
                     v-model="question.question_type"
-                    label="Question type"
                     :items="questionTypes"
                     hide-details
+                    outlined
+                    dense
                   ></v-select>
                 </td>
                 <td>
@@ -60,10 +68,11 @@
                     <v-select
                       v-else
                       v-model="question.choices"
-                      label="Choices"
                       :items="allChoices"
                       multiple
                       hide-details
+                      outlined
+                      dense
                     >
                       <template #prepend-item>
                         <v-list>
@@ -91,50 +100,48 @@
                   <v-text-field
                     v-else
                     :value="formatList(question.answers, ' / ')"
-                    @input="parseList($event, ' / ')"
-                    label="Possible answers"
+                    @input="question.answers = parseList($event, ' / ')"
                     hide-details
+                    outlined
+                    dense
                   ></v-text-field>
                 </td>
                 <td>
-                  <v-menu
+                  <v-icon
                     v-if="!question.editing"
-                    left
-                    offset-x
-                    nudge-left="12"
+                    @click="question.editing = true"
                   >
-                    <template #activator="{ on, attrs }">
-                      <v-icon
-                        v-on="on"
-                        v-bind="attrs"
-                      >
-                        mdi-dots-horizontal
-                      </v-icon>
-                    </template>
-                    <v-list dense>
-                      <v-list-item @click="question.editing = true">
-                        <v-list-item-title>
-                          Edit
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-list-item-title>
-                          Delete
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
+                    mdi-pencil-outline
+                  </v-icon>
                   <v-icon
                     v-else
-                    @click="question.editing = false"
+                    @click="updateQuestion(question)"
                   >
                     mdi-check
+                  </v-icon>
+                  <v-icon
+                    v-if="isLastQuestion(question)"
+                    class="ml-5"
+                    @click="deleteQuestion(question)"
+                  >
+                    mdi-delete-outline
                   </v-icon>
                 </td>
               </tr>
             </tbody>
           </v-simple-table>
         </v-card-text>
+        <v-card-actions v-if="nextPassageIsEmpty(index + 1)">
+          <span
+            class="d-inline-flex cursor-pointer"
+            @click="addQuestion(index + 1)"
+          >
+            <v-icon class="mr-3 ml-5 mb-3">
+              mdi-plus-circle-outline
+            </v-icon>
+            Add question
+          </span>
+        </v-card-actions>
       </v-card>
     </div>
   </v-container>
@@ -152,6 +159,9 @@ declare interface LocalQuestion extends ReadingQuestion {
 @Component
 export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMixin) {
   // TODO: make convenient
+
+  // eslint-disable-next-line no-undef
+  [key: string]: unknown
 
   get breadcrumbs (): unknown[] {
     if (this.exercise === undefined) return []
@@ -199,6 +209,35 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
     })
   }
 
+  newQuestion (passage: LocalQuestion['passage']): LocalQuestion {
+    let lastQuestion: LocalQuestion | null = null
+
+    const passageQuestions = (this[`passage${passage}Questions`] as LocalQuestion[])
+    if (passageQuestions.length === 0) {
+      if (this.localQuestions.length > 0) {
+        lastQuestion = this.localQuestions[this.localQuestions.length - 1]
+      }
+    } else {
+      lastQuestion = passageQuestions[passageQuestions.length - 1]
+    }
+
+    return {
+      pk: lastQuestion !== null ? (lastQuestion.pk + 1) : 1,
+      url: '',
+      exercise: this.exercise.url,
+      passage,
+      number: lastQuestion !== null ? (lastQuestion.number + 1) : 1,
+      question_type: lastQuestion !== null ? lastQuestion.question_type : 'multiple_choice',
+      choices: lastQuestion !== null ? lastQuestion.choices : [],
+      answers: [],
+      editing: true
+    }
+  }
+
+  addQuestion (passage: LocalQuestion['passage']): void {
+    this.localQuestions.push(this.newQuestion(passage))
+  }
+
   formatQuestionType (type: ReadingQuestion['question_type']): string {
     const mapper = {
       multiple_choice: 'Multiple choice',
@@ -223,9 +262,34 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
       question.question_type === 'multiple_choice'
     )
   }
+
+  isLastQuestion (question: LocalQuestion): boolean {
+    const lastNumber = Math.max(...this.localQuestions.map(q => q.number))
+    return question.number === lastNumber
+  }
+
+  nextPassageIsEmpty (passage: LocalQuestion['passage']): boolean {
+    if (passage === 3) return true
+    const nextPassageQuestions = (this[`passage${passage + 1}Questions`] as LocalQuestion[])
+    return nextPassageQuestions.length === 0
+  }
+
+  /**
+   * Call API
+   */
+
+  updateQuestion (question: LocalQuestion): void {
+    question.editing = false
+  }
+
+  deleteQuestion (question: LocalQuestion): void {
+    // TODO
+  }
 }
 </script>
 
 <style scoped lang="scss">
-
+.passage-table {
+  table-layout: fixed;
+}
 </style>
