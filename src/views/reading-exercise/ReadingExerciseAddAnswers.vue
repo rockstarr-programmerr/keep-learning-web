@@ -103,7 +103,11 @@ import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { unexpectedExc } from '@/utils'
-import { Mixins, Component } from 'vue-property-decorator'
+import { Mixins, Component, Watch } from 'vue-property-decorator'
+
+declare interface OverrideQuestion extends ReadingQuestionCreateReq {
+  showSaveBtn?: boolean;
+}
 
 @Component
 export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMixin) {
@@ -122,7 +126,7 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     ]
   }
 
-  overrideQuestions: ReadingQuestionCreateReq[] = []
+  overrideQuestions: OverrideQuestion[] = []
 
   questionTypes = [
     { text: 'Multiple choice', value: 'multiple_choice' },
@@ -138,7 +142,7 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     this.addEmptyQuestion()
   }
 
-  newQuestion (question?: ReadingQuestion): ReadingQuestionCreateReq {
+  newQuestion (question?: ReadingQuestion): OverrideQuestion {
     const number = Math.max(...this.overrideQuestions.map(question => question.number), 0)
     const passage = Math.max(...this.overrideQuestions.map(question => question.passage), 1)
 
@@ -148,7 +152,8 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
       number: question !== undefined ? question.number : number + 1,
       question_type: question !== undefined ? question.question_type : 'multiple_choice',
       choices: question !== undefined ? question.choices : [],
-      answers: question !== undefined ? question.answers : []
+      answers: question !== undefined ? question.answers : [],
+      showSaveBtn: false
     }
   }
 
@@ -156,16 +161,35 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     this.overrideQuestions.push(this.newQuestion())
   }
 
-  showSaveBtn (question: ReadingQuestionCreateReq): boolean {
-    const maxNumber = Math.max(...this.overrideQuestions.map(question => question.number))
-    const isEmptyQuestion = question.number === maxNumber
-    return isEmptyQuestion
+  showSaveBtn (question: OverrideQuestion): boolean {
+    if (question.showSaveBtn === true) {
+      return true
+    } else {
+      const maxNumber = Math.max(...this.overrideQuestions.map(question => question.number))
+      return question.number === maxNumber
+    }
+  }
+
+  @Watch('overrideQuestions', { deep: true })
+  onQuestionChange (questions: OverrideQuestion[]) {
+    questions.forEach(question => {
+      const existingQuestion = this.questions.find(q => q.number === question.number)
+      if (existingQuestion !== undefined) {
+        const changed = Object.entries(question).some((...[key, value]) => {
+          // @ts-expect-error index object by string
+          const existingValue = existingQuestion[key]
+          console.log(value, existingValue)
+          return existingValue !== value
+        })
+        question.showSaveBtn = changed
+      }
+    })
   }
 
   /**
    * Call API
    */
-  saveQuestion (question: ReadingQuestionCreateReq): void {
+  saveQuestion (question: OverrideQuestion): void {
     // TODO: loading
     const existingQuestion = this.questions.find(q => q.number === question.number)
     if (existingQuestion === undefined) {
@@ -176,12 +200,14 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
     }
   }
 
-  createQuestion (question: ReadingQuestionCreateReq): void {
+  createQuestion (question: OverrideQuestion): void {
+    delete question.showSaveBtn
     this.$store.dispatch('readingExercise/createQuestion', question)
       .catch(unexpectedExc)
   }
 
-  updateQuestion (question: ReadingQuestionUpdateReq, existingQuestion: ReadingQuestion): void {
+  updateQuestion (question: OverrideQuestion, existingQuestion: ReadingQuestion): void {
+    delete question.showSaveBtn
     this.$store.dispatch('readingExercise/updateQuestion', {
       pk: existingQuestion.pk,
       payload: question
@@ -189,7 +215,7 @@ export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMix
       .catch(unexpectedExc)
   }
 
-  deleteQuestion (question: ReadingQuestionCreateReq): void {
+  deleteQuestion (question: OverrideQuestion): void {
     const existingQuestion = this.questions.find(q => q.number === question.number)
     if (existingQuestion !== undefined) {
       this.$store.dispatch('readingExercise/deleteQuestion', existingQuestion.pk)
