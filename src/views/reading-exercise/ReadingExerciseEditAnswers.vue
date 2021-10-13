@@ -118,7 +118,7 @@
                   </v-icon>
                   <v-icon
                     v-else
-                    @click="updateQuestion(question)"
+                    @click="saveQuestion(question)"
                   >
                     mdi-check
                   </v-icon>
@@ -187,11 +187,12 @@
 import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { ReadingQuestion } from '@/interfaces/reading-question'
-import { ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
+import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
 import { unexpectedExc } from '@/utils'
 
 declare interface LocalQuestion extends ReadingQuestion {
   editing: boolean;
+  isNew: boolean;
 }
 
 @Component
@@ -242,7 +243,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
 
   initSuccessHook (): void {
     this.questions.forEach(question => {
-      const localQuestion: LocalQuestion = { ...question, editing: false }
+      const localQuestion: LocalQuestion = { ...question, editing: false, isNew: false }
       this.localQuestions.push(localQuestion)
     })
   }
@@ -268,11 +269,13 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
       question_type: lastQuestion !== null ? lastQuestion.question_type : 'multiple_choice',
       choices: lastQuestion !== null ? lastQuestion.choices : [],
       answers: [],
-      editing: true
+      editing: true,
+      isNew: true
     }
   }
 
   addQuestion (passage: LocalQuestion['passage']): void {
+    this.localQuestions.forEach(q => { q.isNew = false })
     this.localQuestions.push(this.newQuestion(passage))
   }
 
@@ -302,7 +305,8 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   }
 
   isLastQuestion (question: LocalQuestion): boolean {
-    const lastNumber = Math.max(...this.localQuestions.map(q => q.number))
+    const questions = this.localQuestions.filter(q => !q.isNew)
+    const lastNumber = Math.max(...questions.map(q => q.number))
     return question.number === lastNumber
   }
 
@@ -320,6 +324,32 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   /**
    * Call API
    */
+
+  saveQuestion (question: LocalQuestion): void {
+    if (question.isNew) {
+      this.createQuestion(question)
+    } else {
+      this.updateQuestion(question)
+    }
+  }
+
+  createQuestion (question: LocalQuestion): void {
+    const payload: ReadingQuestionCreateReq = {
+      exercise: question.exercise,
+      passage: question.passage,
+      number: question.number,
+      question_type: question.question_type,
+      choices: question.choices,
+      answers: question.answers
+    }
+
+    this.$store.dispatch('readingExercise/createQuestion', payload)
+      .then(() => {
+        question.editing = false
+        question.isNew = false
+      })
+      .catch(unexpectedExc)
+  }
 
   updateQuestion (question: LocalQuestion): void {
     const pk = question.pk
