@@ -45,7 +45,7 @@
             <v-list-item
               link
               :to="{
-                name: 'ReadingExerciseAddAnswers',
+                name: 'ReadingExerciseEditAnswers',
                 params: { pk }
               }"
             >
@@ -102,7 +102,7 @@
           No answers yet.
           <router-link
             :to="{
-              name: 'ReadingExerciseAddAnswers',
+              name: 'ReadingExerciseEditAnswers',
               params: { pk }
             }"
           >

@@ -19,7 +19,7 @@ import ReadingExerciseList from '../views/reading-exercise/ReadingExerciseList.v
 import ReadingExerciseDetail from '../views/reading-exercise/ReadingExerciseDetail.vue'
 import ReadingExerciseCreate from '../views/reading-exercise/ReadingExerciseCreate.vue'
 import ReadingExerciseUpdate from '../views/reading-exercise/ReadingExerciseUpdate.vue'
-import ReadingExerciseAddAnswers from '../views/reading-exercise/ReadingExerciseAddAnswers.vue'
+import ReadingExerciseEditAnswers from '../views/reading-exercise/ReadingExerciseEditAnswers.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -105,9 +105,9 @@ const routes: Array<RouteConfig> = [
       props: castToNumber('pk')
     },
     {
-      path: '/:pk/add-answers',
-      name: 'ReadingExerciseAddAnswers',
-      component: ReadingExerciseAddAnswers,
+      path: '/:pk/edit-answers',
+      name: 'ReadingExerciseEditAnswers',
+      component: ReadingExerciseEditAnswers,
       props: castToNumber('pk')
     },
     {

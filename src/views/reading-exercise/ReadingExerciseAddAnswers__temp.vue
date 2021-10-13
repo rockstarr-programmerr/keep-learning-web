@@ -110,7 +110,7 @@ declare interface OverrideQuestion extends ReadingQuestionCreateReq {
 }
 
 @Component
-export default class ReadingExerciseAddAnswers extends Mixins(ReadingExerciseMixin) {
+export default class ReadingExerciseAddAnswers__temp extends Mixins(ReadingExerciseMixin) {
   // TODO: make convenient
 
   // eslint-disable-next-line no-undef
