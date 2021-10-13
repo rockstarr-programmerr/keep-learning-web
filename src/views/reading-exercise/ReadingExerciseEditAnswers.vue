@@ -42,6 +42,9 @@
               </tr>
             </thead>
             <tbody>
+              <tr v-if="passageQuestions.length === 0">
+                <td colspan="5" class="text-center">No answer yet</td>
+              </tr>
               <tr
                 v-for="question of passageQuestions"
                 :key="question.pk"
@@ -122,7 +125,7 @@
                   <v-icon
                     v-if="isLastQuestion(question)"
                     class="ml-5"
-                    @click="deleteQuestion(question)"
+                    @click="prepareDelete(question)"
                   >
                     mdi-delete-outline
                   </v-icon>
@@ -131,7 +134,7 @@
             </tbody>
           </v-simple-table>
         </v-card-text>
-        <v-card-actions v-if="nextPassageIsEmpty(index + 1)">
+        <v-card-actions v-if="allNextPassageIsEmpty(index + 1)">
           <span
             class="d-inline-flex cursor-pointer"
             @click="addQuestion(index + 1)"
@@ -143,6 +146,39 @@
           </span>
         </v-card-actions>
       </v-card>
+
+      <v-dialog
+        v-model="deleteConfirm"
+        width="500"
+      >
+        <v-card>
+          <v-card-title>
+            Please confirm
+          </v-card-title>
+          <v-card-text v-if="questionToDelete !== null">
+            You are removing
+            <b>question number {{ questionToDelete.number }}</b>
+            from this exercise.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              text
+              @click="deleteConfirm = false"
+            >
+              Cancel
+            </v-btn>
+            <v-btn
+              color="primary"
+              depressed
+              :loading="deleting"
+              @click="deleteQuestion"
+            >
+              Confirm
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-container>
 </template>
@@ -151,6 +187,8 @@
 import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { ReadingQuestion } from '@/interfaces/reading-question'
+import { ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
+import { unexpectedExc } from '@/utils'
 
 declare interface LocalQuestion extends ReadingQuestion {
   editing: boolean;
@@ -268,10 +306,15 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
     return question.number === lastNumber
   }
 
-  nextPassageIsEmpty (passage: LocalQuestion['passage']): boolean {
+  allNextPassageIsEmpty (passage: LocalQuestion['passage']): boolean {
     if (passage === 3) return true
-    const nextPassageQuestions = (this[`passage${passage + 1}Questions`] as LocalQuestion[])
-    return nextPassageQuestions.length === 0
+    for (let i = passage; i <= 3; i++) {
+      const questions = (this[`passage${i}Questions`] as LocalQuestion[])
+      if (questions.length > 0) {
+        return false
+      }
+    }
+    return true
   }
 
   /**
@@ -279,11 +322,51 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
    */
 
   updateQuestion (question: LocalQuestion): void {
-    question.editing = false
+    const pk = question.pk
+    const payload: ReadingQuestionUpdateReq = {
+      exercise: question.exercise,
+      passage: question.passage,
+      number: question.number,
+      question_type: question.question_type,
+      choices: question.choices,
+      answers: question.answers
+    }
+    this.$store.dispatch('readingExercise/updateQuestion', { pk, payload })
+      .then(() => {
+        question.editing = false
+      })
+      .catch(unexpectedExc)
   }
 
-  deleteQuestion (question: LocalQuestion): void {
-    // TODO
+  deleteConfirm = false
+  deleting = false
+  questionToDelete: LocalQuestion | null = null
+
+  prepareDelete (question: LocalQuestion): void {
+    this.questionToDelete = question
+    this.deleteConfirm = true
+  }
+
+  deleteQuestion (): void {
+    if (this.deleting || this.questionToDelete === null) return
+    this.deleting = true
+
+    this.$store.dispatch('readingExercise/deleteQuestion', this.questionToDelete.pk)
+      .then(() => {
+        let index = 0
+        for (const q of this.localQuestions) {
+          // @ts-expect-error `questionToDelete` will not be null here
+          if (q.pk === this.questionToDelete.pk) break
+          index++
+        }
+        this.localQuestions.splice(index, 1)
+
+        this.deleteConfirm = false
+      })
+      .catch(unexpectedExc)
+      .finally(() => {
+        this.deleting = false
+      })
   }
 }
 </script>
