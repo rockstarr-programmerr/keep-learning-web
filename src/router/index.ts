@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 
 import LayoutNoAppbar from '../layouts/LayoutNoAppbar.vue'
 import LayoutClassroomTeacher from '../layouts/LayoutClassroomTeacher.vue'
+import LayoutClassroomStudent from '../layouts/LayoutClassroomStudent.vue'
 
 import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
@@ -56,7 +57,8 @@ const routes: Array<RouteConfig> = [
       component: ClassroomOverview,
       props: castToNumber('pk'),
       meta: {
-        teacherLayout: LayoutClassroomTeacher
+        teacherLayout: LayoutClassroomTeacher,
+        studentLayout: LayoutClassroomStudent
       }
     },
     {
@@ -65,7 +67,8 @@ const routes: Array<RouteConfig> = [
       component: ClassroomStudents,
       props: castToNumber('pk'),
       meta: {
-        teacherLayout: LayoutClassroomTeacher
+        teacherLayout: LayoutClassroomTeacher,
+        studentLayout: LayoutClassroomStudent
       }
     },
     {
@@ -74,7 +77,8 @@ const routes: Array<RouteConfig> = [
       component: ClassroomExercisesReading,
       props: castToNumber('pk'),
       meta: {
-        teacherLayout: LayoutClassroomTeacher
+        teacherLayout: LayoutClassroomTeacher,
+        studentLayout: LayoutClassroomStudent
       }
     },
     {
@@ -83,7 +87,8 @@ const routes: Array<RouteConfig> = [
       component: ClassroomExercisesListening,
       props: castToNumber('pk'),
       meta: {
-        teacherLayout: LayoutClassroomTeacher
+        teacherLayout: LayoutClassroomTeacher,
+        studentLayout: LayoutClassroomStudent
       }
     }
   ]),

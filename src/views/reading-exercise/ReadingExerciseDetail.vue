@@ -8,150 +8,94 @@
       color="primary"
     ></v-progress-circular>
 
-    <v-card v-if="exercise !== undefined">
-      <v-card-title>
-        {{ exercise.identifier }}
-        <v-spacer></v-spacer>
-        <v-menu
-          offset-x
-          left
-          nudge-left="12"
+    <div v-if="exercise !== undefined">
+      <h1>{{ exercise.identifier }}</h1>
+      <v-divider></v-divider>
+
+      <v-row class="mt-0">
+        <v-col
+          cols="6"
+          class="exercise-row"
         >
-          <template #activator="{ on, attrs }">
-            <v-icon
-              v-on="on"
-              v-bind="attrs"
-            >
-              mdi-dots-vertical
-            </v-icon>
-          </template>
-          <v-list dense>
-            <v-list-item
-              link
-              :to="{
-                name: 'ReadingExerciseUpdate',
-                params: { pk }
-              }"
-            >
-              <v-list-item-icon class="mr-5">
-                <v-icon>
-                  mdi-pencil-outline
-                </v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>
-                Edit
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              link
+          <router-link
+            :to="{
+              name: 'ReadingExerciseUpdate',
+              params: { pk: exercise.pk }
+            }"
+          >
+            Edit exercise
+          </router-link>
+          <div v-html="exercise.content"></div>
+        </v-col>
+        <v-col
+          cols="6"
+          class="exercise-row"
+        >
+          <span v-if="questions.length === 0">
+            No answers yet.
+            <router-link
               :to="{
                 name: 'ReadingExerciseEditAnswers',
                 params: { pk }
               }"
             >
-              <v-list-item-icon class="mr-5">
-                <v-icon>
-                  mdi-checkbox-marked-outline
-                </v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>
-                Edit answers
-              </v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-icon class="mr-5">
-                <v-icon>
-                  mdi-delete-outline
-                </v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>
-                Delete
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-card-text class="exercise-content">
-        <div
-          v-html="exercise.content"
-          :style="{ maxHeight: exerciseContentHeight, overflow: 'hidden' }"
-        ></div>
-      </v-card-text>
-      <v-divider></v-divider>
-      <v-card-actions class="pa-0">
-        <v-btn
-          block
-          depressed
-          text
-          tile
-          @click="expand = !expand"
-        >
-          {{ expand ? 'Collapse' : 'Expand' }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-
-    <v-card class="mt-5">
-      <v-card-title>
-        Answers
-      </v-card-title>
-      <v-divider></v-divider>
-      <v-card-text>
-        <span v-if="questions.length === 0">
-          No answers yet.
-          <router-link
-            :to="{
-              name: 'ReadingExerciseEditAnswers',
-              params: { pk }
-            }"
-          >
-            Add answers
-          </router-link>
-        </span>
-        <v-row v-else>
-          <v-col cols="4">
-            <v-list dense>
-              <v-subheader>Passage 1</v-subheader>
-              <v-list-item
-                v-for="question of passage1Questions"
-                :key="question.pk"
-              >
-                <v-list-item-content>
-                  {{ question.number }}. {{ formatAnswers(question.answers) }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-          <v-col cols="4">
-            <v-list dense>
-              <v-subheader>Passage 2</v-subheader>
-              <v-list-item
-                v-for="question of passage2Questions"
-                :key="question.pk"
-              >
-                <v-list-item-content>
-                  {{ question.number }}. {{ formatAnswers(question.answers) }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-          <v-col cols="4">
-            <v-list dense>
-              <v-subheader>Passage 3</v-subheader>
-              <v-list-item
-                v-for="question of passage3Questions"
-                :key="question.pk"
-              >
-                <v-list-item-content>
-                  {{ question.number }}. {{ formatAnswers(question.answers) }}
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+              Add answers
+            </router-link>
+          </span>
+          <div v-else>
+            <router-link
+              :to="{
+                name: 'ReadingExerciseEditAnswers',
+                params: { pk: exercise.pk }
+              }"
+            >
+              Edit answers
+            </router-link>
+            <v-row>
+              <v-col cols="4">
+                <v-list dense>
+                  <v-subheader>Passage 1</v-subheader>
+                  <v-list-item
+                    v-for="question of passage1Questions"
+                    :key="question.pk"
+                  >
+                    <v-list-item-content>
+                      {{ question.number }}. {{ formatAnswers(question.answers) }}
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+              <v-col cols="4">
+                <v-list dense>
+                  <v-subheader>Passage 2</v-subheader>
+                  <v-list-item
+                    v-for="question of passage2Questions"
+                    :key="question.pk"
+                  >
+                    <v-list-item-content>
+                      {{ question.number }}. {{ formatAnswers(question.answers) }}
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+              <v-col cols="4">
+                <v-list dense>
+                  <v-subheader>Passage 3</v-subheader>
+                  <v-list-item
+                    v-for="question of passage3Questions"
+                    :key="question.pk"
+                  >
+                    <v-list-item-content>
+                      {{ question.number }}. {{ formatAnswers(question.answers) }}
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+            </v-row>
+          </div>
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
@@ -202,5 +146,11 @@ export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) 
 <style scoped lang="scss">
 .exercise-content.v-card__text {
   color: rgba(0, 0, 0, 1);
+}
+
+.exercise-row {
+  height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 </style>

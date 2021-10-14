@@ -1,181 +1,35 @@
 <template>
-  <div>
-    <p>
-      Choose the exercises you want to use in this class.
-    </p>
-
-    <v-progress-circular
-      v-if="loading"
-      color="primary"
-      indeterminate
-    ></v-progress-circular>
-
-    <p v-else-if="exercises.length === 0">
-      You haven't created any exercise yet.
-      <router-link :to="{ name: 'ReadingExerciseCreate' }">
-        Create exercise
-      </router-link>
-    </p>
-
-    <div v-else>
-      <v-btn-toggle>
-        <v-btn
-          small
-          @click="selectAll"
-        >
-          Select all
-        </v-btn>
-        <v-btn
-          small
-          @click="unselectAll"
-        >
-          Unselect all
-        </v-btn>
-      </v-btn-toggle>
-
-      <v-row
-        no-gutters
-        class="mt-3"
-      >
-        <v-col
-          v-for="exercise of exercises"
-          :key="exercise.pk"
-          cols="3"
-        >
-          <v-checkbox
-            v-model="exercise.isChosen"
-            dense
-            hide-details
-          >
-            <template #label>
-              <router-link
-                :to="{
-                  name: 'ReadingExerciseDetail',
-                  params: { pk: exercise.pk }
-                }"
-              >
-                {{ exercise.identifier }}
-              </router-link>
-            </template>
-          </v-checkbox>
-        </v-col>
-      </v-row>
-
-      <v-btn
-        color="primary"
-        class="mt-5"
-        :loading="saving"
-        @click="save"
-      >
-        Save
-      </v-btn>
-    </div>
-  </div>
+  <component :is="component"></component>
 </template>
 
 <script lang="ts">
-import { AddReadingExercisesReq, RemoveReadingExercisesReq } from '@/interfaces/api/classroom'
-import { Classroom } from '@/interfaces/classroom'
-import { ReadingExercise } from '@/interfaces/reading-exercise'
-import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
-
-declare interface _Exercise extends ReadingExercise {
-  isChosen: boolean
-}
+import { mapGetters } from 'vuex'
+import ClassroomExercisesReadingTeacher from './ClassroomExercisesReadingTeacher.vue'
+import ClassroomExercisesReadingStudent from './ClassroomExercisesReadingStudent.vue'
 
 @Component({
   computed: {
-    ...mapState('readingExercise', {
-      exercisesFromStore: 'readingExercises'
-    }),
-    ...mapState('classroom', {
-      classroom: 'currentClassroom'
-    })
+    ...mapGetters('account', [
+      'isTeacher',
+      'isStudent'
+    ])
+  },
+  components: {
+    ClassroomExercisesReadingTeacher,
+    ClassroomExercisesReadingStudent
   }
 })
 export default class ClassroomExercisesReading extends Vue {
-  loading = false
-  exercisesFromStore!: ReadingExercise[]
-  exercises: _Exercise[] = []
-  classroom!: Classroom
+  isTeacher!: boolean
+  isStudent!: boolean
 
-  created (): void {
-    this.setExercises()
-  }
-
-  setExercises (): void {
-    this.loading = true
-    this.$store.dispatch('readingExercise/list')
-      .then(() => {
-        this.exercises = this.exercisesFromStore.map(exercise => {
-          const data = {
-            ...exercise,
-            isChosen: this.classroom.reading_exercises.includes(exercise.pk)
-          }
-          return data
-        })
-      })
-      .catch(unexpectedExc)
-      .finally(() => {
-        this.loading = false
-      })
-  }
-
-  saving = false
-
-  save (): void {
-    if (this.saving) return
-    this.saving = true
-
-    let promises = [
-      this.addReadingExercise(),
-      this.removeReadingExercise()
-    ]
-    promises = promises.filter(promise => promise !== null)
-
-    Promise.all(promises)
-      .catch(unexpectedExc)
-      .finally(() => {
-        this.saving = false
-      })
-  }
-
-  addReadingExercise (): Promise<unknown> | null {
-    const pksToAdd: AddReadingExercisesReq[] = this.exercises
-      .filter(exercise => exercise.isChosen && !this.classroom.reading_exercises.includes(exercise.pk))
-      .map(exercise => ({ pk: exercise.pk }))
-
-    if (pksToAdd.length === 0) return null
-
-    return this.$store.dispatch('classroom/addReadingExercises', pksToAdd)
-  }
-
-  removeReadingExercise (): Promise<unknown> | null {
-    const pksToRemove: RemoveReadingExercisesReq[] = this.exercises
-      .filter(exercise => !exercise.isChosen && this.classroom.reading_exercises.includes(exercise.pk))
-      .map(exercise => ({ pk: exercise.pk }))
-
-    if (pksToRemove.length === 0) return null
-
-    return this.$store.dispatch('classroom/removeReadingExercises', pksToRemove)
-  }
-
-  selectAll (): void {
-    this.exercises.forEach(exercise => {
-      exercise.isChosen = true
-    })
-  }
-
-  unselectAll (): void {
-    this.exercises.forEach(exercise => {
-      exercise.isChosen = false
-    })
+  get component (): typeof Vue {
+    if (this.isTeacher) {
+      return ClassroomExercisesReadingTeacher
+    } else {
+      return ClassroomExercisesReadingStudent
+    }
   }
 }
 </script>
-
-<style scoped lang="scss">
-
-</style>

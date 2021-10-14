@@ -8,7 +8,10 @@
       color="primary"
     ></v-progress-linear>
 
-    <div v-else>
+    <div
+      v-else
+      class="mb-15"
+    >
       <h1>
         {{ exercise.identifier }}
       </h1>
@@ -109,9 +112,8 @@
                   ></v-select>
                   <v-text-field
                     v-else
-                    v-model="question.answers"
                     :value="formatList(question.answers, ' / ')"
-                    @input="question.answers = parseList($event, ' / ')"
+                    @input="question.answers = parseList($event, '/')"
                     hide-details
                     outlined
                     dense
@@ -302,7 +304,9 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   }
 
   parseList (text: string, separator: string): string[] {
-    return text.split(separator)
+    const val = text.split(separator).map(word => word.trim())
+    console.log(val)
+    return val
   }
 
   allowEditChoices (question: LocalQuestion): boolean {

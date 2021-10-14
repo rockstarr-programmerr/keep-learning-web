@@ -16,16 +16,41 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { mapGetters } from 'vuex'
 
-@Component
+@Component({
+  computed: {
+    ...mapGetters('account', [
+      'isTeacher',
+      'isStudent'
+    ])
+  }
+})
 export default class Home extends Vue {
   breadcrumbs = [
     { text: 'Home', to: { name: 'Home' } }
   ]
 
-  links = [
-    { text: 'Classrooms', to: { name: 'ClassroomList' } },
-    { text: 'Reading exercises', to: { name: 'ReadingExerciseList' } }
-  ]
+  isTeacher!: boolean
+  isStudent!: boolean
+
+  created (): void {
+    if (this.isStudent) {
+      this.$router.push({ name: 'ClassroomList' })
+    }
+  }
+
+  // eslint-disable-next-line
+  get links () {
+    const links = [
+      { text: 'Classrooms', to: { name: 'ClassroomList' } }
+    ]
+    if (this.isTeacher) {
+      links.push(
+        { text: 'Reading exercises', to: { name: 'ReadingExerciseList' } }
+      )
+    }
+    return links
+  }
 }
 </script>

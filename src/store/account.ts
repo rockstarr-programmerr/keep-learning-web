@@ -24,7 +24,9 @@ export const account: Module<AccountState, RootState> = {
     loggedInUser: state => state.loggedInUser,
     hasUserInfo: state => state.loggedInUser !== undefined,
     accessToken: state => state.accessToken,
-    refreshToken: state => state.refreshToken
+    refreshToken: state => state.refreshToken,
+    isTeacher: state => state.loggedInUser !== undefined && state.loggedInUser.user_type === 'teacher',
+    isStudent: state => state.loggedInUser !== undefined && state.loggedInUser.user_type === 'student'
   },
 
   mutations: {

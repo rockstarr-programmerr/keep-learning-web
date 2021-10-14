@@ -53,10 +53,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       state.currentClassroom.students.splice(index, 1)
     },
 
-    ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM (state, exercisePk) {
+    ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM (state, exercise) {
       if (state.currentClassroom !== undefined) {
-        if (!state.currentClassroom.reading_exercises.includes(exercisePk)) {
-          state.currentClassroom.reading_exercises.push(exercisePk)
+        const existingPks = state.currentClassroom.reading_exercises.map(exercise => exercise.pk)
+        if (!existingPks.includes(exercise.pk)) {
+          state.currentClassroom.reading_exercises.push({
+            pk: exercise.pk,
+            identifier: exercise.identifier
+          })
         }
       }
     },
@@ -64,8 +68,8 @@ export const classroom: Module<ClassroomState, RootState> = {
     REMOVE_READING_EXERCISES_FROM_CURRENT_CLASSROOM (state, pkToRemove) {
       if (state.currentClassroom === undefined) return
       let index = 0
-      for (const pk of state.currentClassroom.reading_exercises) {
-        if (pk === pkToRemove) break
+      for (const exercise of state.currentClassroom.reading_exercises) {
+        if (exercise.pk === pkToRemove) break
         index++
       }
       state.currentClassroom.reading_exercises.splice(index, 1)
@@ -113,7 +117,7 @@ export const classroom: Module<ClassroomState, RootState> = {
       if (state.currentClassroom === undefined) return
       await Api.classroom.addReadingExercises(state.currentClassroom.pk, payload)
       payload.forEach(exercise => {
-        commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise.pk)
+        commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise)
       })
     },
 

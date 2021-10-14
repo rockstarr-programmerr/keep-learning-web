@@ -1,4 +1,4 @@
-import { Classroom } from '../classroom'
+import { Classroom, ReadingExerciseReport } from '../classroom'
 import { PaginatedRes } from './common'
 
 export declare interface ClassroomDetailRes extends Classroom {}
@@ -29,3 +29,5 @@ export declare interface AddReadingExercisesReq {
 export declare interface RemoveReadingExercisesReq {
   pk: number;
 }
+
+export declare interface ReadingExerciseReportRes extends ReadingExerciseReport {}

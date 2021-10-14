@@ -4,3 +4,8 @@ export declare interface ReadingExercise {
   identifier: string;
   content: string;
 }
+
+export declare interface ClassroomReadingExercise {
+  pk: number;
+  identifier: string;
+}

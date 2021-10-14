@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import { ClassroomListRes, ClassroomDetailRes, ClassroomCreateReq, AddStudentReq, RemoveStudentReq, AddReadingExercisesReq, RemoveReadingExercisesReq } from '@/interfaces/api/classroom'
+import { ClassroomListRes, ClassroomDetailRes, ClassroomCreateReq, AddStudentReq, RemoveStudentReq, AddReadingExercisesReq, RemoveReadingExercisesReq, ReadingExerciseReportRes } from '@/interfaces/api/classroom'
 import { Classroom } from '@/interfaces/classroom'
 import { endpoints, replacePk } from './endpoints'
+import { User } from '@/interfaces/user'
 
 export const classroom = {
   async list (): Promise<ClassroomListRes> {
@@ -38,5 +39,15 @@ export const classroom = {
   async removeReadingExercises (pk: Classroom['pk'], payload: RemoveReadingExercisesReq[]): Promise<void> {
     const endpoint = replacePk(endpoints.classroom.removeReadingExercises, pk)
     await Vue.axios.post(endpoint, payload)
+  },
+
+  async getStudentReport (classroomPk: Classroom['pk'], studentPk: User['pk']): Promise<ReadingExerciseReportRes[]> {
+    const endpoint = replacePk(endpoints.classroom.studentReadingReport, classroomPk)
+    const res = await Vue.axios.get(endpoint, {
+      params: {
+        student: studentPk
+      }
+    })
+    return res.data
   }
 }

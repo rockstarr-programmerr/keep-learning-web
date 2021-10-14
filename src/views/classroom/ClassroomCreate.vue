@@ -11,7 +11,6 @@
         autofocus
         :error-messages="nameErrs"
         :error-count="nameErrs.length"
-        @keydown.prevent
       ></v-text-field>
       <v-textarea
         v-model="description"

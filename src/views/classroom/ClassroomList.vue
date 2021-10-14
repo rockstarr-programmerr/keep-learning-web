@@ -2,10 +2,11 @@
   <v-container>
     <v-breadcrumbs :items="breadcrumbs" />
 
-    <h1>Manage classrooms</h1>
+    <h1>Classrooms</h1>
     <v-divider></v-divider>
 
     <span
+      v-if="isTeacher"
       class="cursor-pointer d-inline-flex mt-5"
       @click="$router.push({ name: 'ClassroomCreate' })"
     >
@@ -59,12 +60,15 @@
 import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 @Component({
   computed: {
     ...mapState('classroom', [
       'classrooms'
+    ]),
+    ...mapGetters('account', [
+      'isTeacher'
     ])
   }
 })
@@ -78,8 +82,9 @@ export default class ClassroomList extends Vue {
   ]
 
   /**
-   * Init classrooms
+   * Init
    */
+  isTeacher!: boolean
   classrooms!: Classroom[]
 
   get noClassrooms (): boolean {
