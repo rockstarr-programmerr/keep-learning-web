@@ -19,8 +19,14 @@ export declare interface ReadingSubmissionResult {
   is_correct: boolean;
 }
 
+declare interface _ReadingExercise {
+  pk: number;
+  url: string;
+  identifier: string;
+}
+
 export declare interface ReadingExerciseReport {
-  exercise: string;
+  exercise: _ReadingExercise;
   passage_1_total: number;
   passage_2_total: number;
   passage_3_total: number;

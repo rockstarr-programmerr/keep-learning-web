@@ -8,3 +8,15 @@ export declare interface ReadingQuestion {
   choices: string[];
   answers: string[];
 }
+
+declare interface _AnswerChoice {
+  text: string;
+  value: string;
+}
+
+export declare interface ReadingAnswer {
+  question_number: ReadingQuestion['number'];
+  content: string;
+  question_type?: ReadingQuestion['question_type'];
+  choices?: _AnswerChoice[];
+}

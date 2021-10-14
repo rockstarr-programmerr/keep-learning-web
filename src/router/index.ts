@@ -21,6 +21,7 @@ import ReadingExerciseDetail from '../views/reading-exercise/ReadingExerciseDeta
 import ReadingExerciseCreate from '../views/reading-exercise/ReadingExerciseCreate.vue'
 import ReadingExerciseUpdate from '../views/reading-exercise/ReadingExerciseUpdate.vue'
 import ReadingExerciseEditAnswers from '../views/reading-exercise/ReadingExerciseEditAnswers.vue'
+import ReadingExerciseSubmit from '../views/reading-exercise/ReadingExerciseSubmit.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -113,6 +114,12 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/edit-answers',
       name: 'ReadingExerciseEditAnswers',
       component: ReadingExerciseEditAnswers,
+      props: castToNumber('pk')
+    },
+    {
+      path: '/:pk/submit',
+      name: 'ReadingExerciseSubmit',
+      component: ReadingExerciseSubmit,
       props: castToNumber('pk')
     },
     {

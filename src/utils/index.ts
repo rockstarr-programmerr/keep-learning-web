@@ -23,7 +23,8 @@ export function snakeCaseToCamelCase (text: string): string {
   return words.join('')
 }
 
-export function toTitleCase (text: string, separator?: string): string {
+export function toTitleCase (text: string | undefined, separator?: string): string {
+  if (text === undefined) return ''
   if (separator === undefined) separator = ' '
   let words = text.split(separator)
   words = words.map(word => {

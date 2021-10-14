@@ -28,13 +28,20 @@
             v-for="report of reports"
             :key="report.pk"
           >
-            <td>{{ report.exercise }}</td>
+            <td>{{ report.exercise.identifier }}</td>
             <template v-if="!report.submitted">
               <td colspan="5">
                 Not submitted
               </td>
               <td class="text-center">
-                Start
+                <router-link
+                  :to="{
+                    name: 'ReadingExerciseSubmit',
+                    params: { pk: report.exercise.pk }
+                  }"
+                >
+                  Start
+                </router-link>
               </td>
             </template>
             <template v-else>
