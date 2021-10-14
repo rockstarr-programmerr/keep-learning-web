@@ -26,7 +26,6 @@ import { unexpectedExc } from './utils'
 })
 export default class App extends Vue {
   user!: User
-  isAuthenticatedUser = false
   loading = false
   initDone = false
 
@@ -37,9 +36,6 @@ export default class App extends Vue {
   setUserInfo (): void {
     this.loading = true
     this.$store.dispatch('account/getInfo')
-      .then(() => {
-        this.isAuthenticatedUser = true
-      })
       .catch(unexpectedExc)
       .finally(() => {
         this.loading = false
@@ -51,7 +47,7 @@ export default class App extends Vue {
     const meta = this.$route.meta
 
     if (meta !== undefined) {
-      if (this.isAuthenticatedUser) {
+      if (this.user !== undefined) {
         if (
           this.user.user_type === 'teacher' &&
           meta.teacherLayout !== undefined

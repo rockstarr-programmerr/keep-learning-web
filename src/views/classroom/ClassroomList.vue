@@ -41,12 +41,7 @@
             v-for="classroom of classrooms"
             :key="classroom.pk"
             link
-            :to="{
-              name: 'ClassroomOverview',
-              params: {
-                pk: classroom.pk
-              }
-            }"
+            :to="getClassroomLink(classroom)"
           >
             <v-list-item-content v-text="classroom.name" />
           </v-list-item>
@@ -60,6 +55,7 @@
 import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
+import { Location } from 'vue-router'
 import { mapGetters, mapState } from 'vuex'
 
 @Component({
@@ -93,6 +89,24 @@ export default class ClassroomList extends Vue {
 
   created (): void {
     this.listClassroom()
+  }
+
+  getClassroomLink (classroom: Classroom): Location {
+    if (this.isTeacher) {
+      return {
+        name: 'ClassroomOverview',
+        params: {
+          pk: classroom.pk.toString()
+        }
+      }
+    } else {
+      return {
+        name: 'ClassroomExercisesReading',
+        params: {
+          pk: classroom.pk.toString()
+        }
+      }
+    }
   }
 
   /**

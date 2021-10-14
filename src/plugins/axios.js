@@ -91,7 +91,11 @@ function handleResponseError (error) {
   if (isUnauthorized(error)) {
     /* eslint-disable brace-style */
 
-    if (noToken()) {
+    if (isLoginRoute()) {
+      return Promise.reject(error)
+    }
+
+    else if (noToken()) {
       goToLogin()
       return Promise.reject() // Will not display unexpected error message to user
     }
@@ -111,10 +115,6 @@ function handleResponseError (error) {
     else if (userInactiveOrNotFound(error)) {
       Store.dispatch('account/logout')
       goToLogin()
-      return Promise.reject(error)
-    }
-
-    else if (isLoginRoute()) {
       return Promise.reject(error)
     }
 

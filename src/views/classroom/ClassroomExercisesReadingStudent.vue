@@ -48,6 +48,7 @@ export default class ClassroomExercisesReadingStudent extends Vue {
   classroom!: Classroom
 
   get exercises (): ClassroomReadingExercise[] {
+    if (this.classroom === undefined) return []
     return this.classroom.reading_exercises
   }
 }

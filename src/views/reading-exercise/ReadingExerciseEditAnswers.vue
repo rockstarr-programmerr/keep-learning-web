@@ -304,9 +304,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   }
 
   parseList (text: string, separator: string): string[] {
-    const val = text.split(separator).map(word => word.trim())
-    console.log(val)
-    return val
+    return text.split(separator).map(word => word.trim())
   }
 
   allowEditChoices (question: LocalQuestion): boolean {

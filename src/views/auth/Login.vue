@@ -60,16 +60,24 @@ import { Vue, Component, Emit } from 'vue-property-decorator'
 import { LoginReq } from '@/interfaces/api/account'
 import { unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
+import { mapState } from 'vuex'
 
-@Component
+@Component({
+  computed: {
+    ...mapState('account', [
+      'isTeacher'
+    ])
+  }
+})
 export default class Login extends Vue {
   email = ''
   password = ''
   showPassword = false
   loading = false
   errorMsg = ''
+  isTeacher!: boolean
 
-  login (): void {
+  async login (): Promise<void> {
     this.errorMsg = ''
     if (this.loading) return
     this.loading = true
@@ -79,21 +87,47 @@ export default class Login extends Vue {
       password: this.password
     }
 
-    this.$store.dispatch('account/login', payload)
-      .then(() => {
-        // TODO: implement ?next
+    try {
+      await this.$store.dispatch('account/login', payload)
+      await this.$store.dispatch('account/getInfo')
+      // TODO: implement ?next
+      if (this.isTeacher) {
         this.$router.push({ name: 'Home' })
-      })
-      .catch(error => {
-        if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
-          this.errorMsg = error.response.data.detail
-        } else {
-          unexpectedExc(error)
-        }
-      })
-      .finally(() => {
-        this.loading = false
-      })
+      } else {
+        this.$router.push({ name: 'ClassroomList' })
+      }
+    } catch (error) {
+      if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
+        this.errorMsg = error.response.data.detail
+      } else {
+        unexpectedExc(error)
+      }
+    } finally {
+      this.loading = false
+    }
+
+    // this.$store.dispatch('account/login', payload)
+    //   .then(() => {
+    //     this.$store.dispatch('account/getInfo')
+    //       .then(() => {
+    //         // TODO: implement ?next
+    //         if (this.isTeacher) {
+    //           this.$router.push({ name: 'Home' })
+    //         } else {
+    //           this.$router.push({ name: 'ClassroomList' })
+    //         }
+    //       })
+    //   })
+    //   .catch(error => {
+    //     if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
+    //       this.errorMsg = error.response.data.detail
+    //     } else {
+    //       unexpectedExc(error)
+    //     }
+    //   })
+    //   .finally(() => {
+    //     this.loading = false
+    //   })
   }
 
   @Emit('change-page')
