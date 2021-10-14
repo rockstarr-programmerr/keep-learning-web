@@ -1,5 +1,6 @@
-import { ReadingExercise } from "../reading-exercise";
-import { PaginatedRes } from "./common";
+import { ReadingExercise } from '../reading-exercise'
+import { PaginatedRes } from './common'
+import { ReadingAnswer } from '../reading-question'
 
 export declare interface ReadingExerciseDetailRes extends ReadingExercise {}
 
@@ -17,3 +18,5 @@ export declare interface ReadingExerciseUpdateReq {
   identifier: string;
   content: string;
 }
+
+export declare interface ReadingExerciseSubmitAnswersReq extends ReadingAnswer {}

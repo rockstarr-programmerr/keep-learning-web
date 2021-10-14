@@ -47,13 +47,67 @@
               </v-simple-table>
             </v-col>
           </v-row>
+
+          <v-btn
+            color="primary"
+            class="d-block mx-auto mt-7"
+            width="150"
+            @click="confirmSubmit = true"
+          >
+            Submit
+          </v-btn>
         </v-col>
       </v-row>
     </div>
+
+    <v-dialog
+      v-model="confirmSubmit"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>
+          Please confirm
+        </v-card-title>
+        <v-card-text>
+          <div
+            v-if="!allAnswered"
+            class="mb-3 d-flex error--text font-weight-bold"
+          >
+            <v-icon color="error">
+              mdi-alert-outline
+            </v-icon>
+            <span class="ml-3">
+              You haven't answered all questions!
+            </span>
+          </div>
+          Are you sure to submit?
+          You cannot edit your answers after this.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="confirmSubmit = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            depressed
+            :loading="loadingSubmit"
+            @click="submitAnswers"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script lang="ts">
+import { Api } from '@/api'
+import { ReadingExerciseSubmitAnswersReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { ReadingAnswer, ReadingQuestion } from '@/interfaces/reading-question'
 import { unexpectedExc } from '@/utils'
@@ -140,6 +194,33 @@ export default class ReadingExerciseSubmit extends Vue {
 
   get answersCol2 (): ReadingAnswer[] {
     return this.answers.filter(answer => answer.question_number > 20)
+  }
+
+  get allAnswered (): boolean {
+    return this.answers.every(answer => answer.content !== '')
+  }
+
+  confirmSubmit = false
+  loadingSubmit = false
+
+  submitAnswers (): void {
+    if (this.loadingSubmit) return
+    this.loadingSubmit = true
+
+    const payload: ReadingExerciseSubmitAnswersReq[] = this.answers
+      .filter(answer => answer.content !== '')
+      .map(answer => {
+        delete answer.question_type
+        delete answer.choices
+        return answer
+      })
+
+    Api.readingExercise.submitAnswers(this.exercise.pk, payload)
+      .catch(unexpectedExc)
+      .finally(() => {
+        this.confirmSubmit = false
+        this.loadingSubmit = false
+      })
   }
 }
 </script>
