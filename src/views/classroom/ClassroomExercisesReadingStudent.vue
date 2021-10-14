@@ -37,7 +37,10 @@
                 <router-link
                   :to="{
                     name: 'ReadingExerciseSubmit',
-                    params: { pk: report.exercise.pk }
+                    params: {
+                      pk: classroom.pk,
+                      exercisePk: report.exercise.pk
+                    }
                   }"
                 >
                   Start
@@ -51,7 +54,17 @@
               <td>{{ report.total }}</td>
               <td>{{ report.band_score }}</td>
               <td class="text-center">
-                Detail
+                <router-link
+                  :to="{
+                    name: 'ReadingExerciseSubmitResult',
+                    params: {
+                      pk: classroom.pk,
+                      exercisePk: report.exercise.pk
+                    }
+                  }"
+                >
+                  Detail
+                </router-link>
               </td>
             </template>
           </tr>
@@ -62,6 +75,8 @@
 </template>
 
 <script lang="ts">
+import { Api } from '@/api'
+import { GetStudentReportReq } from '@/interfaces/api/classroom'
 import { Classroom, ReadingExerciseReport } from '@/interfaces/classroom'
 import { User } from '@/interfaces/user'
 import { unexpectedExc } from '@/utils'
@@ -75,28 +90,28 @@ import { mapState } from 'vuex'
     }),
     ...mapState('classroom', {
       classroom: 'currentClassroom'
-    }),
-    ...mapState('readingReport', [
-      'reports'
-    ])
+    })
   }
 })
 export default class ClassroomExercisesReadingStudent extends Vue {
   user!: User
   classroom!: Classroom
-  reports!: ReadingExerciseReport[]
+  reports: ReadingExerciseReport[] = []
 
   loading = false
 
   created (): void {
     this.loading = true
 
-    const payload = {
-      classroomPk: this.classroom.pk,
-      studentPk: this.user.pk
+    const params: GetStudentReportReq = {
+      student_pk: this.user.pk,
+      show_detail: false
     }
 
-    this.$store.dispatch('readingReport/getReports', payload)
+    Api.classroom.getStudentReport(this.classroom.pk, params)
+      .then(data => {
+        this.reports = data
+      })
       .catch(unexpectedExc)
       .finally(() => {
         this.loading = false

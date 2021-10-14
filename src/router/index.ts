@@ -21,7 +21,8 @@ import ReadingExerciseDetail from '../views/reading-exercise/ReadingExerciseDeta
 import ReadingExerciseCreate from '../views/reading-exercise/ReadingExerciseCreate.vue'
 import ReadingExerciseUpdate from '../views/reading-exercise/ReadingExerciseUpdate.vue'
 import ReadingExerciseEditAnswers from '../views/reading-exercise/ReadingExerciseEditAnswers.vue'
-import ReadingExerciseSubmit from '../views/reading-exercise/ReadingExerciseSubmit.vue'
+import ReadingExerciseSubmit from '../views/classroom/ReadingExerciseSubmit.vue'
+import ReadingExerciseSubmitResult from '../views/classroom/ReadingExerciseSubmitResult.vue'
 
 import { castToNumber, prefixWith } from './utils'
 
@@ -56,7 +57,7 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/overview',
       name: 'ClassroomOverview',
       component: ClassroomOverview,
-      props: castToNumber('pk'),
+      props: castToNumber(['pk']),
       meta: {
         teacherLayout: LayoutClassroomTeacher,
         studentLayout: LayoutClassroomStudent
@@ -66,7 +67,7 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/students',
       name: 'ClassroomStudents',
       component: ClassroomStudents,
-      props: castToNumber('pk'),
+      props: castToNumber(['pk']),
       meta: {
         teacherLayout: LayoutClassroomTeacher,
         studentLayout: LayoutClassroomStudent
@@ -76,17 +77,29 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/reading-exercises',
       name: 'ClassroomExercisesReading',
       component: ClassroomExercisesReading,
-      props: castToNumber('pk'),
+      props: castToNumber(['pk']),
       meta: {
         teacherLayout: LayoutClassroomTeacher,
         studentLayout: LayoutClassroomStudent
       }
     },
     {
+      path: '/:pk/reading-exercises/:exercisePk/submit',
+      name: 'ReadingExerciseSubmit',
+      component: ReadingExerciseSubmit,
+      props: castToNumber(['pk', 'exercisePk'])
+    },
+    {
+      path: '/:pk/reading-exercises/:exercisePk/result',
+      name: 'ReadingExerciseSubmitResult',
+      component: ReadingExerciseSubmitResult,
+      props: castToNumber(['pk', 'exercisePk'])
+    },
+    {
       path: '/:pk/listening-exercises',
       name: 'ClassroomExercisesListening',
       component: ClassroomExercisesListening,
-      props: castToNumber('pk'),
+      props: castToNumber(['pk']),
       meta: {
         teacherLayout: LayoutClassroomTeacher,
         studentLayout: LayoutClassroomStudent
@@ -108,25 +121,19 @@ const routes: Array<RouteConfig> = [
       path: '/:pk/update',
       name: 'ReadingExerciseUpdate',
       component: ReadingExerciseUpdate,
-      props: castToNumber('pk')
+      props: castToNumber(['pk'])
     },
     {
       path: '/:pk/edit-answers',
       name: 'ReadingExerciseEditAnswers',
       component: ReadingExerciseEditAnswers,
-      props: castToNumber('pk')
-    },
-    {
-      path: '/:pk/submit',
-      name: 'ReadingExerciseSubmit',
-      component: ReadingExerciseSubmit,
-      props: castToNumber('pk')
+      props: castToNumber(['pk'])
     },
     {
       path: '/:pk',
       name: 'ReadingExerciseDetail',
       component: ReadingExerciseDetail,
-      props: castToNumber('pk')
+      props: castToNumber(['pk'])
     }
   ]),
   {

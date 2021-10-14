@@ -7,11 +7,15 @@ export function prefixWith (prefix: string, routeConfigs: Array<RouteConfig>): A
   })
 }
 
-export function castToNumber (prop: string): RoutePropsFunction {
+export function castToNumber (args: string[]): RoutePropsFunction {
   function _castToNumber (route: Route) {
-    const propVal = route.params[prop]
-    const propValCasted = parseInt(propVal)
-    const props = { [prop]: propValCasted }
+    const props = {}
+    for (const prop of args) {
+      const propVal = route.params[prop]
+      const propValCasted = parseInt(propVal)
+      // @ts-expect-error don't care
+      props[prop] = propValCasted
+    }
     return props
   }
   return _castToNumber

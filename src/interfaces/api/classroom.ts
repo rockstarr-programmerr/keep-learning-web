@@ -31,3 +31,9 @@ export declare interface RemoveReadingExercisesReq {
 }
 
 export declare interface ReadingExerciseReportRes extends ReadingExerciseReport {}
+
+export declare interface GetStudentReportReq {
+  student_pk: number;
+  exercise_pk?: number;
+  show_detail?: boolean;
+}

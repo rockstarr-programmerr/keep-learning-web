@@ -12,17 +12,17 @@ export declare interface Classroom {
 }
 
 
+declare interface _ReadingExercise {
+  pk: number;
+  url: string;
+  identifier: string;
+}
+
 export declare interface ReadingSubmissionResult {
   question_number: number;
   submitted_answer: string;
   possible_answers: string[];
   is_correct: boolean;
-}
-
-declare interface _ReadingExercise {
-  pk: number;
-  url: string;
-  identifier: string;
 }
 
 export declare interface ReadingExerciseReport {
@@ -33,7 +33,7 @@ export declare interface ReadingExerciseReport {
   total: number;
   band_score: number;
   submitted: boolean;
-  passage_1_detail: ReadingSubmissionResult[];
-  passage_2_detail: ReadingSubmissionResult[];
-  passage_3_detail: ReadingSubmissionResult[];
+  passage_1_detail?: ReadingSubmissionResult[];
+  passage_2_detail?: ReadingSubmissionResult[];
+  passage_3_detail?: ReadingSubmissionResult[];
 }

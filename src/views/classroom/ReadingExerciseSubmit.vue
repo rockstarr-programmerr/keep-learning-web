@@ -126,6 +126,7 @@ import { mapState } from 'vuex'
 })
 export default class ReadingExerciseSubmit extends Vue {
   @Prop(Number) readonly pk!: number
+  @Prop(Number) readonly exercisePk!: number
 
   async created (): Promise<void> {
     await this.setQuestions()
@@ -143,7 +144,7 @@ export default class ReadingExerciseSubmit extends Vue {
     this.loading = true
 
     try {
-      await this.$store.dispatch('readingExercise/detail', this.pk)
+      await this.$store.dispatch('readingExercise/detail', this.exercisePk)
       await this.$store.dispatch('readingExercise/getQuestions')
     } catch (error) {
       unexpectedExc(error)
@@ -220,6 +221,13 @@ export default class ReadingExerciseSubmit extends Vue {
       .finally(() => {
         this.confirmSubmit = false
         this.loadingSubmit = false
+        this.$router.push({
+          name: 'ReadingExerciseSubmitResult',
+          params: {
+            pk: this.pk.toString(),
+            exercisePk: this.exercisePk.toString()
+          }
+        })
       })
   }
 }

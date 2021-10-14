@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import { account } from './account'
 import { classroom } from './classroom'
 import { readingExercise } from './reading-exercises'
-import { readingReport } from './reading-reports'
 
 Vue.use(Vuex)
 
@@ -21,7 +20,6 @@ export default new Vuex.Store({
   modules: {
     account,
     classroom,
-    readingExercise,
-    readingReport
+    readingExercise
   }
 })
