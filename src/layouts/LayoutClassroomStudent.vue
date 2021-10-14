@@ -12,7 +12,10 @@
 
         <h1 v-text="classroom.name"></h1>
         <v-divider></v-divider>
-        <p v-text="classroom.description"></p>  <!-- TODO: multiline -->
+        <p
+          class="mt-5"
+          v-text="classroom.description"
+        ></p>  <!-- TODO: multiline -->
 
         <v-tabs>
           <v-tab
