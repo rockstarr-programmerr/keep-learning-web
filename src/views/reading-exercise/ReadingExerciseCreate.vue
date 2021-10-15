@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="container-sm">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
     <v-card class="mx-auto">

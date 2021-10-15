@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="container-sm">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
     <v-progress-circular
@@ -42,21 +42,6 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-
-    <!--
-    <v-btn
-      fab
-      color="primary"
-      bottom
-      right
-      fixed
-      large
-    >
-      <v-icon>
-        mdi-content-save-outline
-      </v-icon>
-    </v-btn>
-    -->
   </v-container>
 </template>
 

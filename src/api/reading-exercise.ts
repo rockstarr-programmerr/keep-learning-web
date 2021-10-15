@@ -26,6 +26,11 @@ export const readingExercise = {
     return res.data
   },
 
+  async delete (pk: ReadingExercise['pk']): Promise<void> {
+    const endpoint = replacePk(endpoints.readingExercise.delete, pk)
+    await Vue.axios.delete(endpoint)
+  },
+
   async submitAnswers (pk: ReadingExercise['pk'], payload: ReadingExerciseSubmitAnswersReq[]): Promise<void> {
     const endpoint = replacePk(endpoints.readingExercise.submitAnswers, pk)
     await Vue.axios.post(endpoint, payload)

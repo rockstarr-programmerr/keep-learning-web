@@ -9,7 +9,22 @@
     ></v-progress-circular>
 
     <div v-if="exercise !== undefined">
-      <h1>{{ exercise.identifier }}</h1>
+      <v-row
+        justify="space-between"
+        align="center"
+      >
+        <v-col cols="auto">
+          <h1>{{ exercise.identifier }}</h1>
+        </v-col>
+        <v-col cols="auto">
+          <v-btn
+            icon
+            @click="confirmDelete = true"
+          >
+            <v-icon>mdi-delete-outline</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-divider></v-divider>
 
       <v-row class="mt-0">
@@ -96,6 +111,45 @@
         </v-col>
       </v-row>
     </div>
+
+    <v-dialog
+      v-model="confirmDelete"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>
+          Please confirm
+        </v-card-title>
+        <v-card-text>
+          <p>
+            You are deleting exercise <strong>{{ exercise.identifier }}</strong>.
+          </p>
+          <div class="error--text">
+            <v-icon color="error">
+              mdi-alert-outline
+            </v-icon>
+            This cannot be undone!
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="confirmDelete = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            depressed
+            :loading="deleting"
+            @click="deleteExercise"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -103,6 +157,7 @@
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
+import { unexpectedExc } from '@/utils'
 
 @Component
 export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) {
@@ -113,16 +168,6 @@ export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) 
       { text: 'Reading exercises', to: { name: 'ReadingExerciseList' }, exact: true },
       { text: this.exercise.identifier, disabled: true }
     ]
-  }
-
-  expand = false
-
-  get exerciseContentHeight (): string {
-    if (!this.expand) {
-      return '50vh'
-    } else {
-      return 'unset'
-    }
   }
 
   get passage1Questions (): ReadingQuestion[] {
@@ -139,6 +184,26 @@ export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) 
 
   formatAnswers (answers: ReadingQuestion['answers']): string {
     return answers.join(' / ')
+  }
+
+  /**
+   * Delete exercise
+   */
+  confirmDelete = false
+  deleting = false
+
+  deleteExercise (): void {
+    if (this.deleting) return
+    this.deleting = true
+
+    this.$store.dispatch('readingExercise/delete', this.exercise.pk)
+      .then(() => {
+        this.$router.push({ name: 'ReadingExerciseList' })
+      })
+      .catch(unexpectedExc)
+      .finally(() => {
+        this.deleting = false
+      })
   }
 }
 </script>
