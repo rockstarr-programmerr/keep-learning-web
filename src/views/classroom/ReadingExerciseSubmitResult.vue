@@ -104,6 +104,19 @@
               </v-simple-table>
             </v-card-text>
           </v-card>
+
+          <v-btn
+            color="primary"
+            link
+            :to="{
+              name: 'ClassroomExercisesReading',
+              params: {
+                pk: classroom.pk
+              }
+            }"
+          >
+            Back to classroom
+          </v-btn>
         </v-col>
       </v-row>
     </div>
