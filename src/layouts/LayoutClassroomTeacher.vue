@@ -13,9 +13,9 @@
         <h1 v-text="classroom.name"></h1>
         <v-divider></v-divider>
         <p
-          class="mt-5"
+          class="mt-5 description"
           v-text="classroom.description"
-        ></p>  <!-- TODO: multiline -->
+        ></p>
 
         <v-tabs>
           <v-tab
@@ -110,5 +110,7 @@ export default class LayoutClassroomTeacher extends Vue {
 </script>
 
 <style scoped lang="scss">
-
+.description {
+  white-space: pre-wrap;
+}
 </style>

@@ -105,29 +105,6 @@ export default class Login extends Vue {
     } finally {
       this.loading = false
     }
-
-    // this.$store.dispatch('account/login', payload)
-    //   .then(() => {
-    //     this.$store.dispatch('account/getInfo')
-    //       .then(() => {
-    //         // TODO: implement ?next
-    //         if (this.isTeacher) {
-    //           this.$router.push({ name: 'Home' })
-    //         } else {
-    //           this.$router.push({ name: 'ClassroomList' })
-    //         }
-    //       })
-    //   })
-    //   .catch(error => {
-    //     if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
-    //       this.errorMsg = error.response.data.detail
-    //     } else {
-    //       unexpectedExc(error)
-    //     }
-    //   })
-    //   .finally(() => {
-    //     this.loading = false
-    //   })
   }
 
   @Emit('change-page')

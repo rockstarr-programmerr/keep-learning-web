@@ -1,30 +1,39 @@
 <template>
-  <v-container>
+  <v-container class="container-sm">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
-    <h1>New classroom</h1>
+    <v-card>
+      <v-card-title>
+        New classroom
+      </v-card-title>
 
-    <v-form>
-      <v-text-field
-        v-model="name"
-        label="Name *"
-        autofocus
-        :error-messages="nameErrs"
-        :error-count="nameErrs.length"
-      ></v-text-field>
-      <v-textarea
-        v-model="description"
-        label="Description"
-      ></v-textarea>
-    </v-form>
+      <v-card-text>
+        <v-form>
+          <v-text-field
+            v-model="name"
+            label="Name *"
+            autofocus
+            :error-messages="nameErrs"
+            :error-count="nameErrs.length"
+          ></v-text-field>
+          <v-textarea
+            v-model="description"
+            label="Description"
+          ></v-textarea>
+        </v-form>
+      </v-card-text>
 
-    <v-btn
-      color="primary"
-      @click="submit"
-      :loading="loading"
-    >
-      Create
-    </v-btn>
+      <v-card-actions>
+        <v-btn
+          color="primary"
+          @click="submit"
+          :loading="loading"
+          min-width="110"
+        >
+          Create
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 

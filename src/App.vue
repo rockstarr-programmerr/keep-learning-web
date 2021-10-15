@@ -75,4 +75,8 @@ export default class App extends Vue {
 .cursor-pointer {
   cursor: pointer;
 }
+
+.container-sm {
+  width: 1140px;
+}
 </style>

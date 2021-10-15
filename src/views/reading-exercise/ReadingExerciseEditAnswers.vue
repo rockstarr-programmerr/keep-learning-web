@@ -207,8 +207,6 @@ declare interface LocalQuestion extends ReadingQuestion {
 
 @Component
 export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMixin) {
-  // TODO: make convenient
-
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
@@ -230,12 +228,6 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   ]
 
   allChoices = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-  commonChoices = { // TODO: remember user's input
-    'A, B, C, D': ['A', 'B', 'C', 'D'],
-    'A, B, C, D, E': ['A', 'B', 'C', 'D', 'E'],
-    'A, B, C, D, E, F': ['A', 'B', 'C', 'D', 'E', 'F'],
-    'A, B, C, D, E, F, G, H': ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-  }
 
   localQuestions: LocalQuestion[] = []
 
