@@ -46,7 +46,7 @@
                     <v-list-item-title>Edit</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
-                <v-list-item>
+                <v-list-item @click="confirmDelete = true">
                   <v-list-item-icon>
                     <v-icon>mdi-delete-outline</v-icon>
                   </v-list-item-icon>
@@ -77,6 +77,45 @@
         <router-view v-if="classroomFound" class="mt-5"></router-view>
       </div>
     </v-container>
+
+    <v-dialog
+      v-model="confirmDelete"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>
+          Please confirm
+        </v-card-title>
+        <v-card-text>
+          <p>
+            You are deleting classroom <strong>{{ classroom.name }}</strong>.
+          </p>
+          <div class="error--text">
+            <v-icon color="error">
+              mdi-alert-outline
+            </v-icon>
+            This cannot be undone!
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            @click="confirmDelete = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="primary"
+            depressed
+            :loading="deleting"
+            @click="deleteClassroom"
+          >
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </LayoutDefault>
 </template>
 
@@ -146,6 +185,26 @@ export default class LayoutClassroomTeacher extends Vue {
     { text: 'Reading exercises', to: { name: 'ClassroomExercisesReading' } },
     { text: 'Listening exercises', to: { name: 'ClassroomExercisesListening' } }
   ]
+
+  /**
+   * Delete classroom
+   */
+  confirmDelete = false
+  deleting = false
+
+  deleteClassroom (): void {
+    if (this.deleting) return
+    this.deleting = true
+
+    this.$store.dispatch('classroom/delete', this.classroom.pk)
+      .then(() => {
+        this.$router.push({ name: 'ClassroomList' })
+      })
+      .catch(unexpectedExc)
+      .finally(() => {
+        this.deleting = false
+      })
+  }
 
   // @ts-expect-error: don't care
   // eslint-disable-next-line

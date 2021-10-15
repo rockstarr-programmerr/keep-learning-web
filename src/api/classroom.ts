@@ -26,6 +26,11 @@ export const classroom = {
     return res.data
   },
 
+  async delete (pk: Classroom['pk']): Promise<void> {
+    const endpoint = replacePk(endpoints.classroom.classroomDelete, pk)
+    await Vue.axios.delete(endpoint)
+  },
+
   async addStudents (pk: Classroom['pk'], payload: AddStudentReq[]): Promise<void> {
     const endpoint = replacePk(endpoints.classroom.addStudents, pk)
     await Vue.axios.post(endpoint, payload)

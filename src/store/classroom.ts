@@ -46,6 +46,10 @@ export const classroom: Module<ClassroomState, RootState> = {
       state.classrooms.splice(index, 1, classroom)
     },
 
+    REMOVE_CLASSROOM (state, pkDeleted) {
+      state.classrooms = state.classrooms.filter(classroom => classroom.pk !== pkDeleted)
+    },
+
     ADD_STUDENT_TO_CURRENT_CLASSROOM (state, student) {
       if (state.currentClassroom !== undefined) {
         state.currentClassroom.students.push(student)
@@ -112,6 +116,11 @@ export const classroom: Module<ClassroomState, RootState> = {
     ): Promise<void> {
       const data = await Api.classroom.update(pk, payload)
       commit('EDIT_CLASSROOM', data)
+    },
+
+    async delete ({ commit }, pk: Classroom['pk']): Promise<void> {
+      await Api.classroom.delete(pk)
+      commit('REMOVE_CLASSROOM', pk)
     },
 
     async addStudents ({ state, commit }, payload: AddStudentReq[]): Promise<void> {
