@@ -33,3 +33,5 @@ export declare interface RegisterTeacherRes {
 }
 
 export declare interface MyInfoRes extends User {}
+
+export declare interface UserDetailRes extends User {}

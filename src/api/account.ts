@@ -1,10 +1,11 @@
 import Vue from 'vue'
-import { endpoints } from './endpoints'
+import { endpoints, replacePk } from './endpoints'
 import {
   LoginReq, LoginRes,
   MyInfoRes,
-  RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes
+  RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes, UserDetailRes
 } from '@/interfaces/api/account'
+import { User } from '@/interfaces/user'
 
 export const account = {
   async registerTeacher (reqBody: RegisterTeacherReq): Promise<RegisterTeacherRes> {
@@ -24,6 +25,12 @@ export const account = {
 
   async getMyInfo (): Promise<MyInfoRes> {
     const res = await Vue.axios.get(endpoints.account.me.myInfo)
+    return res.data
+  },
+
+  async userDetail (pk: User['pk']): Promise<UserDetailRes> {
+    const endpoint = replacePk(endpoints.account.users.detail, pk)
+    const res = await Vue.axios.get(endpoint)
     return res.data
   }
 }

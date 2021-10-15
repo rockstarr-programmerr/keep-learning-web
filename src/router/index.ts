@@ -12,6 +12,7 @@ import Http404 from '../views/http/Http404.vue'
 import ClassroomList from '../views/classroom/ClassroomList.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
 import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
+import ClassroomOverviewStudentReport from '../views/classroom/ClassroomOverviewStudentReport.vue'
 import ClassroomStudents from '../views/classroom/ClassroomStudents.vue'
 import ClassroomExercisesReading from '../views/classroom/ClassroomExercisesReading.vue'
 import ClassroomExercisesListening from '../views/classroom/ClassroomExercisesListening.vue'
@@ -59,8 +60,16 @@ const routes: Array<RouteConfig> = [
       component: ClassroomOverview,
       props: castToNumber(['pk']),
       meta: {
-        teacherLayout: LayoutClassroomTeacher,
-        studentLayout: LayoutClassroomStudent
+        teacherLayout: LayoutClassroomTeacher
+      }
+    },
+    {
+      path: '/:pk/overview/:studentPk',
+      name: 'ClassroomOverviewStudentReport',
+      component: ClassroomOverviewStudentReport,
+      props: castToNumber(['pk', 'studentPk']),
+      meta: {
+        teacherLayout: LayoutClassroomTeacher
       }
     },
     {
@@ -69,8 +78,7 @@ const routes: Array<RouteConfig> = [
       component: ClassroomStudents,
       props: castToNumber(['pk']),
       meta: {
-        teacherLayout: LayoutClassroomTeacher,
-        studentLayout: LayoutClassroomStudent
+        teacherLayout: LayoutClassroomTeacher
       }
     },
     {
@@ -90,10 +98,10 @@ const routes: Array<RouteConfig> = [
       props: castToNumber(['pk', 'exercisePk'])
     },
     {
-      path: '/:pk/reading-exercises/:exercisePk/result',
+      path: '/:pk/reading-exercises/:exercisePk/result/:studentPk',
       name: 'ReadingExerciseSubmitResult',
       component: ReadingExerciseSubmitResult,
-      props: castToNumber(['pk', 'exercisePk'])
+      props: castToNumber(['pk', 'exercisePk', 'studentPk'])
     },
     {
       path: '/:pk/listening-exercises',

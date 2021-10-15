@@ -110,6 +110,7 @@ import { Api } from '@/api'
 import { ReadingExerciseSubmitAnswersReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { ReadingAnswer, ReadingQuestion } from '@/interfaces/reading-question'
+import { User } from '@/interfaces/user'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
@@ -121,6 +122,9 @@ import { mapState } from 'vuex'
     }),
     ...mapState('readingExercise', {
       questions: 'currentQuestions'
+    }),
+    ...mapState('account', {
+      user: 'loggedInUser'
     })
   }
 })
@@ -203,6 +207,7 @@ export default class ReadingExerciseSubmit extends Vue {
 
   confirmSubmit = false
   loadingSubmit = false
+  user!: User
 
   submitAnswers (): void {
     if (this.loadingSubmit) return
@@ -225,7 +230,8 @@ export default class ReadingExerciseSubmit extends Vue {
           name: 'ReadingExerciseSubmitResult',
           params: {
             pk: this.pk.toString(),
-            exercisePk: this.exercisePk.toString()
+            exercisePk: this.exercisePk.toString(),
+            studentPk: this.user.pk.toString()
           }
         })
       })

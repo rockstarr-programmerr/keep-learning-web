@@ -1,33 +1,56 @@
 <template>
-  <div>
-    <component
-      :is="component"
-      :student-pk="studentPk"
-      @detail="goToDetail($event)"
-    ></component>
-  </div>
+  <v-card>
+    <v-card-title>
+      Students list
+    </v-card-title>
+    <v-card-subtitle>
+      Click to see each student's tracking sheet
+    </v-card-subtitle>
+    <v-card-text>
+      <v-list>
+        <v-list-item
+          v-for="student of students"
+          :key="student.pk"
+          link
+          :to="{
+            name: 'ClassroomOverviewStudentReport',
+            params: {
+              pk: classroom.pk,
+              studentPk: student.pk
+            }
+          }"
+        >
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ student.name }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ student.email }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
-import { User } from '@/interfaces/user'
 import { Vue, Component } from 'vue-property-decorator'
-import ClassroomOverviewStudentList from './ClassroomOverviewStudentList.vue'
-import ClassroomOverviewStudentDetail from './ClassroomOverviewStudentDetail.vue'
+import { mapState } from 'vuex'
+import { Classroom } from '@/interfaces/classroom'
 
 @Component({
-  components: {
-    ClassroomOverviewStudentList,
-    ClassroomOverviewStudentDetail
+  computed: {
+    ...mapState('classroom', {
+      classroom: 'currentClassroom'
+    })
   }
 })
 export default class ClassroomOverview extends Vue {
-  component = ClassroomOverviewStudentList
+  classroom!: Classroom
 
-  studentPk: User['pk'] | null = null
-
-  goToDetail (studentPk: User['pk']): void {
-    this.studentPk = studentPk
-    this.component = ClassroomOverviewStudentDetail
+  get students (): Classroom['students'] {
+    return this.classroom.students
   }
 }
 </script>
