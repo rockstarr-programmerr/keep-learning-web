@@ -12,6 +12,8 @@ export declare interface ClassroomCreateReq {
   description?: string;
 }
 
+export declare interface ClassroomUpdateReq extends ClassroomCreateReq {}
+
 export declare interface AddStudentReq {
   name: string;
   email: string;

@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, RemoveReadingExercisesReq, RemoveStudentReq } from '@/interfaces/api/classroom'
+import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, ClassroomUpdateReq, RemoveReadingExercisesReq, RemoveStudentReq } from '@/interfaces/api/classroom'
 import { PaginatedRes } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
@@ -35,6 +35,15 @@ export const classroom: Module<ClassroomState, RootState> = {
 
     ADD_CLASSROOM (state, classroom) {
       state.classrooms.splice(0, 0, classroom)
+    },
+
+    EDIT_CLASSROOM (state, classroom) {
+      let index = 0
+      for (const c of state.classrooms) {
+        if (c.pk === classroom.pk) break
+        index++
+      }
+      state.classrooms.splice(index, 1, classroom)
     },
 
     ADD_STUDENT_TO_CURRENT_CLASSROOM (state, student) {
@@ -95,6 +104,14 @@ export const classroom: Module<ClassroomState, RootState> = {
       const data = await Api.classroom.create(payload)
       commit('ADD_CLASSROOM', data)
       return data.pk
+    },
+
+    async update (
+      { commit },
+      { pk, payload }: { pk: Classroom['pk'], payload: ClassroomUpdateReq }
+    ): Promise<void> {
+      const data = await Api.classroom.update(pk, payload)
+      commit('EDIT_CLASSROOM', data)
     },
 
     async addStudents ({ state, commit }, payload: AddStudentReq[]): Promise<void> {

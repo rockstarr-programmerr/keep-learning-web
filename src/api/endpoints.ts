@@ -14,6 +14,7 @@ export const endpoints = {
     classroomList: '/classroom/classrooms/',
     classroomDetail: '/classroom/classrooms/<pk>/',
     classroomCreate: '/classroom/classrooms/',
+    classroomUpdate: '/classroom/classrooms/<pk>/',
     addStudents: '/classroom/classrooms/<pk>/add-students/',
     removeStudents: '/classroom/classrooms/<pk>/remove-students/',
     addReadingExercises: '/classroom/classrooms/<pk>/add-reading-exercises/',

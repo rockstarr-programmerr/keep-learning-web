@@ -11,6 +11,7 @@ import Http404 from '../views/http/Http404.vue'
 
 import ClassroomList from '../views/classroom/ClassroomList.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
+import ClassroomUpdate from '../views/classroom/ClassroomUpdate.vue'
 import ClassroomOverview from '../views/classroom/ClassroomOverview.vue'
 import ClassroomOverviewStudentReport from '../views/classroom/ClassroomOverviewStudentReport.vue'
 import ClassroomStudents from '../views/classroom/ClassroomStudents.vue'
@@ -53,6 +54,12 @@ const routes: Array<RouteConfig> = [
       path: '/new',
       name: 'ClassroomCreate',
       component: ClassroomCreate
+    },
+    {
+      path: '/:pk/edit',
+      name: 'ClassroomUpdate',
+      component: ClassroomUpdate,
+      props: castToNumber(['pk'])
     },
     {
       path: '/:pk/overview',

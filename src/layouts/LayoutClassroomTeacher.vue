@@ -10,7 +10,54 @@
       <div v-else-if="classroom !== undefined">
         <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
-        <h1 v-text="classroom.name"></h1>
+        <v-row
+          justify="space-between"
+          align="center"
+        >
+          <v-col cols="auto">
+            <h1 v-text="classroom.name"></h1>
+          </v-col>
+          <v-col cols="auto">
+            <v-menu
+              offset-x
+              left
+              nudge-left="12"
+            >
+              <template #activator="{ on, attrs }">
+                <v-icon
+                  v-on="on"
+                  v-bind="attrs"
+                >
+                  mdi-dots-vertical
+                </v-icon>
+              </template>
+              <v-list>
+                <v-list-item
+                  link
+                  :to="{
+                    name: 'ClassroomUpdate',
+                    params: { pk: classroom.pk }
+                  }"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-pencil-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>Edit</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>mdi-delete-outline</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>Delete</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+        </v-row>
         <v-divider></v-divider>
         <p
           class="mt-5 description"
