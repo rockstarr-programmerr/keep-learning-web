@@ -1,77 +1,80 @@
 <template>
-  <div>
-    <v-progress-circular
-      v-if="loading"
-      indeterminate
-      color="primary"
-    ></v-progress-circular>
+  <v-card>
+    <v-card-text>
+      <v-progress-circular
+        v-if="loading"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
 
-    <p v-else-if="reports.length === 0">
-      This classroom don't have any reading exercises. Perhaps your teacher forgot to add them?
-    </p>
+      <p v-else-if="reports.length === 0">
+        This classroom don't have any reading exercises. Perhaps your teacher forgot to add them?
+      </p>
 
-    <div v-else>
-      <v-simple-table>
-        <thead>
-          <tr>
-            <th>Exercise</th>
-            <th>Passage 1</th>
-            <th>Passage 2</th>
-            <th>Passage 3</th>
-            <th>Total</th>
-            <th>Band score</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="report of reports"
-            :key="report.pk"
-          >
-            <td>{{ report.exercise.identifier }}</td>
-            <template v-if="!report.submitted">
-              <td colspan="5">
-                Not submitted
-              </td>
-              <td class="text-center">
-                <router-link
-                  :to="{
-                    name: 'ReadingExerciseSubmit',
-                    params: {
-                      pk: classroom.pk,
-                      exercisePk: report.exercise.pk
-                    }
-                  }"
-                >
-                  Start
-                </router-link>
-              </td>
-            </template>
-            <template v-else>
-              <td>{{ report.passage_1_total }}</td>
-              <td>{{ report.passage_2_total }}</td>
-              <td>{{ report.passage_3_total }}</td>
-              <td>{{ report.total }}</td>
-              <td>{{ report.band_score }}</td>
-              <td class="text-center">
-                <router-link
-                  :to="{
-                    name: 'ReadingExerciseSubmitResult',
-                    params: {
-                      pk: classroom.pk,
-                      exercisePk: report.exercise.pk
-                    }
-                  }"
-                >
-                  Detail
-                </router-link>
-              </td>
-            </template>
-          </tr>
-        </tbody>
-      </v-simple-table>
-    </div>
-  </div>
+      <div v-else>
+        <v-simple-table>
+          <thead>
+            <tr>
+              <th>Reading</th>
+              <th>Passage 1</th>
+              <th>Passage 2</th>
+              <th>Passage 3</th>
+              <th>Total</th>
+              <th>Band score</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="report of reports"
+              :key="report.pk"
+            >
+              <td>{{ report.exercise.identifier }}</td>
+              <template v-if="!report.submitted">
+                <td colspan="5">
+                  Not submitted
+                </td>
+                <td class="text-center">
+                  <router-link
+                    :to="{
+                      name: 'ReadingExerciseSubmit',
+                      params: {
+                        pk: classroom.pk,
+                        exercisePk: report.exercise.pk
+                      }
+                    }"
+                  >
+                    Start
+                  </router-link>
+                </td>
+              </template>
+              <template v-else>
+                <td>{{ report.passage_1_total }}</td>
+                <td>{{ report.passage_2_total }}</td>
+                <td>{{ report.passage_3_total }}</td>
+                <td>{{ report.total }}</td>
+                <td>{{ report.band_score }}</td>
+                <td class="text-center">
+                  <router-link
+                    :to="{
+                      name: 'ReadingExerciseSubmitResult',
+                      params: {
+                        pk: classroom.pk,
+                        exercisePk: report.exercise.pk,
+                        studentPk: user.pk
+                      }
+                    }"
+                  >
+                    Detail
+                  </router-link>
+                </td>
+              </template>
+            </tr>
+          </tbody>
+        </v-simple-table>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">

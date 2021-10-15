@@ -22,7 +22,7 @@
           <v-simple-table>
             <thead>
               <tr>
-                <th>Exercise</th>
+                <th>Reading</th>
                 <th>Passage 1</th>
                 <th>Passage 2</th>
                 <th>Passage 3</th>
