@@ -1,76 +1,80 @@
 <template>
-  <div>
-    <p>
+  <v-card>
+    <v-card-title>
+      Reading exercises
+    </v-card-title>
+    <v-card-subtitle>
       Choose the exercises you want to use in this class.
-    </p>
-
-    <v-progress-circular
-      v-if="loading"
-      color="primary"
-      indeterminate
-    ></v-progress-circular>
-
-    <p v-else-if="exercises.length === 0">
-      You haven't created any exercise yet.
-      <router-link :to="{ name: 'ReadingExerciseCreate' }">
-        Create exercise
-      </router-link>
-    </p>
-
-    <div v-else>
-      <v-btn-toggle>
-        <v-btn
-          small
-          @click="selectAll"
-        >
-          Select all
-        </v-btn>
-        <v-btn
-          small
-          @click="unselectAll"
-        >
-          Unselect all
-        </v-btn>
-      </v-btn-toggle>
-
-      <v-row
-        no-gutters
-        class="mt-3"
-      >
-        <v-col
-          v-for="exercise of exercises"
-          :key="exercise.pk"
-          cols="3"
-        >
-          <v-checkbox
-            v-model="exercise.isChosen"
-            dense
-            hide-details
-          >
-            <template #label>
-              <router-link
-                :to="{
-                  name: 'ReadingExerciseDetail',
-                  params: { pk: exercise.pk }
-                }"
-              >
-                {{ exercise.identifier }}
-              </router-link>
-            </template>
-          </v-checkbox>
-        </v-col>
-      </v-row>
-
-      <v-btn
+    </v-card-subtitle>
+    <v-card-text>
+      <v-progress-circular
+        v-if="loading"
         color="primary"
-        class="mt-5"
-        :loading="saving"
-        @click="save"
-      >
-        Save
-      </v-btn>
-    </div>
-  </div>
+        indeterminate
+      ></v-progress-circular>
+
+      <p v-else-if="exercises.length === 0">
+        You haven't created any exercise yet.
+        <router-link :to="{ name: 'ReadingExerciseCreate' }">
+          Create exercise
+        </router-link>
+      </p>
+
+      <div v-else>
+        <v-btn-toggle>
+          <v-btn
+            small
+            @click="selectAll"
+          >
+            Select all
+          </v-btn>
+          <v-btn
+            small
+            @click="unselectAll"
+          >
+            Unselect all
+          </v-btn>
+        </v-btn-toggle>
+
+        <v-row
+          no-gutters
+          class="mt-3"
+        >
+          <v-col
+            v-for="exercise of exercises"
+            :key="exercise.pk"
+            cols="3"
+          >
+            <v-checkbox
+              v-model="exercise.isChosen"
+              dense
+              hide-details
+            >
+              <template #label>
+                <router-link
+                  :to="{
+                    name: 'ReadingExerciseDetail',
+                    params: { pk: exercise.pk }
+                  }"
+                >
+                  {{ exercise.identifier }}
+                </router-link>
+              </template>
+            </v-checkbox>
+          </v-col>
+        </v-row>
+
+        <v-btn
+          color="primary"
+          class="mt-5"
+          :loading="saving"
+          @click="save"
+        >
+          Save
+        </v-btn>
+      </div>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">

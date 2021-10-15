@@ -1,7 +1,12 @@
 <template>
-  <div>
-    ClassroomExercisesListening
-  </div>
+  <v-card>
+    <v-card-title>
+      Listening exercises
+    </v-card-title>
+    <v-card-text>
+      Coming soon
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
