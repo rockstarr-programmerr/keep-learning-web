@@ -46,6 +46,7 @@
         </v-row>
         <v-divider class="mt-3"></v-divider>
       </v-card-subtitle>
+
       <v-card-text>
         <v-row>
           <v-col
@@ -66,28 +67,40 @@
           </v-col>
         </v-row>
       </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-pagination
+          v-model="page"
+          :length="paginationLength"
+          total-visible="7"
+        ></v-pagination>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts">
+import { PaginationQuery } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Mixins, Component, Watch } from 'vue-property-decorator'
 import { Location } from 'vue-router'
 import { mapGetters, mapState } from 'vuex'
+import { PaginationMixin } from '@/mixins/pagination-mixin'
 
 @Component({
   computed: {
     ...mapState('classroom', [
-      'classrooms'
+      'classrooms',
+      'pagination'
     ]),
     ...mapGetters('account', [
       'isTeacher'
     ])
   }
 })
-export default class ClassroomList extends Vue {
+export default class ClassroomList extends Mixins(PaginationMixin) {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
@@ -116,7 +129,7 @@ export default class ClassroomList extends Vue {
   }
 
   created (): void {
-    this.listClassroom()
+    this.getList()
   }
 
   getClassroomLink (classroom: Classroom): Location {
@@ -142,10 +155,10 @@ export default class ClassroomList extends Vue {
    */
   loading = true
 
-  listClassroom (): void {
+  getList (query?: PaginationQuery): void {
     this.loading = true
 
-    this.$store.dispatch('classroom/list')
+    this.$store.dispatch('classroom/list', query)
       .then(() => {
         this.localClassrooms = this.classrooms
       })

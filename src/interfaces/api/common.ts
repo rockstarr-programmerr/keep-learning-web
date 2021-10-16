@@ -4,3 +4,8 @@ export declare interface PaginatedRes {
   previous: string | null;
   results?: unknown[];
 }
+
+export declare interface PaginationQuery {
+  limit: number;
+  offset: number;
+}

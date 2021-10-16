@@ -2,10 +2,13 @@ import Vue from 'vue'
 import { ClassroomListRes, ClassroomDetailRes, ClassroomCreateReq, AddStudentReq, RemoveStudentReq, AddReadingExercisesReq, RemoveReadingExercisesReq, ReadingExerciseReportRes, GetStudentReportReq, ClassroomUpdateReq, ResendPasswordEmailReq } from '@/interfaces/api/classroom'
 import { Classroom } from '@/interfaces/classroom'
 import { endpoints, replacePk } from './endpoints'
+import { PaginationQuery } from '@/interfaces/api/common'
 
 export const classroom = {
-  async list (): Promise<ClassroomListRes> {
-    const res = await Vue.axios.get(endpoints.classroom.classroomList)
+  async list (query?: PaginationQuery): Promise<ClassroomListRes> {
+    const res = await Vue.axios.get(endpoints.classroom.classroomList, {
+      params: query
+    })
     return res.data
   },
 

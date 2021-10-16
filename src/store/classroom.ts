@@ -1,6 +1,6 @@
 import { Api } from '@/api'
 import { AddReadingExercisesReq, AddStudentReq, ClassroomCreateReq, ClassroomUpdateReq, RemoveReadingExercisesReq, RemoveStudentReq } from '@/interfaces/api/classroom'
-import { PaginatedRes } from '@/interfaces/api/common'
+import { PaginatedRes, PaginationQuery } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { Module } from 'vuex'
 import { RootState } from './index'
@@ -90,8 +90,8 @@ export const classroom: Module<ClassroomState, RootState> = {
   },
 
   actions: {
-    async list ({ commit }): Promise<void> {
-      const data = await Api.classroom.list()
+    async list ({ commit }, query?: PaginationQuery): Promise<void> {
+      const data = await Api.classroom.list(query)
       const classrooms = data.results
       const pagination: PaginatedRes = { ...data }
       delete pagination.results

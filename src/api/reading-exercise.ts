@@ -2,10 +2,13 @@ import Vue from 'vue'
 import { ReadingExerciseCreateReq, ReadingExerciseDetailRes, ReadingExerciseListRes, ReadingExerciseSubmitAnswersReq, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { endpoints, replacePk } from './endpoints'
+import { PaginationQuery } from '@/interfaces/api/common'
 
 export const readingExercise = {
-  async list (): Promise<ReadingExerciseListRes> {
-    const res = await Vue.axios.get(endpoints.readingExercise.list)
+  async list (query: PaginationQuery): Promise<ReadingExerciseListRes> {
+    const res = await Vue.axios.get(endpoints.readingExercise.list, {
+      params: query
+    })
     return res.data
   },
 

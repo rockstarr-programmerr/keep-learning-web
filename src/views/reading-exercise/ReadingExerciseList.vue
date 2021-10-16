@@ -77,24 +77,36 @@
           </v-col>
         </v-row>
       </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-pagination
+          v-model="page"
+          :length="paginationLength"
+          total-visible="7"
+        ></v-pagination>
+      </v-card-actions>
     </v-card>
   </v-container>
 </template>
 
 <script lang="ts">
+import { PaginationQuery } from '@/interfaces/api/common'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
+import { PaginationMixin } from '@/mixins/pagination-mixin'
 import { unexpectedExc } from '@/utils'
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 @Component({
   computed: {
     ...mapState('readingExercise', {
-      exercises: 'readingExercises'
+      exercises: 'readingExercises',
+      pagination: 'exercisePagination'
     })
   }
 })
-export default class ReadingExerciseList extends Vue {
+export default class ReadingExerciseList extends Mixins(PaginationMixin) {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
 
@@ -114,7 +126,7 @@ export default class ReadingExerciseList extends Vue {
   }
 
   created (): void {
-    this.listExercise()
+    this.getList()
   }
 
   get exercisesCol1 (): ReadingExercise[] {
@@ -130,10 +142,10 @@ export default class ReadingExerciseList extends Vue {
    */
   loading = false
 
-  listExercise (): void {
+  getList (query?: PaginationQuery): void {
     this.loading = true
 
-    this.$store.dispatch('readingExercise/list')
+    this.$store.dispatch('readingExercise/list', query)
       .then(() => {
         this.localExercises = this.exercises
       })

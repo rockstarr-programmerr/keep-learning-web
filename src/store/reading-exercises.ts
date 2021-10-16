@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { PaginatedRes } from '@/interfaces/api/common'
+import { PaginatedRes, PaginationQuery } from '@/interfaces/api/common'
 import { ReadingExerciseCreateReq, ReadingExerciseUpdateReq } from '@/interfaces/api/reading-exercise'
 import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
@@ -74,8 +74,8 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
   },
 
   actions: {
-    async list ({ commit }): Promise<void> {
-      const data = await Api.readingExercise.list()
+    async list ({ commit }, query: PaginationQuery): Promise<void> {
+      const data = await Api.readingExercise.list(query)
       const readingExercises = data.results
       const pagination: PaginatedRes = { ...data }
       delete pagination.results
