@@ -156,7 +156,9 @@ export default class ClassroomExercisesReadingTeacher extends Vue {
 
     if (pksToAdd.length === 0) return null
 
-    return this.$store.dispatch('classroom/addReadingExercises', pksToAdd)
+    return this.$store.dispatch('classroom/addReadingExercises', {
+      payload: pksToAdd
+    })
   }
 
   removeReadingExercise (): Promise<unknown> | null {

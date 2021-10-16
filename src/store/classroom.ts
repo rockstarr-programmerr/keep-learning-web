@@ -139,9 +139,22 @@ export const classroom: Module<ClassroomState, RootState> = {
       })
     },
 
-    async addReadingExercises ({ state, commit }, payload: AddReadingExercisesReq[]): Promise<void> {
-      if (state.currentClassroom === undefined) return
-      await Api.classroom.addReadingExercises(state.currentClassroom.pk, payload)
+    async addReadingExercises (
+      { state, commit },
+      { classroomPk, payload }: { classroomPk?: number; payload: AddReadingExercisesReq[] }
+    ): Promise<void> {
+      let pk
+
+      if (classroomPk !== undefined) {
+        pk = classroomPk
+      } else if (state.currentClassroom !== undefined) {
+        pk = state.currentClassroom.pk
+      }
+
+      if (pk === undefined) return
+
+      console.log(payload)
+      await Api.classroom.addReadingExercises(pk, payload)
       payload.forEach(exercise => {
         commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise)
       })

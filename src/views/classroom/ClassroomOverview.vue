@@ -4,10 +4,24 @@
       Students list
     </v-card-title>
     <v-card-subtitle>
-      Click to see each student's tracking sheet
+      <span v-if="students.length > 0">
+        Click to see each student's tracking sheet
+      </span>
     </v-card-subtitle>
     <v-card-text>
-      <v-row>
+      <span v-if="students.length === 0">
+        This class doesn't have any students yet.
+        <router-link
+          :to="{
+            name: 'ClassroomStudents',
+            params: { pk: classroom.pk },
+            query: { adding: 'true' }
+          }"
+        >
+          Add students
+        </router-link>
+      </span>
+      <v-row v-else>
         <v-col
           v-for="(students, index) of [studentsCol1, studentsCol2]"
           :key="index"

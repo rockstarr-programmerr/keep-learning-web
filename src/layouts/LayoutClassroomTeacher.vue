@@ -1,6 +1,8 @@
 <template>
   <LayoutDefault>
     <v-container>
+      <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+
       <v-progress-circular
         v-if="loading"
         indeterminate
@@ -8,8 +10,6 @@
       ></v-progress-circular>
 
       <div v-else-if="classroom !== undefined">
-        <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-
         <v-row
           justify="space-between"
           align="center"
@@ -31,7 +31,7 @@
                   mdi-dots-vertical
                 </v-icon>
               </template>
-              <v-list>
+              <v-list dense>
                 <v-list-item
                   link
                   :to="{
@@ -43,7 +43,7 @@
                     <v-icon>mdi-pencil-outline</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Edit</v-list-item-title>
+                    <v-list-item-title class="mr-3">Edit</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
                 <v-list-item @click="confirmDelete = true">
@@ -51,7 +51,7 @@
                     <v-icon>mdi-delete-outline</v-icon>
                   </v-list-item-icon>
                   <v-list-item-content>
-                    <v-list-item-title>Delete</v-list-item-title>
+                    <v-list-item-title class="mr-3">Delete</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -63,6 +63,24 @@
           class="mt-5 description"
           v-text="classroom.description"
         ></p>
+
+        <div
+          v-if="classroom.reading_exercises.length === 0"
+          class="my-5 error--text"
+        >
+          <v-icon color="error" class="mr-3">
+            mdi-alert-outline
+          </v-icon>
+          You haven't added any reading exercises to this classroom yet.
+          <router-link
+            :to="{
+              name: 'ClassroomExercisesReading',
+              params: { pk: classroom.pk }
+            }"
+          >
+            Add exercises
+          </router-link>
+        </div>
 
         <v-tabs>
           <v-tab

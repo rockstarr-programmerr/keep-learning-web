@@ -63,7 +63,7 @@
       :headers="headers"
       :items="students"
       :items-per-page="-1"
-      no-data-text="This class don't have any students yet."
+      no-data-text="This class doesn't have any students yet."
       class="mt-3 elevation-2"
     >
       <!-- eslint-disable-next-line -->
@@ -157,6 +157,14 @@ export default class ClassroomStudents extends Vue {
       return this.classroom.students
     }
     return []
+  }
+
+  mounted (): void {
+    const adding = this.$route.query.adding
+    if (adding === 'true') {
+      this.showAddStudent = true
+      console.log(this.showAddStudent)
+    }
   }
 
   /**
