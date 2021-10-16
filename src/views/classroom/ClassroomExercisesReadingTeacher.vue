@@ -6,6 +6,7 @@
     <v-card-subtitle>
       Choose the exercises you want to use in this class.
     </v-card-subtitle>
+
     <v-card-text>
       <v-progress-circular
         v-if="loading"
@@ -38,7 +39,7 @@
 
         <v-row
           no-gutters
-          class="mt-3"
+          class="my-3"
         >
           <v-col
             v-for="exercise of exercises"
@@ -64,24 +65,45 @@
           </v-col>
         </v-row>
 
-        <v-btn
-          color="primary"
-          class="mt-5"
-          :loading="saving"
-          @click="save"
-        >
-          Save
-        </v-btn>
+        <div v-if="pagination.next !== null">
+          <v-progress-circular
+            v-if="loadingMore"
+            indeterminate
+            color="primary"
+            width="2"
+            size="18"
+          ></v-progress-circular>
+          <a
+            v-else
+            href="#"
+            @click="loadMoreReading"
+          >
+            Load more
+          </a>
+        </div>
       </div>
     </v-card-text>
+
+    <v-card-actions>
+      <v-btn
+        color="primary"
+        :loading="saving"
+        @click="save"
+        min-width="110"
+      >
+        Save
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script lang="ts">
 import { AddReadingExercisesReq, RemoveReadingExercisesReq } from '@/interfaces/api/classroom'
+import { PaginatedRes, PaginationQuery } from '@/interfaces/api/common'
 import { Classroom } from '@/interfaces/classroom'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
+import { PAGE_SIZE } from '@/utils/constants'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
@@ -92,7 +114,8 @@ declare interface _Exercise extends ReadingExercise {
 @Component({
   computed: {
     ...mapState('readingExercise', {
-      exercisesFromStore: 'readingExercises'
+      exercisesFromStore: 'readingExercises',
+      pagination: 'exercisePagination'
     }),
     ...mapState('classroom', {
       classroom: 'currentClassroom'
@@ -100,32 +123,48 @@ declare interface _Exercise extends ReadingExercise {
   }
 })
 export default class ClassroomExercisesReadingTeacher extends Vue {
+  // eslint-disable-next-line no-undef
+  [index: string]: unknown
+
   loading = false
+  loadingMore = false
   exercisesFromStore!: ReadingExercise[]
   exercises: _Exercise[] = []
+  pagination!: PaginatedRes
   classroom!: Classroom
+  page = 1
 
   created (): void {
     this.setExercises()
   }
 
-  setExercises (): void {
-    this.loading = true
-    this.$store.dispatch('readingExercise/list')
+  setExercises (query?: PaginationQuery, loadingProp?: string): void {
+    if (loadingProp === undefined) loadingProp = 'loading'
+
+    this[loadingProp] = true
+    this.$store.dispatch('readingExercise/list', query)
       .then(() => {
         const existingPks = this.classroom.reading_exercises.map(exercise => exercise.pk)
-        this.exercises = this.exercisesFromStore.map(exercise => {
+        this.exercises.push(...this.exercisesFromStore.map(exercise => {
           const data = {
             ...exercise,
             isChosen: existingPks.includes(exercise.pk)
           }
           return data
-        })
+        }))
+        this.page++
       })
       .catch(unexpectedExc)
       .finally(() => {
-        this.loading = false
+        this[loadingProp as string] = false
       })
+  }
+
+  loadMoreReading (): void {
+    this.setExercises({
+      limit: PAGE_SIZE,
+      offset: (this.page - 1) * PAGE_SIZE
+    }, 'loadingMore')
   }
 
   saving = false

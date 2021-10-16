@@ -153,7 +153,6 @@ export const classroom: Module<ClassroomState, RootState> = {
 
       if (pk === undefined) return
 
-      console.log(payload)
       await Api.classroom.addReadingExercises(pk, payload)
       payload.forEach(exercise => {
         commit('ADD_READING_EXERCISES_TO_CURRENT_CLASSROOM', exercise)

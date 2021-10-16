@@ -26,13 +26,7 @@
           <p class="font-weight-bold mt-7 mb-0">Add reading exercises</p>
           <p class="caption--text">Choose the exercises you want to use in this class.</p>
 
-          <v-progress-circular
-            v-if="loadingExercises"
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-
-          <p v-else-if="exercises.length === 0">
+          <p v-if="exercises.length === 0">
             You haven't created any reading exercises yet.
             <router-link :to="{ name: 'ReadingExerciseCreate' }">
               Create now
@@ -57,7 +51,7 @@
 
             <v-row
               no-gutters
-              class="mt-3"
+              class="my-3"
             >
               <v-col
                 v-for="exercise of localExercises"
@@ -72,6 +66,23 @@
                 ></v-checkbox>
               </v-col>
             </v-row>
+
+            <div v-if="readingPagination.next !== null">
+              <v-progress-circular
+                v-if="loadingExercises"
+                indeterminate
+                color="primary"
+                width="2"
+                size="18"
+              ></v-progress-circular>
+              <a
+                v-else
+                href="#"
+                @click="loadMoreReading"
+              >
+                Load more
+              </a>
+            </div>
           </div>
         </div>
 
@@ -98,8 +109,10 @@
 
 <script lang="ts">
 import { AddReadingExercisesReq, ClassroomCreateReq } from '@/interfaces/api/classroom'
+import { PaginatedRes, PaginationQuery } from '@/interfaces/api/common'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
+import { PAGE_SIZE } from '@/utils/constants'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
@@ -111,7 +124,8 @@ declare interface LocalExercise extends ReadingExercise {
 @Component({
   computed: {
     ...mapState('readingExercise', {
-      exercises: 'readingExercises'
+      exercises: 'readingExercises',
+      readingPagination: 'exercisePagination'
     })
   }
 })
@@ -130,21 +144,24 @@ export default class ClassroomCreate extends Vue {
    */
   exercises!: ReadingExercise[]
   localExercises: LocalExercise[] = []
+  readingPagination!: PaginatedRes
   loadingExercises = false
+  page = 1
 
   created (): void {
     this.listExercise()
   }
 
-  listExercise (): void {
+  listExercise (query?: PaginationQuery): void {
     this.loadingExercises = true
 
-    this.$store.dispatch('readingExercise/list')
+    this.$store.dispatch('readingExercise/list', query)
       .then(() => {
-        this.localExercises = this.exercises.map(exercise => ({
+        this.localExercises.push(...this.exercises.map(exercise => ({
           ...exercise,
           isChosen: false
-        }))
+        })))
+        this.page++
       })
       .catch(unexpectedExc)
       .finally(() => {
@@ -155,6 +172,13 @@ export default class ClassroomCreate extends Vue {
   /**
    * Select reading exercises
    */
+  loadMoreReading (): void {
+    this.listExercise({
+      limit: PAGE_SIZE,
+      offset: (this.page - 1) * PAGE_SIZE
+    })
+  }
+
   selectAll (): void {
     this.localExercises.forEach(exercise => { exercise.isChosen = true })
   }

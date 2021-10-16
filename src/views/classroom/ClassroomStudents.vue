@@ -167,7 +167,6 @@ export default class ClassroomStudents extends Vue {
     const adding = this.$route.query.adding
     if (adding === 'true') {
       this.showAddStudent = true
-      console.log(this.showAddStudent)
     }
   }
 
