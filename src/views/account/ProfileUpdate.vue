@@ -91,11 +91,13 @@ export default class ProfileUpdate extends Vue {
     if (this.user.avatar !== null) {
       Vue.axios.get(this.user.avatar)
         .then(res => {
-          const parts = this.user.avatar.split('/')
-          const avatarName = parts[parts.length - 1]
-          const file = new File([res.data], avatarName)
-          this.avatar = file
-          this.originalAvatar = file
+          if (this.user.avatar !== null) {
+            const parts = this.user.avatar.split('/')
+            const avatarName = parts[parts.length - 1]
+            const file = new File([res.data], avatarName)
+            this.avatar = file
+            this.originalAvatar = file
+          }
         })
     }
   }

@@ -5,6 +5,6 @@ export declare interface User {
   email: string;
   phone_number: string;
   user_type: 'teacher' | 'student';
-  avatar: string;
-  avatar_thumbnail: string;
+  avatar: string | null;
+  avatar_thumbnail: string | null;
 }

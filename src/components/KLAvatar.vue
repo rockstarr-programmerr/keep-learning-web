@@ -1,12 +1,12 @@
 <template>
   <v-avatar
-    :color="user.avatar !== null ? 'white' : backgroundColor"
+    :color="imgSrc !== null ? 'white' : backgroundColor"
     v-bind="$attrs"
   >
     <v-img
-      v-if="user.avatar !== null"
-      :src="user.avatar"
-      :alt="user.name"
+      v-if="imgSrc !== null"
+      :src="imgSrc"
+      :alt="localUser.name"
     >
       <template #placeholder>
         <v-row
@@ -26,7 +26,7 @@
       class="white--text"
       :style="{ fontSize }"
     >
-      {{ user.name.charAt(0) }}
+      {{ localUser.name.charAt(0) }}
     </span>
   </v-avatar>
 </template>
@@ -39,18 +39,34 @@ import { mapGetters } from 'vuex'
 @Component({
   computed: {
     ...mapGetters({
-      user: 'account/loggedInUser'
+      loggedInUser: 'account/loggedInUser'
     })
   }
 })
 export default class KLAvatar extends Vue {
+  @Prop() readonly user!: User | undefined
   @Prop({ type: String, default: 'secondary' }) readonly backgroundColor!: string
 
-  user!: User
+  loggedInUser!: User
+
+  get localUser (): User {
+    return this.user || this.loggedInUser
+  }
+
+  get imgSize (): number {
+    return parseInt(this.$attrs.size || '48')
+  }
+
+  get imgSrc (): string | null {
+    if (this.imgSize > 64) {
+      return this.localUser.avatar
+    } else {
+      return this.localUser.avatar_thumbnail
+    }
+  }
 
   get fontSize (): string {
-    let imgSize: number | string = this.$attrs.size || '48'
-    imgSize = parseInt(imgSize) * 0.5
+    const imgSize = this.imgSize * 0.5
     return imgSize.toString() + 'px'
   }
 }

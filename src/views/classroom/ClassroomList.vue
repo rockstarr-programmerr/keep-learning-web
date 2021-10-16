@@ -30,20 +30,41 @@
       class="mt-5"
     >
       <v-card-subtitle>
-        Your classrooms
+        <v-row align="center">
+          <v-col cols="8">
+            Your classrooms
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="searchText"
+              placeholder="Search"
+              dense
+              hide-details
+              prepend-icon="mdi-magnify"
+            ></v-text-field>
+          </v-col>
+        </v-row>
         <v-divider class="mt-3"></v-divider>
       </v-card-subtitle>
       <v-card-text>
-        <v-list>
-          <v-list-item
-            v-for="classroom of classrooms"
-            :key="classroom.pk"
-            link
-            :to="getClassroomLink(classroom)"
+        <v-row>
+          <v-col
+            v-for="(classrooms, index) of [classroomsCol1, classroomsCol2]"
+            :key="index"
+            cols="6"
           >
-            <v-list-item-content v-text="classroom.name" />
-          </v-list-item>
-        </v-list>
+            <v-list>
+              <v-list-item
+                v-for="classroom of classrooms"
+                :key="classroom.pk"
+                link
+                :to="getClassroomLink(classroom)"
+              >
+                <v-list-item-content v-text="classroom.name" />
+              </v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </v-container>
@@ -52,7 +73,7 @@
 <script lang="ts">
 import { Classroom } from '@/interfaces/classroom'
 import { unexpectedExc } from '@/utils'
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { Location } from 'vue-router'
 import { mapGetters, mapState } from 'vuex'
 
@@ -80,9 +101,18 @@ export default class ClassroomList extends Vue {
    */
   isTeacher!: boolean
   classrooms!: Classroom[]
+  localClassrooms: Classroom[] = []
 
   get noClassrooms (): boolean {
     return this.classrooms.length === 0
+  }
+
+  get classroomsCol1 (): Classroom[] {
+    return this.localClassrooms.slice(0, Math.ceil(this.localClassrooms.length / 2))
+  }
+
+  get classroomsCol2 (): Classroom[] {
+    return this.localClassrooms.slice(Math.ceil(this.localClassrooms.length / 2))
   }
 
   created (): void {
@@ -116,10 +146,26 @@ export default class ClassroomList extends Vue {
     this.loading = true
 
     this.$store.dispatch('classroom/list')
+      .then(() => {
+        this.localClassrooms = this.classrooms
+      })
       .catch(unexpectedExc)
       .finally(() => {
         this.loading = false
       })
+  }
+
+  /**
+   * Search
+   */
+  searchText = ''
+
+  @Watch('searchText')
+  onSearch (text: string): void {
+    text = text.toLowerCase()
+    this.localClassrooms = this.classrooms.filter(
+      classroom => classroom.name.toLowerCase().indexOf(text) !== -1
+    )
   }
 }
 </script>

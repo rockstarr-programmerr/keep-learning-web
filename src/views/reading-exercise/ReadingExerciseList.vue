@@ -30,23 +30,52 @@
       class="mt-5"
     >
       <v-card-subtitle>
-        Your reading exercises
+        <v-row
+          justify="space-between"
+          align="center"
+        >
+          <v-col cols="8">
+            Your reading exercises
+          </v-col>
+          <v-col cols="4">
+            <v-text-field
+              v-model="searchText"
+              placeholder="Search"
+              hide-details
+              dense
+              prepend-icon="mdi-magnify"
+            ></v-text-field>
+          </v-col>
+        </v-row>
         <v-divider class="mt-3"></v-divider>
       </v-card-subtitle>
+
       <v-card-text>
-        <v-list dense>
-          <v-list-item
-            v-for="exercise of exercises"
-            :key="exercise.pk"
-            link
-            :to="{
-              name: 'ReadingExerciseDetail',
-              params: { pk: exercise.pk }
-            }"
+        <v-row>
+          <v-col
+            v-for="(exercises, index) of [exercisesCol1, exercisesCol2]"
+            :key="index"
+            cols="6"
           >
-            <v-list-item-content v-text="exercise.identifier" />
-          </v-list-item>
-        </v-list>
+            <v-list>
+              <v-list-item
+                v-for="exercise of exercises"
+                :key="exercise.pk"
+                link
+                :to="{
+                  name: 'ReadingExerciseDetail',
+                  params: { pk: exercise.pk }
+                }"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ exercise.identifier }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </v-container>
@@ -55,7 +84,7 @@
 <script lang="ts">
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 
 @Component({
@@ -78,6 +107,7 @@ export default class ReadingExerciseList extends Vue {
    * Init exercises
    */
   exercises!: ReadingExercise[]
+  localExercises: ReadingExercise[] = []
 
   get noExercises (): boolean {
     return this.exercises.length === 0
@@ -85,6 +115,14 @@ export default class ReadingExerciseList extends Vue {
 
   created (): void {
     this.listExercise()
+  }
+
+  get exercisesCol1 (): ReadingExercise[] {
+    return this.localExercises.slice(0, Math.ceil(this.localExercises.length / 2))
+  }
+
+  get exercisesCol2 (): ReadingExercise[] {
+    return this.localExercises.slice(Math.ceil(this.localExercises.length / 2))
   }
 
   /**
@@ -96,6 +134,9 @@ export default class ReadingExerciseList extends Vue {
     this.loading = true
 
     this.$store.dispatch('readingExercise/list')
+      .then(() => {
+        this.localExercises = this.exercises
+      })
       .catch(unexpectedExc)
       .finally(() => {
         this.loading = false
@@ -107,6 +148,19 @@ export default class ReadingExerciseList extends Vue {
    */
   goToNewExercise (): void {
     this.$router.push({ name: 'ReadingExerciseCreate' })
+  }
+
+  /**
+   * Search
+   */
+  searchText = ''
+
+  @Watch('searchText')
+  onSearch (text: string): void {
+    text = text.toLowerCase()
+    this.localExercises = this.exercises.filter(
+      ex => ex.identifier.toLowerCase().indexOf(text) !== -1
+    )
   }
 }
 </script>

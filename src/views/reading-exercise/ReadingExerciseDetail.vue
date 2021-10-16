@@ -32,14 +32,19 @@
           cols="6"
           class="exercise-row"
         >
-          <router-link
+          <v-btn
+            link
+            depressed
             :to="{
               name: 'ReadingExerciseUpdate',
               params: { pk: exercise.pk }
             }"
           >
+            <v-icon left>
+              mdi-pencil-outline
+            </v-icon>
             Edit exercise
-          </router-link>
+          </v-btn>
           <div v-html="exercise.content"></div>
         </v-col>
         <v-col
@@ -58,14 +63,19 @@
             </router-link>
           </span>
           <div v-else>
-            <router-link
+            <v-btn
+              link
+              depressed
               :to="{
                 name: 'ReadingExerciseEditAnswers',
                 params: { pk: exercise.pk }
               }"
             >
+              <v-icon left>
+                mdi-pencil-outline
+              </v-icon>
               Edit answers
-            </router-link>
+            </v-btn>
             <v-row>
               <v-col cols="4">
                 <v-list dense>

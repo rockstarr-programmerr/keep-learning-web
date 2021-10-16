@@ -7,29 +7,40 @@
       Click to see each student's tracking sheet
     </v-card-subtitle>
     <v-card-text>
-      <v-list>
-        <v-list-item
-          v-for="student of students"
-          :key="student.pk"
-          link
-          :to="{
-            name: 'ClassroomOverviewStudentReport',
-            params: {
-              pk: classroom.pk,
-              studentPk: student.pk
-            }
-          }"
+      <v-row>
+        <v-col
+          v-for="(students, index) of [studentsCol1, studentsCol2]"
+          :key="index"
+          cols="6"
         >
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ student.name }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              {{ student.email }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+          <v-list>
+            <v-list-item
+              v-for="student of students"
+              :key="student.pk"
+              link
+              :to="{
+                name: 'ClassroomOverviewStudentReport',
+                params: {
+                  pk: classroom.pk,
+                  studentPk: student.pk
+                }
+              }"
+            >
+              <v-list-item-avatar>
+                <KLAvatar :user="student" />
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ student.name }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ student.email }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
     </v-card-text>
   </v-card>
 </template>
@@ -38,12 +49,16 @@
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import { Classroom } from '@/interfaces/classroom'
+import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
   computed: {
     ...mapState('classroom', {
       classroom: 'currentClassroom'
     })
+  },
+  components: {
+    KLAvatar
   }
 })
 export default class ClassroomOverview extends Vue {
@@ -51,6 +66,14 @@ export default class ClassroomOverview extends Vue {
 
   get students (): Classroom['students'] {
     return this.classroom.students
+  }
+
+  get studentsCol1 (): Classroom['students'] {
+    return this.students.slice(0, Math.ceil(this.students.length / 2))
+  }
+
+  get studentsCol2 (): Classroom['students'] {
+    return this.students.slice(Math.ceil(this.students.length / 2))
   }
 }
 </script>

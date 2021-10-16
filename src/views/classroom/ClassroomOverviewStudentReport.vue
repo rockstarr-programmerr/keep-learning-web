@@ -12,12 +12,35 @@
 
     <div v-else>
       <v-card>
-        <v-card-title>
-          <span v-if="student !== null">{{ student.name }}</span>
-        </v-card-title>
-        <v-card-subtitle>
-          <span v-if="student !== null">{{ student.email }}</span>
-        </v-card-subtitle>
+        <v-row
+          align="center"
+          no-gutters
+          class="fill-height ma-0"
+        >
+          <v-col cols="auto">
+            <v-btn
+              icon
+              large
+              class="ml-3"
+              @click="$router.push({
+                name: 'ClassroomOverview',
+                params: { pk: classroom.pk }
+              })"
+            >
+              <v-icon>
+                mdi-arrow-left
+              </v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-card-title>
+              <span v-if="student !== null">{{ student.name }}</span>
+            </v-card-title>
+            <v-card-subtitle>
+              <span v-if="student !== null">{{ student.email }}</span>
+            </v-card-subtitle>
+          </v-col>
+        </v-row>
         <v-card-text>
           <v-row>
             <v-col cols="6">

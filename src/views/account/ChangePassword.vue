@@ -46,7 +46,6 @@
 
 <script lang="ts">
 import { Api } from '@/api'
-import { VForm } from '@/interfaces/vuetify'
 import { snakeCaseToCamelCase } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
