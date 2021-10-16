@@ -60,48 +60,26 @@
       </v-row>
     </div>
 
-    <v-dialog
+    <KLDialogConfirm
       v-model="confirmSubmit"
-      width="500"
+      :loading="loadingSubmit"
+      @confirm="submitAnswers"
+      @cancel="confirmSubmit = false"
     >
-      <v-card>
-        <v-card-title>
-          Please confirm
-        </v-card-title>
-        <v-card-text>
-          <div
-            v-if="!allAnswered"
-            class="mb-3 d-flex error--text font-weight-bold"
-          >
-            <v-icon color="error">
-              mdi-alert-outline
-            </v-icon>
-            <span class="ml-3">
-              You haven't answered all questions!
-            </span>
-          </div>
-          Are you sure to submit?
-          You cannot edit your answers after this.
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="confirmSubmit = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            :loading="loadingSubmit"
-            @click="submitAnswers"
-          >
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <div
+        v-if="!allAnswered"
+        class="mb-3 d-flex error--text font-weight-bold"
+      >
+        <v-icon color="error">
+          mdi-alert-outline
+        </v-icon>
+        <span class="ml-3">
+          You haven't answered all questions!
+        </span>
+      </div>
+      Are you sure to submit?
+      You cannot edit your answers after this.
+    </KLDialogConfirm>
   </v-container>
 </template>
 
@@ -114,6 +92,7 @@ import { User } from '@/interfaces/user'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 
 @Component({
   computed: {
@@ -126,6 +105,9 @@ import { mapState } from 'vuex'
     ...mapState('account', {
       user: 'loggedInUser'
     })
+  },
+  components: {
+    KLDialogConfirm
   }
 })
 export default class ReadingExerciseSubmit extends Vue {

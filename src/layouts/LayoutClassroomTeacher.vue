@@ -75,47 +75,27 @@
         </v-tabs>
 
         <router-view v-if="classroomFound" class="mt-5"></router-view>
+
+        <KLDialogConfirm
+          v-model="confirmDelete"
+          :loading="deleting"
+          @confirm="deleteClassroom"
+          @cancel="confirmDelete = false"
+        >
+          <div>
+            <p>
+              You are deleting classroom <strong>{{ classroom.name }}</strong>.
+            </p>
+            <div class="error--text">
+              <v-icon color="error">
+                mdi-alert-outline
+              </v-icon>
+              This cannot be undone!
+            </div>
+          </div>
+        </KLDialogConfirm>
       </div>
     </v-container>
-
-    <v-dialog
-      v-model="confirmDelete"
-      width="500"
-    >
-      <v-card>
-        <v-card-title>
-          Please confirm
-        </v-card-title>
-        <v-card-text>
-          <p>
-            You are deleting classroom <strong>{{ classroom.name }}</strong>.
-          </p>
-          <div class="error--text">
-            <v-icon color="error">
-              mdi-alert-outline
-            </v-icon>
-            This cannot be undone!
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="confirmDelete = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            :loading="deleting"
-            @click="deleteClassroom"
-          >
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </LayoutDefault>
 </template>
 
@@ -125,10 +105,12 @@ import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapMutations, mapState } from 'vuex'
 import LayoutDefault from './LayoutDefault.vue'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 
 @Component({
   components: {
-    LayoutDefault
+    LayoutDefault,
+    KLDialogConfirm
   },
   computed: {
     ...mapState('classroom', {

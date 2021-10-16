@@ -109,38 +109,18 @@
         </v-menu>
       </template>
     </v-data-table>
-    <v-dialog
+    <KLDialogConfirm
       v-model="removeConfirm"
-      width="500"
+      :loading="loadingRemove"
+      @confirm="removeStudent"
+      @cancel="removeConfirm = false"
     >
-      <v-card>
-        <v-card-title>
-          Please confirm
-        </v-card-title>
-        <v-card-text v-if="studentToRemove !== null">
-          You are removing
-          <b>{{ studentToRemove.name }} ({{ studentToRemove.email }})</b>
-          from this classroom.
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="removeConfirm = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            :loading="loadingRemove"
-            @click="removeStudent"
-          >
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <div v-if="studentToRemove !== null">
+        You are removing
+        <b>{{ studentToRemove.name }} ({{ studentToRemove.email }})</b>
+        from this classroom.
+      </div>
+    </KLDialogConfirm>
   </div>
 </template>
 
@@ -153,12 +133,16 @@ import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 
 @Component({
   computed: {
     ...mapState('classroom', {
       classroom: 'currentClassroom'
     })
+  },
+  components: {
+    KLDialogConfirm
   }
 })
 export default class ClassroomStudents extends Vue {

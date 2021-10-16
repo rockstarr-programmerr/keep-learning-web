@@ -157,38 +157,18 @@
         </v-card-actions>
       </v-card>
 
-      <v-dialog
+      <KLDialogConfirm
         v-model="deleteConfirm"
-        width="500"
+        :loading="deleting"
+        @confirm="deleteQuestion"
+        @cancel="deleteConfirm = false"
       >
-        <v-card>
-          <v-card-title>
-            Please confirm
-          </v-card-title>
-          <v-card-text v-if="questionToDelete !== null">
-            You are removing
-            <b>question number {{ questionToDelete.number }}</b>
-            from this exercise.
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              @click="deleteConfirm = false"
-            >
-              Cancel
-            </v-btn>
-            <v-btn
-              color="primary"
-              depressed
-              :loading="deleting"
-              @click="deleteQuestion"
-            >
-              Confirm
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+        <div v-if="questionToDelete !== null">
+          You are removing
+          <b>question number {{ questionToDelete.number }}</b>
+          from this exercise.
+        </div>
+      </KLDialogConfirm>
     </div>
   </v-container>
 </template>
@@ -199,13 +179,18 @@ import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { ReadingQuestion } from '@/interfaces/reading-question'
 import { ReadingQuestionCreateReq, ReadingQuestionUpdateReq } from '@/interfaces/api/reading-question'
 import { toTitleCase, unexpectedExc } from '@/utils'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 
 declare interface LocalQuestion extends ReadingQuestion {
   editing: boolean;
   isNew: boolean;
 }
 
-@Component
+@Component({
+  components: {
+    KLDialogConfirm
+  }
+})
 export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMixin) {
   // eslint-disable-next-line no-undef
   [key: string]: unknown

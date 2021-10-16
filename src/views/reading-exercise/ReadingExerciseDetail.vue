@@ -110,46 +110,24 @@
           </div>
         </v-col>
       </v-row>
-    </div>
 
-    <v-dialog
-      v-model="confirmDelete"
-      width="500"
-    >
-      <v-card>
-        <v-card-title>
-          Please confirm
-        </v-card-title>
-        <v-card-text>
-          <p>
-            You are deleting exercise <strong>{{ exercise.identifier }}</strong>.
-          </p>
-          <div class="error--text">
-            <v-icon color="error">
-              mdi-alert-outline
-            </v-icon>
-            This cannot be undone!
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            text
-            @click="confirmDelete = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            color="primary"
-            depressed
-            :loading="deleting"
-            @click="deleteExercise"
-          >
-            Confirm
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <KLDialogConfirm
+        v-model="confirmDelete"
+        :loading="deleting"
+        @confirm="deleteExercise"
+        @cancel="confirmDelete = false"
+      >
+        <p>
+          You are deleting exercise <strong>{{ exercise.identifier }}</strong>.
+        </p>
+        <div class="error--text">
+          <v-icon color="error">
+            mdi-alert-outline
+          </v-icon>
+          This cannot be undone!
+        </div>
+      </KLDialogConfirm>
+    </div>
   </v-container>
 </template>
 
@@ -158,8 +136,13 @@ import { ReadingQuestion } from '@/interfaces/reading-question'
 import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { unexpectedExc } from '@/utils'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 
-@Component
+@Component({
+  components: {
+    KLDialogConfirm
+  }
+})
 export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) {
   get breadcrumbs (): unknown[] {
     if (this.exercise === undefined) return []

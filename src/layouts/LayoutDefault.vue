@@ -24,9 +24,17 @@
         <router-link
           v-else
           :to="{ name: 'MyInfo' }"
-          class="white--text"
+          class="white--text user-info"
         >
-          {{ user.name }}
+          <v-btn
+            large
+            text
+          >
+            <KLAvatar size="40"></KLAvatar>
+            <span class="ml-3">
+              {{ user.name }}
+            </span>
+          </v-btn>
         </router-link>
       </div>
     </v-app-bar>
@@ -57,15 +65,25 @@
 import { User } from '@/interfaces/user'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
+import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
   computed: {
     ...mapGetters({
       user: 'account/loggedInUser'
     })
+  },
+  components: {
+    KLAvatar
   }
 })
 export default class LayoutDefault extends Vue {
   user!: User
 }
 </script>
+
+<style lang="scss" scoped>
+.user-info {
+  text-decoration: none;
+}
+</style>

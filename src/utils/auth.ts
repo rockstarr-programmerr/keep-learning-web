@@ -32,3 +32,8 @@ export function deleteAccessToken (): void {
 export function deleteRefreshToken (): void {
   localStorage.removeItem(refreshTokenKey)
 }
+
+export function logout (): void {
+  deleteAccessToken()
+  deleteRefreshToken()
+}

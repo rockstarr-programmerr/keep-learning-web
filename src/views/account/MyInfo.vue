@@ -8,36 +8,10 @@
     <div class="mt-5">
       <v-row>
         <v-col cols="auto">
-          <v-avatar
-            :color="user.avatar !== null ? 'white' : 'primary'"
+          <KLAvatar
             size="256"
             tile
-          >
-            <v-img
-              v-if="user.avatar !== null"
-              :src="user.avatar"
-              :alt="user.name"
-            >
-              <template #placeholder>
-                <v-row
-                  class="fill-height ma-0"
-                  justify="center"
-                  align="center"
-                >
-                  <v-progress-circular
-                    indeterminate
-                    color="primary"
-                  ></v-progress-circular>
-                </v-row>
-              </template>
-            </v-img>
-            <span
-              v-else
-              class="white--text"
-            >
-              {{ user.name.charAt(0) }}
-            </span>
-          </v-avatar>
+          ></KLAvatar>
         </v-col>
         <v-col cols="auto">
           <div>
@@ -67,10 +41,29 @@
                 Change password
               </router-link>
             </p>
+            <p
+              @click="logoutConfirm = true"
+              class="d-inline-flex cursor-pointer"
+            >
+              <a href="#" class="mr-3">
+                Logout
+              </a>
+              <v-icon>
+                mdi-logout-variant
+              </v-icon>
+            </p>
           </div>
         </v-col>
       </v-row>
     </div>
+
+    <KLDialogConfirm
+      v-model="logoutConfirm"
+      @confirm="goodBye"
+      @cancel="logoutConfirm = false"
+    >
+      Logout now?
+    </KLDialogConfirm>
   </v-container>
 </template>
 
@@ -78,6 +71,9 @@
 import { User } from '@/interfaces/user'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapGetters, mapState } from 'vuex'
+import KLAvatar from '@/components/KLAvatar.vue'
+import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import { logout } from '@/utils/auth'
 
 @Component({
   computed: {
@@ -87,6 +83,10 @@ import { mapGetters, mapState } from 'vuex'
     ...mapGetters('account', [
       'isTeacher'
     ])
+  },
+  components: {
+    KLAvatar,
+    KLDialogConfirm
   }
 })
 export default class MyInfo extends Vue {
@@ -100,6 +100,13 @@ export default class MyInfo extends Vue {
 
   get account (): string {
     return this.isTeacher ? 'Teacher' : 'Student'
+  }
+
+  logoutConfirm = false
+
+  goodBye (): void {
+    logout()
+    this.$router.push({ name: 'Auth' })
   }
 }
 </script>
