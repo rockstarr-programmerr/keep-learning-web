@@ -43,3 +43,8 @@ export declare interface UpdateProfileReq {
 }
 
 export declare interface UpdateProfileRes extends User {}
+
+export declare interface ChangePasswordReq {
+  current_password: string;
+  new_password: string;
+}

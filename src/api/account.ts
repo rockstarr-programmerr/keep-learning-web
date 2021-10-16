@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { endpoints, replacePk } from './endpoints'
 import {
+  ChangePasswordReq,
   LoginReq, LoginRes,
   MyInfoRes,
   RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes, UpdateProfileReq, UpdateProfileRes, UserDetailRes
@@ -55,5 +56,9 @@ export const account = {
       }
     })
     return res.data
+  },
+
+  async changePassword (payload: ChangePasswordReq): Promise<void> {
+    await Vue.axios.post(endpoints.account.users.changePassword, payload)
   }
 }
