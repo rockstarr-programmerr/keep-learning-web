@@ -5,7 +5,9 @@ export const endpoints = {
       tokenRefresh: '/account/users/token-refresh/',
       registerTeacher: '/account/users/register-teacher/',
       detail: '/account/users/<pk>/',
-      changePassword: '/account/users/change-password/'
+      changePassword: '/account/users/change-password/',
+      emailResetPasswordLink: '/account/users/email-reset-password-link/',
+      resetPassword: '/account/users/reset-password/'
     },
     me: {
       myInfo: '/account/me/',

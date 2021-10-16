@@ -1,64 +1,74 @@
 <template>
-  <v-card outlined>
-    <v-card-title>
-      Keep learning
-    </v-card-title>
+  <v-container class="container-xs">
+    <h1>Welcome to Tango</h1>
+    <v-divider></v-divider>
 
-    <v-card-subtitle>
-      Login
-    </v-card-subtitle>
-
-    <v-card-text>
-      <v-form v-on:keyup.enter.native="login">
-        <v-text-field
-          v-model="email"
-          label="Email"
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          label="Password"
-          :type="showPassword ? 'text' : 'password'"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-        ></v-text-field>
-      </v-form>
-
-      <div
-        v-if="errorMsg !== ''"
-        class="error--text mb-3"
-      >
-        {{ errorMsg }}
-      </div>
-
-      <div>
-        <span>Want to register as a teacher?</span>
-        <a
-          href="#"
-          @click="changePage"
-        >
-          Register
-        </a>
-      </div>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        @click="login"
-        color="primary"
-        depressed
-        :loading="loading"
-      >
+    <v-card class="mt-5">
+      <v-card-title>
         Login
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+      </v-card-title>
+
+      <v-card-text>
+        <v-form v-on:keydown.enter.native="login">
+          <v-text-field
+            v-model="email"
+            label="Email"
+            autofocus
+            :error-messages="emailErrs"
+            :error-count="emailErrs.length"
+          ></v-text-field>
+          <v-text-field
+            v-model="password"
+            label="Password"
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            :error-messages="passwordErrs"
+            :error-count="passwordErrs.length"
+          ></v-text-field>
+        </v-form>
+
+        <div
+          v-if="errorMsg !== ''"
+          class="error--text mb-3"
+        >
+          {{ errorMsg }}
+        </div>
+
+        <div>
+          Want to register teacher account?
+          <router-link :to="{ name: 'Register' }">
+            Register
+          </router-link>
+        </div>
+
+        <div class="mt-3">
+          Forgot password?
+          <router-link :to="{ name: 'ResetPassword' }">
+            Reset
+          </router-link>
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          @click="login"
+          color="primary"
+          min-width="110"
+          :loading="loading"
+        >
+          Login
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Emit } from 'vue-property-decorator'
 import { LoginReq } from '@/interfaces/api/account'
-import { unexpectedExc } from '@/utils'
+import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { mapState } from 'vuex'
 
@@ -70,8 +80,13 @@ import { mapState } from 'vuex'
   }
 })
 export default class Login extends Vue {
+  // eslint-disable-next-line no-undef
+  [index: string]: unknown
+
   email = ''
   password = ''
+  emailErrs: string[] = []
+  passwordErrs: string[] = []
   showPassword = false
   loading = false
   errorMsg = ''
@@ -99,6 +114,12 @@ export default class Login extends Vue {
     } catch (error) {
       if (assertErrCode(error, status.HTTP_401_UNAUTHORIZED)) {
         this.errorMsg = error.response.data.detail
+      } else if (assertErrCode(error, status.HTTP_400_BAD_REQUEST)) {
+        const data = error.response.data
+        Object.entries(data).forEach(([field, errMsgs]) => {
+          const attr = `${snakeCaseToCamelCase(field)}Errs`
+          this[attr] = errMsgs
+        })
       } else {
         unexpectedExc(error)
       }

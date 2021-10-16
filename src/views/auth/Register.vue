@@ -1,55 +1,54 @@
 <template>
-  <v-card outlined>
-    <v-card-title>
-      Keep learning
-    </v-card-title>
+  <v-container class="container-xs">
+    <h1>Welcome to Tango</h1>
+    <v-divider></v-divider>
 
-    <v-card-subtitle>
-      Register as a teacher
-    </v-card-subtitle>
+    <v-card class="mt-5">
+      <v-card-title>
+        Register teacher account
+      </v-card-title>
 
-    <v-card-text>
-      <v-form v-on:keyup.native.enter="register">
-        <v-text-field
-          v-model="email"
-          label="Email"
-          :error-messages="emailErrs"
-          :error-count="emailErrs.length"
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          label="Password"
-          :type="showPassword ? 'text' : 'password'"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-          :error-messages="passwordErrs"
-          :error-count="passwordErrs.length"
-        ></v-text-field>
-      </v-form>
+      <v-card-text>
+        <v-form v-on:keyup.native.enter="register">
+          <v-text-field
+            v-model="email"
+            label="Email"
+            autofocus
+            :error-messages="emailErrs"
+            :error-count="emailErrs.length"
+          ></v-text-field>
+          <v-text-field
+            v-model="password"
+            label="Password"
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            :error-messages="passwordErrs"
+            :error-count="passwordErrs.length"
+          ></v-text-field>
+        </v-form>
 
-      <div>
-        <span>Already have account?</span>
-        <a
-          href="#"
-          @click="changePage"
+        <div>
+          <span>Already have account?</span>
+          <router-link :to="{ name: 'Login' }">
+            Login
+          </router-link>
+        </div>
+      </v-card-text>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          @click="register"
+          color="primary"
+          min-width="110"
+          :loading="loading"
         >
-          Login
-        </a>
-      </div>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        @click="register"
-        color="primary"
-        depressed
-        :loading="loading"
-      >
-        Register
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+          Register
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script lang="ts">

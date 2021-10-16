@@ -2,9 +2,10 @@ import Vue from 'vue'
 import { endpoints, replacePk } from './endpoints'
 import {
   ChangePasswordReq,
+  EmailResetPasswordLinkReq,
   LoginReq, LoginRes,
   MyInfoRes,
-  RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes, UpdateProfileReq, UpdateProfileRes, UserDetailRes
+  RegisterTeacherReq, RegisterTeacherRes, ResetPasswordReq, TokenRefreshReq, TokenRefreshRes, UpdateProfileReq, UpdateProfileRes, UserDetailRes
 } from '@/interfaces/api/account'
 import { User } from '@/interfaces/user'
 
@@ -60,5 +61,13 @@ export const account = {
 
   async changePassword (payload: ChangePasswordReq): Promise<void> {
     await Vue.axios.post(endpoints.account.users.changePassword, payload)
+  },
+
+  async emailResetPasswordLink (payload: EmailResetPasswordLinkReq): Promise<void> {
+    await Vue.axios.post(endpoints.account.users.emailResetPasswordLink, payload)
+  },
+
+  async resetPassword (payload: ResetPasswordReq): Promise<void> {
+    await Vue.axios.post(endpoints.account.users.resetPassword, payload)
   }
 }

@@ -6,7 +6,10 @@ import LayoutClassroomTeacher from '../layouts/LayoutClassroomTeacher.vue'
 import LayoutClassroomStudent from '../layouts/LayoutClassroomStudent.vue'
 
 import Home from '../views/Home.vue'
-import Auth from '../views/auth/Auth.vue'
+import Login from '../views/auth/Login.vue'
+import Register from '../views/auth/Register.vue'
+import ResetPassword from '../views/auth/ResetPassword.vue'
+import NewPassword from '../views/auth/NewPassword.vue'
 import Http404 from '../views/http/Http404.vue'
 
 import MyInfo from '../views/account/MyInfo.vue'
@@ -41,9 +44,33 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
-    path: '/auth',
-    name: 'Auth',
-    component: Auth,
+    path: '/login',
+    name: 'Login',
+    component: Login,
+    meta: {
+      layout: LayoutNoAppbar
+    }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+    meta: {
+      layout: LayoutNoAppbar
+    }
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
+    meta: {
+      layout: LayoutNoAppbar
+    }
+  },
+  {
+    path: '/new-password',
+    name: 'NewPassword',
+    component: NewPassword,
     meta: {
       layout: LayoutNoAppbar
     }

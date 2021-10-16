@@ -48,3 +48,13 @@ export declare interface ChangePasswordReq {
   current_password: string;
   new_password: string;
 }
+
+export declare interface EmailResetPasswordLinkReq {
+  email: string;
+}
+
+export declare interface ResetPasswordReq {
+  uid: string;
+  token: string;
+  password: string;
+}

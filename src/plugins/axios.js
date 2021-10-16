@@ -129,7 +129,7 @@ function handleResponseError (error) {
 
 function isLoginRoute () {
   if (router.options !== undefined && router.options.routes !== undefined) {
-    const loginRoute = router.options.routes.find(route => route.name === 'Auth')
+    const loginRoute = router.options.routes.find(route => route.name === 'Login')
     return (
       loginRoute !== undefined &&
       location.pathname === loginRoute.path
@@ -147,7 +147,7 @@ function goToLogin () {
   // If user is at some other page, redirect them to signin page
   const next = `${window.location.pathname}${window.location.search}`
   router.push({
-    name: 'Auth',
+    name: 'Login',
     query: {
       next
     }

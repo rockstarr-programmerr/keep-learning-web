@@ -106,7 +106,7 @@ export default class MyInfo extends Vue {
 
   goodBye (): void {
     logout()
-    this.$router.push({ name: 'Auth' })
+    this.$router.push({ name: 'Login' })
   }
 }
 </script>

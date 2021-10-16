@@ -13,6 +13,7 @@ import LayoutDefault from '@/layouts/LayoutDefault.vue'
 import { mapGetters } from 'vuex'
 import { User } from './interfaces/user'
 import { unexpectedExc } from './utils'
+import { assertErrCode, status } from './utils/status-codes'
 
 @Component({
   components: {
@@ -29,14 +30,33 @@ export default class App extends Vue {
   loading = false
   initDone = false
 
+  noAuthenRoutes = [
+    'Login',
+    'Register',
+    'ResetPassword',
+    'NewPassword'
+  ]
+
   created (): void {
     this.setUserInfo()
   }
 
   setUserInfo (): void {
+    const routeName = this.$route.name
+    if (this.noAuthenRoutes.includes(routeName as string)) {
+      this.initDone = true
+      return
+    }
+
     this.loading = true
     this.$store.dispatch('account/getInfo')
-      .catch(unexpectedExc)
+      .catch(err => {
+        if (assertErrCode(err, status.HTTP_401_UNAUTHORIZED)) {
+          this.$router.push({ name: 'Login' })
+        } else {
+          unexpectedExc(err)
+        }
+      })
       .finally(() => {
         this.loading = false
         this.initDone = true
@@ -78,5 +98,9 @@ export default class App extends Vue {
 
 .container-sm {
   width: 1140px;
+}
+
+.container-xs {
+  width: 720px;
 }
 </style>
