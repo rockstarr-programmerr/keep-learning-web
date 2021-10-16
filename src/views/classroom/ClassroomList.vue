@@ -5,19 +5,17 @@
     <h1>Classrooms</h1>
     <v-divider></v-divider>
 
-    <span
+    <v-btn
       v-if="isTeacher"
-      class="cursor-pointer d-inline-flex mt-5"
+      class="mt-5"
+      depressed
       @click="$router.push({ name: 'ClassroomCreate' })"
     >
-      <v-icon>
+      <v-icon left>
         mdi-plus-circle-outline
       </v-icon>
-      <span
-        v-text="'New classroom'"
-        class="ml-3"
-      ></span>
-    </span>
+      New classroom
+    </v-btn>
 
     <v-progress-circular
       v-if="loading"

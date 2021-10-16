@@ -1,22 +1,22 @@
 <template>
   <div>
-    <span
-      class="cursor-pointer d-inline-flex"
+    <v-btn
+      depressed
       @click="showAddStudent = !showAddStudent"
     >
-      <v-icon>
-        mdi-plus-circle-outline
+      <v-icon left>
+        {{ showAddStudent ? 'mdi-minus-circle-outline' : 'mdi-plus-circle-outline' }}
       </v-icon>
-      <span
-        v-text="'Add student'"
-        class="ml-3"
-      ></span>
-    </span>
+      Add student
+    </v-btn>
 
-    <div v-show="showAddStudent">
+    <div
+      v-if="showAddStudent"
+      class="mt-3"
+    >
       <v-card width="50%">
         <v-card-subtitle>
-          An email containing temporary password will be sent to your student after creating.
+          An email containing temporary password will be sent to your student after adding.
           Tell them to login with that password.
         </v-card-subtitle>
         <v-card-text>
@@ -51,8 +51,9 @@
             color="primary"
             :loading="loadingAddStudent"
             @click="addStudent"
+            min-width="110"
           >
-            Add student
+            Add
           </v-btn>
         </v-card-actions>
       </v-card>

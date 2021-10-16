@@ -5,18 +5,16 @@
     <h1>Manage reading exercises</h1>
     <v-divider></v-divider>
 
-    <span
-      class="cursor-pointer d-inline-flex mt-5"
+    <v-btn
+      class="mt-5"
+      depressed
       @click="goToNewExercise"
     >
-      <v-icon>
+      <v-icon left>
         mdi-plus-circle-outline
       </v-icon>
-      <span
-        v-text="'Add exercise'"
-        class="ml-3"
-      ></span>
-    </span>
+      New exercise
+    </v-btn>
     <br>
 
     <v-progress-circular
