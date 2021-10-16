@@ -126,14 +126,20 @@
                   >
                     mdi-pencil-outline
                   </v-icon>
+                  <template v-else>
+                    <v-icon @click="saveQuestion(question)">
+                      mdi-check
+                    </v-icon>
+                    <v-icon
+                      v-if="!question.saved"
+                      @click="removeQuestion(question)"
+                      class="ml-5"
+                    >
+                      mdi-close
+                    </v-icon>
+                  </template>
                   <v-icon
-                    v-else
-                    @click="saveQuestion(question)"
-                  >
-                    mdi-check
-                  </v-icon>
-                  <v-icon
-                    v-if="isLastQuestion(question)"
+                    v-if="isLastQuestion(question) && question.saved"
                     class="ml-5"
                     @click="prepareDelete(question)"
                   >
@@ -145,15 +151,16 @@
           </v-simple-table>
         </v-card-text>
         <v-card-actions v-if="allNextPassageIsEmpty(index + 1)">
-          <span
-            class="d-inline-flex cursor-pointer"
+          <v-btn
             @click="addQuestion(index + 1)"
+            depressed
+            :disabled="cannotAddQuestion"
           >
-            <v-icon class="mr-3 ml-5 mb-3">
+            <v-icon left>
               mdi-plus-circle-outline
             </v-icon>
             Add question
-          </span>
+          </v-btn>
         </v-card-actions>
       </v-card>
 
@@ -184,6 +191,7 @@ import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 declare interface LocalQuestion extends ReadingQuestion {
   editing: boolean;
   isNew: boolean;
+  saved: boolean;
 }
 
 @Component({
@@ -230,7 +238,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
 
   initSuccessHook (): void {
     this.questions.forEach(question => {
-      const localQuestion: LocalQuestion = { ...question, editing: false, isNew: false }
+      const localQuestion: LocalQuestion = { ...question, editing: false, isNew: false, saved: true }
       this.localQuestions.push(localQuestion)
     })
   }
@@ -257,13 +265,38 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
       choices: lastQuestion !== null ? lastQuestion.choices : [],
       answers: [],
       editing: true,
-      isNew: true
+      isNew: true,
+      saved: false
     }
   }
 
+  get cannotAddQuestion (): boolean {
+    return this.localQuestions.some(q => q.isNew)
+  }
+
   addQuestion (passage: LocalQuestion['passage']): void {
-    this.localQuestions.forEach(q => { q.isNew = false })
+    if (this.localQuestions.some(q => q.isNew)) {
+      return
+    }
+    this.localQuestions.forEach(q => {
+      if (q.saved) {
+        q.isNew = false
+      }
+    })
     this.localQuestions.push(this.newQuestion(passage))
+  }
+
+  removeQuestion (question: ReadingQuestion): void {
+    this.localQuestions = this.localQuestions.filter(q => q.pk !== question.pk)
+    this.resetNumbers()
+  }
+
+  resetNumbers (): void {
+    let number = 1
+    this.localQuestions.forEach(q => {
+      q.number = number
+      number++
+    })
   }
 
   formatQuestionType (type: ReadingQuestion['question_type']): string {
@@ -344,6 +377,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
     } else {
       this.updateQuestion(question)
     }
+    question.saved = true
   }
 
   createQuestion (question: LocalQuestion): void {
@@ -357,9 +391,16 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
     }
 
     this.$store.dispatch('readingExercise/createQuestion', payload)
-      .then(() => {
-        question.editing = false
-        question.isNew = false
+      .then(pk => {
+        if (pk !== null) {
+          question.pk = pk
+          question.editing = false
+          question.isNew = false
+
+          if (!this.localQuestions.some(q => q.isNew)) {
+            this.addQuestion(question.passage)
+          }
+        }
       })
       .catch(unexpectedExc)
   }
@@ -386,7 +427,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
   questionToDelete: LocalQuestion | null = null
 
   prepareDelete (question: LocalQuestion): void {
-    this.questionToDelete = question
+    this.questionToDelete = { ...question }
     this.deleteConfirm = true
   }
 
@@ -404,6 +445,7 @@ export default class ReadingExerciseEditAnswers extends Mixins(ReadingExerciseMi
         }
         this.localQuestions.splice(index, 1)
 
+        this.resetNumbers()
         this.deleteConfirm = false
       })
       .catch(unexpectedExc)

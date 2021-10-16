@@ -119,11 +119,12 @@ export const readingExercise: Module<ReadingExerciseState, RootState> = {
       commit('SET_QUESTION_PAGINATION', pagination)
     },
 
-    async createQuestion ({ state, commit }, payload: ReadingQuestionCreateReq): Promise<void> {
-      if (state.currentReadingExercise === undefined) return
+    async createQuestion ({ state, commit }, payload: ReadingQuestionCreateReq): Promise<ReadingQuestion['pk'] | null> {
+      if (state.currentReadingExercise === undefined) return null
       payload.exercise = state.currentReadingExercise.url
       const data = await Api.readingQuestion.create(payload)
       commit('ADD_QUESTION', data)
+      return data.pk
     },
 
     async updateQuestion (
