@@ -1,10 +1,10 @@
 <template>
-  <v-container>
+  <v-container class="container-sm">
     <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
 
     <v-row>
       <v-col
-        cols="3"
+        cols="6"
         v-for="link of links"
         :key="link.text"
       >

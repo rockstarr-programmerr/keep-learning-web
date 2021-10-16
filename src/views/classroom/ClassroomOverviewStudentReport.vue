@@ -19,47 +19,72 @@
           <span v-if="student !== null">{{ student.email }}</span>
         </v-card-subtitle>
         <v-card-text>
-          <v-simple-table>
-            <thead>
-              <tr>
-                <th>Reading</th>
-                <th>Passage 1</th>
-                <th>Passage 2</th>
-                <th>Passage 3</th>
-                <th>Total</th>
-                <th>Band score</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="report of reports"
-                :key="report.pk"
-                class="cursor-pointer"
-                @click="$router.push({
-                  name: 'ReadingExerciseSubmitResult',
-                  params: {
-                    pk: classroom.pk,
-                    exercisePk: report.exercise.pk,
-                    studentPk
-                  }
-                })"
-              >
-                <td>{{ report.exercise.identifier }}</td>
-                <template v-if="!report.submitted">
-                  <td colspan="6">
-                    Not submitted
-                  </td>
-                </template>
-                <template v-else>
-                  <td>{{ report.passage_1_total }}</td>
-                  <td>{{ report.passage_2_total }}</td>
-                  <td>{{ report.passage_3_total }}</td>
-                  <td>{{ report.total }}</td>
-                  <td>{{ report.band_score }}</td>
-                </template>
-              </tr>
-            </tbody>
-          </v-simple-table>
+          <v-row>
+            <v-col cols="6">
+              <v-simple-table>
+                <thead>
+                  <tr>
+                    <th>Reading</th>
+                    <th>Passage 1</th>
+                    <th>Passage 2</th>
+                    <th>Passage 3</th>
+                    <th>Total</th>
+                    <th>Band score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="report of reports"
+                    :key="report.pk"
+                    class="cursor-pointer"
+                    @click="$router.push({
+                      name: 'ReadingExerciseSubmitResult',
+                      params: {
+                        pk: classroom.pk,
+                        exercisePk: report.exercise.pk,
+                        studentPk
+                      }
+                    })"
+                  >
+                    <td>{{ report.exercise.identifier }}</td>
+                    <template v-if="!report.submitted">
+                      <td colspan="6">
+                        Not submitted
+                      </td>
+                    </template>
+                    <template v-else>
+                      <td>{{ report.passage_1_total }}</td>
+                      <td>{{ report.passage_2_total }}</td>
+                      <td>{{ report.passage_3_total }}</td>
+                      <td>{{ report.total }}</td>
+                      <td>{{ report.band_score }}</td>
+                    </template>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col cols="6">
+              <v-simple-table>
+                <thead>
+                  <tr>
+                    <th>Listening</th>
+                    <th>Section 1</th>
+                    <th>Section 2</th>
+                    <th>Section 3</th>
+                    <th>Section 4</th>
+                    <th>Total</th>
+                    <th>Band score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="7">Coming soon</td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
     </div>
