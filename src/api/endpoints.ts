@@ -22,7 +22,8 @@ export const endpoints = {
     removeStudents: '/classroom/classrooms/<pk>/remove-students/',
     addReadingExercises: '/classroom/classrooms/<pk>/add-reading-exercises/',
     removeReadingExercises: '/classroom/classrooms/<pk>/remove-reading-exercises/',
-    studentReadingReport: '/classroom/classrooms/<pk>/student-reading-report/'
+    studentReadingReport: '/classroom/classrooms/<pk>/student-reading-report/',
+    resendPasswordEmail: '/classroom/classrooms/<pk>/resend-password-email/'
   },
   readingExercise: {
     list: '/classroom/reading-exercises/',

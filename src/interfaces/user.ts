@@ -7,4 +7,5 @@ export declare interface User {
   user_type: 'teacher' | 'student';
   avatar: string | null;
   avatar_thumbnail: string | null;
+  last_login: string | null;
 }

@@ -39,3 +39,7 @@ export declare interface GetStudentReportReq {
   exercise_pk?: number;
   show_detail?: boolean;
 }
+
+export declare interface ResendPasswordEmailReq {
+  email: string;
+}

@@ -82,7 +82,10 @@
             </v-icon>
           </template>
           <v-list dense>
-            <v-list-item>
+            <v-list-item
+              :disabled="item.last_login !== null"
+              @click="resendPasswordEmail(item)"
+            >
               <v-list-item-icon>
                 <v-icon>
                   mdi-email-outline
@@ -135,6 +138,7 @@ import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import { Api } from '@/api'
 
 @Component({
   computed: {
@@ -251,6 +255,16 @@ export default class ClassroomStudents extends Vue {
       .finally(() => {
         this.loadingRemove = false
       })
+  }
+
+  /**
+   * Resend password email
+   */
+  resendPasswordEmail (student: User): void {
+    Api.classroom.resendPasswordEmail(this.classroom.pk, {
+      email: student.email
+    })
+      .catch(unexpectedExc)
   }
 }
 </script>

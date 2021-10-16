@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ClassroomListRes, ClassroomDetailRes, ClassroomCreateReq, AddStudentReq, RemoveStudentReq, AddReadingExercisesReq, RemoveReadingExercisesReq, ReadingExerciseReportRes, GetStudentReportReq, ClassroomUpdateReq } from '@/interfaces/api/classroom'
+import { ClassroomListRes, ClassroomDetailRes, ClassroomCreateReq, AddStudentReq, RemoveStudentReq, AddReadingExercisesReq, RemoveReadingExercisesReq, ReadingExerciseReportRes, GetStudentReportReq, ClassroomUpdateReq, ResendPasswordEmailReq } from '@/interfaces/api/classroom'
 import { Classroom } from '@/interfaces/classroom'
 import { endpoints, replacePk } from './endpoints'
 
@@ -51,9 +51,14 @@ export const classroom = {
     await Vue.axios.post(endpoint, payload)
   },
 
-  async getStudentReport (classroomPk: Classroom['pk'], params: GetStudentReportReq): Promise<ReadingExerciseReportRes[]> {
-    const endpoint = replacePk(endpoints.classroom.studentReadingReport, classroomPk)
+  async getStudentReport (pk: Classroom['pk'], params: GetStudentReportReq): Promise<ReadingExerciseReportRes[]> {
+    const endpoint = replacePk(endpoints.classroom.studentReadingReport, pk)
     const res = await Vue.axios.get(endpoint, { params })
     return res.data
+  },
+
+  async resendPasswordEmail (pk: Classroom['pk'], payload: ResendPasswordEmailReq): Promise<void> {
+    const endpoint = replacePk(endpoints.classroom.resendPasswordEmail, pk)
+    await Vue.axios.post(endpoint, payload)
   }
 }
