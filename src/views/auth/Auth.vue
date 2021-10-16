@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="container-sm">
     <component
       :is="formComponent"
       @change-page="isLogin = !isLogin"

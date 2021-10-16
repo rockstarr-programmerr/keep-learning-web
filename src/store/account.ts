@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { LoginReq, RegisterTeacherReq } from '@/interfaces/api/account'
+import { LoginReq, RegisterTeacherReq, UpdateProfileReq } from '@/interfaces/api/account'
 import { User } from '@/interfaces/user'
 import { loadAccessToken, loadRefreshToken, setAccessToken, setRefreshToken } from '@/utils/auth'
 import { Module } from 'vuex'
@@ -74,6 +74,11 @@ export const account: Module<AccountState, RootState> = {
 
     async getInfo ({ commit }): Promise<void> {
       const data = await Api.account.getMyInfo()
+      commit('SET_LOGGED_IN_USER', data)
+    },
+
+    async updateProfile ({ commit }, payload: UpdateProfileReq): Promise<void> {
+      const data = await Api.account.updateProfile(payload)
       commit('SET_LOGGED_IN_USER', data)
     }
   }

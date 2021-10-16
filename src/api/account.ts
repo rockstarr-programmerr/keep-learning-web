@@ -3,7 +3,7 @@ import { endpoints, replacePk } from './endpoints'
 import {
   LoginReq, LoginRes,
   MyInfoRes,
-  RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes, UserDetailRes
+  RegisterTeacherReq, RegisterTeacherRes, TokenRefreshReq, TokenRefreshRes, UpdateProfileReq, UpdateProfileRes, UserDetailRes
 } from '@/interfaces/api/account'
 import { User } from '@/interfaces/user'
 
@@ -31,6 +31,11 @@ export const account = {
   async userDetail (pk: User['pk']): Promise<UserDetailRes> {
     const endpoint = replacePk(endpoints.account.users.detail, pk)
     const res = await Vue.axios.get(endpoint)
+    return res.data
+  },
+
+  async updateProfile (payload: UpdateProfileReq): Promise<UpdateProfileRes> {
+    const res = await Vue.axios.patch(endpoints.account.me.updateProfile, payload)
     return res.data
   }
 }

@@ -9,6 +9,10 @@ import Home from '../views/Home.vue'
 import Auth from '../views/auth/Auth.vue'
 import Http404 from '../views/http/Http404.vue'
 
+import MyInfo from '../views/account/MyInfo.vue'
+import ProfileUpdate from '../views/account/ProfileUpdate.vue'
+import ChangePassword from '../views/account/ChangePassword.vue'
+
 import ClassroomList from '../views/classroom/ClassroomList.vue'
 import ClassroomCreate from '../views/classroom/ClassroomCreate.vue'
 import ClassroomUpdate from '../views/classroom/ClassroomUpdate.vue'
@@ -44,6 +48,23 @@ const routes: Array<RouteConfig> = [
       layout: LayoutNoAppbar
     }
   },
+  ...prefixWith('/account', [
+    {
+      path: '',
+      name: 'MyInfo',
+      component: MyInfo
+    },
+    {
+      path: '/edit',
+      name: 'ProfileUpdate',
+      component: ProfileUpdate
+    },
+    {
+      path: '/change-password',
+      name: 'ChangePassword',
+      component: ChangePassword
+    }
+  ]),
   ...prefixWith('/classrooms', [
     {
       path: '',

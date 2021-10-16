@@ -35,3 +35,11 @@ export declare interface RegisterTeacherRes {
 export declare interface MyInfoRes extends User {}
 
 export declare interface UserDetailRes extends User {}
+
+export declare interface UpdateProfileReq {
+  name?: User['name'];
+  phone_number?: User['phone_number'];
+  avatar?: User['avatar'];
+}
+
+export declare interface UpdateProfileRes extends User {}

@@ -76,6 +76,7 @@ export default class Home extends Vue {
         description: this.isTeacher ? classroomTeacherDescription : classroomStudentDescription
       }
     ]
+
     if (this.isTeacher) {
       links.push(
         {
@@ -85,6 +86,14 @@ export default class Home extends Vue {
         }
       )
     }
+
+    links.push(...[
+      {
+        text: 'Profile',
+        to: { name: 'MyInfo' },
+        description: 'Manage your profile.'
+      }
+    ])
     return links
   }
 }

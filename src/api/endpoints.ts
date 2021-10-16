@@ -7,7 +7,8 @@ export const endpoints = {
       detail: '/account/users/<pk>/'
     },
     me: {
-      myInfo: '/account/me/'
+      myInfo: '/account/me/',
+      updateProfile: '/account/me/'
     }
   },
   classroom: {

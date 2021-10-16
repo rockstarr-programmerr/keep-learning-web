@@ -21,9 +21,13 @@
           indeterminate
           color="primary"
         ></v-progress-circular>
-        <span v-else>
+        <router-link
+          v-else
+          :to="{ name: 'MyInfo' }"
+          class="white--text"
+        >
           {{ user.name }}
-        </span>
+        </router-link>
       </div>
     </v-app-bar>
 
