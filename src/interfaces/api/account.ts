@@ -39,7 +39,7 @@ export declare interface UserDetailRes extends User {}
 export declare interface UpdateProfileReq {
   name?: User['name'];
   phone_number?: User['phone_number'];
-  avatar?: User['avatar'];
+  avatar?: File | null;
 }
 
 export declare interface UpdateProfileRes extends User {}

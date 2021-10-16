@@ -5,10 +5,7 @@
     <h1>Edit profile</h1>
     <v-divider></v-divider>
 
-    <v-card
-      v-if="localUser !== null"
-      class="mt-5"
-    >
+    <v-card class="mt-5">
       <v-card-text>
         <v-form>
           <v-text-field
@@ -17,12 +14,21 @@
             :error-messages="nameErrs"
             :error-count="nameErrs.length"
           ></v-text-field>
+
           <v-text-field
             v-model="phoneNumber"
             label="Phone number"
             :error-messages="phoneNumberErrs"
             :error-count="phoneNumberErrs.length"
           ></v-text-field>
+
+          <v-file-input
+            v-model="avatar"
+            label="Avatar"
+            prepend-icon="mdi-camera"
+            :error-messages="avatarErrs"
+            :error-count="avatarErrs.length"
+          ></v-file-input>
         </v-form>
       </v-card-text>
 
@@ -66,15 +72,32 @@ export default class ProfileUpdate extends Vue {
   ]
 
   user!: User
+
   name: User['name'] = ''
   phoneNumber: User['phone_number'] = ''
+  avatar: File | null = null
+  originalAvatar: File | null = null
+
   nameErrs: string[] = []
   phoneNumberErrs: string[] = []
+  avatarErrs: string[] = []
+
   loading = false
 
   created (): void {
     this.name = this.user.name
     this.phoneNumber = this.user.phone_number
+
+    if (this.user.avatar !== null) {
+      Vue.axios.get(this.user.avatar)
+        .then(res => {
+          const parts = this.user.avatar.split('/')
+          const avatarName = parts[parts.length - 1]
+          const file = new File([res.data], avatarName)
+          this.avatar = file
+          this.originalAvatar = file
+        })
+    }
   }
 
   saveProfile (): void {
@@ -84,6 +107,10 @@ export default class ProfileUpdate extends Vue {
     const payload: UpdateProfileReq = {
       name: this.name,
       phone_number: this.phoneNumber
+    }
+
+    if (this.avatar !== this.originalAvatar) {
+      payload.avatar = this.avatar
     }
 
     this.$store.dispatch('account/updateProfile', payload)

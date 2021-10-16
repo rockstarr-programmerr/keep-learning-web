@@ -35,7 +35,25 @@ export const account = {
   },
 
   async updateProfile (payload: UpdateProfileReq): Promise<UpdateProfileRes> {
-    const res = await Vue.axios.patch(endpoints.account.me.updateProfile, payload)
+    let formData: FormData | UpdateProfileReq
+    let contentType: string
+
+    if (payload.avatar !== null) {
+      formData = new FormData()
+      Object.entries(payload).forEach(([key, value]) => {
+        (formData as FormData).append(key, value)
+      })
+      contentType = 'multipart/formdata'
+    } else {
+      formData = payload
+      contentType = 'application/json'
+    }
+
+    const res = await Vue.axios.patch(endpoints.account.me.updateProfile, formData, {
+      headers: {
+        'Content-Type': contentType
+      }
+    })
     return res.data
   }
 }

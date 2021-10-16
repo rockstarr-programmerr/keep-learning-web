@@ -17,7 +17,20 @@
               v-if="user.avatar !== null"
               :src="user.avatar"
               :alt="user.name"
-            ></v-img>
+            >
+              <template #placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  justify="center"
+                  align="center"
+                >
+                  <v-progress-circular
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
             <span
               v-else
               class="white--text"
