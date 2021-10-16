@@ -21,6 +21,7 @@
       v-if="loading"
       indeterminate
       color="primary"
+      class="mt-5"
     ></v-progress-circular>
 
     <p v-else-if="noExercises" v-text="'You don\'t have any exercises yet.'" />
@@ -78,7 +79,7 @@
         </v-row>
       </v-card-text>
 
-      <v-card-actions>
+      <v-card-actions v-if="!noPagination">
         <v-spacer></v-spacer>
         <v-pagination
           v-model="page"

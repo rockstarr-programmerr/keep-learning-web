@@ -12,6 +12,10 @@ export class PaginationMixin extends Vue {
     return Math.ceil(this.pagination.count / PAGE_SIZE)
   }
 
+  get noPagination (): boolean {
+    return this.pagination.next === null && this.pagination.previous === null
+  }
+
   getList (query?: PaginationQuery): void {
     throw Error('You must implement `getList` function when using `PaginationMixin`')
   }

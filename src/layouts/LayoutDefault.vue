@@ -10,7 +10,7 @@
         :to="{ name: 'Home' }"
         class="d-flex align-center white--text"
       >
-        Keep learning!
+        Tango
       </router-link>
 
       <v-spacer></v-spacer>
