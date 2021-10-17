@@ -16,12 +16,13 @@ export class PaginationMixin extends Vue {
     return this.pagination.next === null && this.pagination.previous === null
   }
 
+  // eslint-disable-next-line
   getList (query?: PaginationQuery): void {
     throw Error('You must implement `getList` function when using `PaginationMixin`')
   }
 
   @Watch('page')
-  onPageChange (page: number) {
+  onPageChange (page: number): void {
     this.getList({
       limit: PAGE_SIZE,
       offset: (page - 1) * PAGE_SIZE

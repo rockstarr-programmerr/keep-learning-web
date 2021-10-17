@@ -4,7 +4,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/cover.png"
   },
   {
-    "revision": "004f6b1b615bad11a268",
+    "revision": "04837703a8df49fa8982",
     "url": "/css/app.2c9f27da.css"
   },
   {
@@ -20,12 +20,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/default-tango.f3573521.svg"
   },
   {
-    "revision": "3d57e9d7325c4393f170ee5f81b128d2",
+    "revision": "1a745233292cfea59b8d30fee9ae78dd",
     "url": "/index.html"
   },
   {
-    "revision": "004f6b1b615bad11a268",
-    "url": "/js/app.d6447ce0.js"
+    "revision": "04837703a8df49fa8982",
+    "url": "/js/app.2345c2b7.js"
   },
   {
     "revision": "368d9a5e3a2af6a60240",
