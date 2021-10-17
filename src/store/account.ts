@@ -48,7 +48,8 @@ export const account: Module<AccountState, RootState> = {
   actions: {
     // eslint-disable-next-line
     async registerTeacher ({ commit }, payload: RegisterTeacherReq): Promise<void> {
-      await Api.account.registerTeacher(payload)
+      const data = await Api.account.registerTeacher(payload)
+      commit('SET_LOGGED_IN_USER', data)
     },
 
     async login ({ commit }, payload: LoginReq): Promise<void> {

@@ -26,11 +26,7 @@ export declare interface RegisterTeacherReq {
   phone_number?: string;
 }
 
-export declare interface RegisterTeacherRes {
-  email: string;
-  name: string;
-  phone_number: string;
-}
+export declare interface RegisterTeacherRes extends User {}
 
 export declare interface MyInfoRes extends User {}
 
