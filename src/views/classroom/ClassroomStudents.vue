@@ -67,6 +67,14 @@
       class="mt-3 elevation-2"
     >
       <!-- eslint-disable-next-line -->
+      <template #item.name="{ item }">
+        <KLAvatar
+          :user="item"
+          size="32"
+        ></KLAvatar>
+        <span class="ml-5">{{ item.name }}</span>
+      </template>
+      <!-- eslint-disable-next-line -->
       <template #item.manage="{ item }">
         <v-menu
           offset-x
@@ -138,6 +146,7 @@ import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapMutations, mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import KLAvatar from '@/components/KLAvatar.vue'
 import { Api } from '@/api'
 
 @Component({
@@ -152,7 +161,8 @@ import { Api } from '@/api'
     })
   },
   components: {
-    KLDialogConfirm
+    KLDialogConfirm,
+    KLAvatar
   }
 })
 export default class ClassroomStudents extends Vue {

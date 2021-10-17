@@ -13,7 +13,7 @@ export const message: Module<MessageState, RootState> = {
   state: {
     show: false,
     text: '',
-    color: 'success'
+    color: 'primary'
   },
 
   mutations: {

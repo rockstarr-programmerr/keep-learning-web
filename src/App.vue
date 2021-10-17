@@ -1,6 +1,10 @@
 <template>
   <v-app id="keep-learning-app">
-    <component v-if="initDone" :is="layout"/>
+    <component
+      v-if="initDone"
+      :is="layout"
+      class="fill-height"
+    />
     <v-progress-linear
       v-else
       indeterminate
@@ -9,16 +13,20 @@
     <v-snackbar
       :value="messageShow"
       @input="setMessage"
+      :color="messageColor"
     >
       {{ messageText }}
       <template #action="{ attrs }">
         <v-btn
-          color="pink"
+          color="black"
           text
+          icon
           v-bind="attrs"
           @click="hideMessage"
         >
-          Close
+          <v-icon>
+            mdi-close
+          </v-icon>
         </v-btn>
       </template>
     </v-snackbar>
@@ -44,7 +52,8 @@ import { noAuthenRoutes } from './router'
     }),
     ...mapState('message', {
       messageShow: 'show',
-      messageText: 'text'
+      messageText: 'text',
+      messageColor: 'color'
     })
   },
   methods: {
@@ -123,6 +132,7 @@ export default class App extends Vue {
    */
   messageShow!: boolean
   messageText!: string
+  messageColor!: string
   showMessage!: CallableFunction
   hideMessage!: CallableFunction
 

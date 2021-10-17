@@ -57,6 +57,7 @@
                     name: 'ReadingExerciseDetail',
                     params: { pk: exercise.pk }
                   }"
+                  class="exercise-links"
                 >
                   {{ exercise.identifier }}
                 </router-link>
@@ -236,5 +237,7 @@ export default class ClassroomExercisesReadingTeacher extends Vue {
 </script>
 
 <style scoped lang="scss">
-
+.exercise-links {
+  text-decoration: none;
+}
 </style>
