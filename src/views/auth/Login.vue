@@ -1,8 +1,5 @@
 <template>
-  <v-container class="container-xs">
-    <h1>Welcome to Tango</h1>
-    <v-divider></v-divider>
-
+  <BaseAuth>
     <v-card class="mt-5">
       <v-card-title>
         Login
@@ -62,7 +59,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-container>
+  </BaseAuth>
 </template>
 
 <script lang="ts">
@@ -71,12 +68,16 @@ import { LoginReq } from '@/interfaces/api/account'
 import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { mapState } from 'vuex'
+import BaseAuth from './BaseAuth.vue'
 
 @Component({
   computed: {
     ...mapState('account', [
       'isTeacher'
     ])
+  },
+  components: {
+    BaseAuth
   }
 })
 export default class Login extends Vue {

@@ -1,8 +1,5 @@
 <template>
-  <v-container class="container-xs">
-    <h1>Reset password on Tango</h1>
-    <v-divider></v-divider>
-
+  <BaseAuth>
     <v-card class="mt-5">
       <v-card-subtitle>
         We'll send you instruction to reset your password.
@@ -58,7 +55,7 @@
         </p>
       </v-card-text>
     </v-card>
-  </v-container>
+  </BaseAuth>
 </template>
 
 <script lang="ts">
@@ -66,8 +63,13 @@ import { Api } from '@/api'
 import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
+import BaseAuth from './BaseAuth.vue'
 
-@Component
+@Component({
+  components: {
+    BaseAuth
+  }
+})
 export default class ResetPassword extends Vue {
   // eslint-disable-next-line no-undef
   [index: string]: unknown

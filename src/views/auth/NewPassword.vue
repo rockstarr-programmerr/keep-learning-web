@@ -1,8 +1,5 @@
 <template>
-  <v-container class="container-xs">
-    <h1>Reset password on Tango</h1>
-    <v-divider></v-divider>
-
+  <BaseAuth>
     <v-card class="mt-5">
       <v-card-title>
         Choose your new password
@@ -37,7 +34,7 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-container>
+  </BaseAuth>
 </template>
 
 <script lang="ts">
@@ -46,12 +43,16 @@ import { snakeCaseToCamelCase } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapMutations } from 'vuex'
+import BaseAuth from './BaseAuth.vue'
 
 @Component({
   methods: {
     ...mapMutations('message', {
       showMessage: 'SHOW_MESSAGE'
     })
+  },
+  components: {
+    BaseAuth
   }
 })
 export default class NewPassword extends Vue {

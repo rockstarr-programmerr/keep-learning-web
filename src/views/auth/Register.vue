@@ -1,8 +1,5 @@
 <template>
-  <v-container class="container-xs">
-    <h1>Welcome to Tango</h1>
-    <v-divider></v-divider>
-
+  <BaseAuth>
     <v-card class="mt-5">
       <v-card-title>
         Register teacher account
@@ -48,15 +45,20 @@
         </v-btn>
       </v-card-actions>
     </v-card>
-  </v-container>
+  </BaseAuth>
 </template>
 
 <script lang="ts">
 import { unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component, Emit } from 'vue-property-decorator'
+import BaseAuth from './BaseAuth.vue'
 
-@Component
+@Component({
+  components: {
+    BaseAuth
+  }
+})
 export default class Register extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown

@@ -6,12 +6,17 @@
       dark
       hide-on-scroll
     >
-      <router-link
+      <v-btn
+        text
+        link
+        color="primary"
         :to="{ name: 'Home' }"
-        class="d-flex align-center white--text"
       >
-        Tango
-      </router-link>
+        <v-img
+          :src="require('@/assets/default-tango.svg')"
+          max-width="100"
+        ></v-img>
+      </v-btn>
 
       <v-spacer></v-spacer>
 
@@ -64,7 +69,7 @@
 <script lang="ts">
 import { User } from '@/interfaces/user'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapGetters, mapMutations, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
