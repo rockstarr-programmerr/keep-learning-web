@@ -123,12 +123,10 @@ export const classroom: Module<ClassroomState, RootState> = {
       commit('REMOVE_CLASSROOM', pk)
     },
 
-    async addStudents ({ state, commit }, payload: AddStudentReq[]): Promise<void> {
+    async addStudents ({ state, dispatch }, payload: AddStudentReq[]): Promise<void> {
       if (state.currentClassroom === undefined) return
       await Api.classroom.addStudents(state.currentClassroom.pk, payload)
-      payload.forEach(student => {
-        commit('ADD_STUDENT_TO_CURRENT_CLASSROOM', student)
-      })
+      await dispatch('detail', state.currentClassroom.pk)
     },
 
     async removeStudents ({ state, commit }, payload: RemoveStudentReq[]): Promise<void> {

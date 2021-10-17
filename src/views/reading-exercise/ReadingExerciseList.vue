@@ -24,7 +24,11 @@
       class="mt-5"
     ></v-progress-circular>
 
-    <p v-else-if="noExercises" v-text="'You don\'t have any exercises yet.'" />
+    <p
+      v-else-if="noExercises"
+      class="mt-3"
+      v-text="'You don\'t have any exercises yet.'"
+    />
 
     <v-card
       v-else

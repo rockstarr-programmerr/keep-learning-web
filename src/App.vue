@@ -18,7 +18,7 @@
       {{ messageText }}
       <template #action="{ attrs }">
         <v-btn
-          color="black"
+          color="white"
           text
           icon
           v-bind="attrs"

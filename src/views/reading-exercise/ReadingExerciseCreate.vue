@@ -34,6 +34,7 @@
           color="primary"
           :loading="loading"
           @click="save"
+          min-width="110"
         >
           Save
         </v-btn>
