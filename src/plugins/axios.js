@@ -4,7 +4,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import Store from '@/store'
 import router from '@/router'
-import { getAuthorizationHeaderValue, loadRefreshToken } from '@/utils/auth'
+import { getAuthorizationHeaderValue, loadAccessToken, loadRefreshToken } from '@/utils/auth'
 import { status, assertErrCode } from '@/utils/status-codes'
 
 // Full config:  https://github.com/axios/axios#request-config
@@ -68,24 +68,39 @@ Vue.use(Plugin)
 export default Plugin
 
 function setAuthenticationHeader (headers) {
-  const accessToken = Store.getters['account/accessToken']
+  const accessToken = getAuthorizationHeaderValue()
   if (accessToken !== '') {
-    headers.Authorization = getAuthorizationHeaderValue(accessToken)
+    headers.Authorization = accessToken
   } else {
     delete headers.Authorization
   }
 }
 
 function handleResponseError (error) {
+  /* eslint-disable prefer-promise-reject-errors */
+
   if (error.response === undefined) {
     return Promise.reject(error)
   }
 
+  if (isNotFound(error)) {
+    router.push({ name: 'Http404' })
+    return Promise.reject() // Will not display unexpected error message to user
+  }
+
   if (isUnauthorized(error)) {
     /* eslint-disable brace-style */
-    /* eslint-disable prefer-promise-reject-errors */
 
-    if (refreshTokenNotValid(error)) {
+    if (isLoginRoute()) {
+      return Promise.reject(error)
+    }
+
+    else if (noToken()) {
+      goToLogin()
+      return Promise.reject() // Will not display unexpected error message to user
+    }
+
+    else if (refreshTokenNotValid(error)) {
       Store.dispatch('account/logout')
       goToLogin()
       const isExpectedError = assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
@@ -103,15 +118,6 @@ function handleResponseError (error) {
       return Promise.reject(error)
     }
 
-    else if (isLoginRoute()) {
-      return Promise.reject(error)
-    }
-
-    else if (noRefreshToken()) {
-      goToLogin()
-      return Promise.reject() // Will not display unexpected error message to user
-    }
-
     else {
       const response = tryAgainAfterRefreshingToken(error)
       return Promise.resolve(response)
@@ -123,7 +129,7 @@ function handleResponseError (error) {
 
 function isLoginRoute () {
   if (router.options !== undefined && router.options.routes !== undefined) {
-    const loginRoute = router.options.routes.find(route => route.name === 'Auth')
+    const loginRoute = router.options.routes.find(route => route.name === 'Login')
     return (
       loginRoute !== undefined &&
       location.pathname === loginRoute.path
@@ -141,7 +147,7 @@ function goToLogin () {
   // If user is at some other page, redirect them to signin page
   const next = `${window.location.pathname}${window.location.search}`
   router.push({
-    name: 'Auth',
+    name: 'Login',
     query: {
       next
     }
@@ -150,6 +156,10 @@ function goToLogin () {
 
 function isUnauthorized (error) {
   return assertErrCode(error, status.HTTP_401_UNAUTHORIZED)
+}
+
+function isNotFound (error) {
+  return assertErrCode(error, status.HTTP_404_NOT_FOUND)
 }
 
 function refreshTokenNotValid (error) {
@@ -166,8 +176,8 @@ function userInactiveOrNotFound (error) {
   )
 }
 
-function noRefreshToken () {
-  return loadRefreshToken() === ''
+function noToken () {
+  return loadAccessToken() === '' || loadRefreshToken() === ''
 }
 
 async function tryAgainAfterRefreshingToken (error) {

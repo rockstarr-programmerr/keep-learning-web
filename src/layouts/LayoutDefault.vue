@@ -1,36 +1,56 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar
       app
       color="primary"
       dark
-      dense
-      flat
+      hide-on-scroll
     >
-      <router-link
+      <v-btn
+        text
+        link
+        color="primary"
         :to="{ name: 'Home' }"
-        class="d-flex align-center white--text"
       >
-        Keep learning!
-      </router-link>
+        <v-img
+          :src="require('@/assets/default-tango.svg')"
+          max-width="100"
+        ></v-img>
+      </v-btn>
 
       <v-spacer></v-spacer>
 
       <div>
         <v-progress-circular
-          v-if="loading"
+          v-if="user === undefined"
           indeterminate
+          color="primary"
         ></v-progress-circular>
-        <span v-else>
-          {{ user.name }}
-        </span>
+        <router-link
+          v-else
+          :to="{ name: 'MyInfo' }"
+          class="white--text user-info"
+        >
+          <v-btn
+            large
+            text
+          >
+            <KLAvatar size="40"></KLAvatar>
+            <span class="ml-3">
+              {{ user.name }}
+            </span>
+          </v-btn>
+        </router-link>
       </div>
     </v-app-bar>
 
     <v-main>
-      <router-view/>
+      <slot>
+        <router-view/>
+      </slot>
     </v-main>
 
+    <!--  TODO: is this needed?
     <v-bottom-navigation
       app
       background-color="secondary"
@@ -42,41 +62,33 @@
       </v-btn>
       <v-spacer></v-spacer>
     </v-bottom-navigation>
-  </v-app>
+    -->
+  </div>
 </template>
 
 <script lang="ts">
 import { User } from '@/interfaces/user'
-import { unexpectedExc } from '@/utils'
 import { Vue, Component } from 'vue-property-decorator'
 import { mapGetters } from 'vuex'
+import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
   computed: {
     ...mapGetters({
-      user: 'account/loggedInUser',
-      hasUserInfo: 'account/hasUserInfo'
+      user: 'account/loggedInUser'
     })
+  },
+  components: {
+    KLAvatar
   }
 })
 export default class LayoutDefault extends Vue {
   user!: User
-  hasUserInfo!: boolean
-  loading = false
-
-  created (): void {
-    this.setUserInfo()
-  }
-
-  setUserInfo (): void {
-    if (!this.hasUserInfo) {
-      this.loading = true
-      this.$store.dispatch('account/getInfo')
-        .catch(unexpectedExc)
-        .finally(() => {
-          this.loading = false
-        })
-    }
-  }
 }
 </script>
+
+<style lang="scss" scoped>
+.user-info {
+  text-decoration: none;
+}
+</style>

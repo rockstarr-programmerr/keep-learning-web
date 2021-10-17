@@ -1,3 +1,5 @@
+import { User } from '../user'
+
 export declare interface LoginReq {
   email: string;
   password: string;
@@ -21,22 +23,34 @@ export declare interface RegisterTeacherReq {
   email: string;
   password: string;
   name?: string;
-  phoneNumber?: string;
+  phone_number?: string;
 }
 
-export declare interface RegisterTeacherRes {
-  email: string;
-  name: string;
-  phoneNumber: string;
+export declare interface RegisterTeacherRes extends User {}
+
+export declare interface MyInfoRes extends User {}
+
+export declare interface UserDetailRes extends User {}
+
+export declare interface UpdateProfileReq {
+  name?: User['name'];
+  phone_number?: User['phone_number'];
+  avatar?: File | null;
 }
 
-export declare interface MyInfoRes {
-  pk: number;
-  url: string;
-  name: string;
+export declare interface UpdateProfileRes extends User {}
+
+export declare interface ChangePasswordReq {
+  current_password: string;
+  new_password: string;
+}
+
+export declare interface EmailResetPasswordLinkReq {
   email: string;
-  phoneNumber: string;
-  userType: string;
-  avatar: string;
-  avatarThumbnail: string;
+}
+
+export declare interface ResetPasswordReq {
+  uid: string;
+  token: string;
+  password: string;
 }

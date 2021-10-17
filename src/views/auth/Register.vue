@@ -1,63 +1,64 @@
 <template>
-  <v-card outlined>
-    <v-card-title>
-      Keep learning
-    </v-card-title>
+  <BaseAuth>
+    <v-card class="mt-5">
+      <v-card-title>
+        Register teacher account
+      </v-card-title>
 
-    <v-card-subtitle>
-      Register as a teacher
-    </v-card-subtitle>
+      <v-card-text>
+        <v-form v-on:keyup.native.enter="register">
+          <v-text-field
+            v-model="email"
+            label="Email"
+            autofocus
+            :error-messages="emailErrs"
+            :error-count="emailErrs.length"
+          ></v-text-field>
+          <v-text-field
+            v-model="password"
+            label="Password"
+            :type="showPassword ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            :error-messages="passwordErrs"
+            :error-count="passwordErrs.length"
+          ></v-text-field>
+        </v-form>
 
-    <v-card-text>
-      <v-form>
-        <v-text-field
-          v-model="email"
-          label="Email"
-          :error-messages="emailErrs"
-          :error-count="emailErrs.length"
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          label="Password"
-          :type="showPassword ? 'text' : 'password'"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-          :error-messages="passwordErrs"
-          :error-count="passwordErrs.length"
-        ></v-text-field>
-      </v-form>
+        <div>
+          <span>Already have account?</span>
+          <router-link :to="{ name: 'Login' }">
+            Login
+          </router-link>
+        </div>
+      </v-card-text>
 
-      <div>
-        <span>Already have account?</span>
-        <a
-          href="#"
-          @click="changePage"
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          @click="register"
+          color="primary"
+          min-width="110"
+          :loading="loading"
         >
-          Login
-        </a>
-      </div>
-    </v-card-text>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        @click="register"
-        color="primary"
-        depressed
-        :loading="loading"
-      >
-        Register
-      </v-btn>
-    </v-card-actions>
-  </v-card>
+          Register
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </BaseAuth>
 </template>
 
 <script lang="ts">
 import { unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component, Emit } from 'vue-property-decorator'
+import BaseAuth from './BaseAuth.vue'
 
-@Component
+@Component({
+  components: {
+    BaseAuth
+  }
+})
 export default class Register extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown

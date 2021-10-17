@@ -17,8 +17,13 @@ export function loadRefreshToken (): string {
   return localStorage.getItem(refreshTokenKey) || ''
 }
 
-export function getAuthorizationHeaderValue (accessToken: string): string {
-  return `Bearer ${accessToken}`
+export function getAuthorizationHeaderValue (accessToken?: string): string {
+  const token = accessToken || loadAccessToken()
+  if (token === undefined || token === null || token === '') {
+    return ''
+  } else {
+    return `Bearer ${token}`
+  }
 }
 
 export function deleteAccessToken (): void {
@@ -27,4 +32,9 @@ export function deleteAccessToken (): void {
 
 export function deleteRefreshToken (): void {
   localStorage.removeItem(refreshTokenKey)
+}
+
+export function logout (): void {
+  deleteAccessToken()
+  deleteRefreshToken()
 }

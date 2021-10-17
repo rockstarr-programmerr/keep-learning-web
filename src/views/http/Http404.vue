@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    404 Not Found
+    <p>404 Not Found</p>
     <router-link :to="{ name: 'Home' }">
       Home
     </router-link>

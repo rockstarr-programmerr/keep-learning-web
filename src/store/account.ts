@@ -1,5 +1,5 @@
 import { Api } from '@/api'
-import { LoginReq, RegisterTeacherReq } from '@/interfaces/api/account'
+import { LoginReq, RegisterTeacherReq, UpdateProfileReq } from '@/interfaces/api/account'
 import { User } from '@/interfaces/user'
 import { loadAccessToken, loadRefreshToken, setAccessToken, setRefreshToken } from '@/utils/auth'
 import { Module } from 'vuex'
@@ -24,7 +24,9 @@ export const account: Module<AccountState, RootState> = {
     loggedInUser: state => state.loggedInUser,
     hasUserInfo: state => state.loggedInUser !== undefined,
     accessToken: state => state.accessToken,
-    refreshToken: state => state.refreshToken
+    refreshToken: state => state.refreshToken,
+    isTeacher: state => state.loggedInUser !== undefined && state.loggedInUser.user_type === 'teacher',
+    isStudent: state => state.loggedInUser !== undefined && state.loggedInUser.user_type === 'student'
   },
 
   mutations: {
@@ -46,7 +48,8 @@ export const account: Module<AccountState, RootState> = {
   actions: {
     // eslint-disable-next-line
     async registerTeacher ({ commit }, payload: RegisterTeacherReq): Promise<void> {
-      await Api.account.registerTeacher(payload)
+      const data = await Api.account.registerTeacher(payload)
+      commit('SET_LOGGED_IN_USER', data)
     },
 
     async login ({ commit }, payload: LoginReq): Promise<void> {
@@ -72,6 +75,11 @@ export const account: Module<AccountState, RootState> = {
 
     async getInfo ({ commit }): Promise<void> {
       const data = await Api.account.getMyInfo()
+      commit('SET_LOGGED_IN_USER', data)
+    },
+
+    async updateProfile ({ commit }, payload: UpdateProfileReq): Promise<void> {
+      const data = await Api.account.updateProfile(payload)
       commit('SET_LOGGED_IN_USER', data)
     }
   }

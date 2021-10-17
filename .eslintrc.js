@@ -25,5 +25,8 @@ module.exports = {
         mocha: true
       }
     }
+  ],
+  ignorePatterns: [
+    '**/ckeditor5/**'
   ]
 }
