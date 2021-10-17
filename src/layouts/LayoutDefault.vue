@@ -1,5 +1,5 @@
 <template>
-  <v-app id="keep-learning-app">
+  <div>
     <v-app-bar
       app
       color="primary"
@@ -45,6 +45,23 @@
       </slot>
     </v-main>
 
+    <v-snackbar
+      :value="messageShow"
+      @input="setMessage"
+    >
+      {{ messageText }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="hideMessage"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
     <!--  TODO: is this needed?
     <v-bottom-navigation
       app
@@ -58,19 +75,29 @@
       <v-spacer></v-spacer>
     </v-bottom-navigation>
     -->
-  </v-app>
+  </div>
 </template>
 
 <script lang="ts">
 import { User } from '@/interfaces/user'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
   computed: {
     ...mapGetters({
       user: 'account/loggedInUser'
+    }),
+    ...mapState('message', {
+      messageShow: 'show',
+      messageText: 'text'
+    })
+  },
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE',
+      hideMessage: 'HIDE_MESSAGE'
     })
   },
   components: {
@@ -79,6 +106,19 @@ import KLAvatar from '@/components/KLAvatar.vue'
 })
 export default class LayoutDefault extends Vue {
   user!: User
+
+  messageShow!: boolean
+  messageText!: string
+  showMessage!: CallableFunction
+  hideMessage!: CallableFunction
+
+  setMessage (show: boolean): void {
+    if (show) {
+      this.showMessage()
+    } else {
+      this.hideMessage()
+    }
+  }
 }
 </script>
 

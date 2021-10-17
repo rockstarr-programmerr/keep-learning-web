@@ -136,7 +136,7 @@ import { VForm } from '@/interfaces/vuetify'
 import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 import { Api } from '@/api'
 
@@ -144,6 +144,11 @@ import { Api } from '@/api'
   computed: {
     ...mapState('classroom', {
       classroom: 'currentClassroom'
+    })
+  },
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
     })
   },
   components: {
@@ -185,6 +190,7 @@ export default class ClassroomStudents extends Vue {
    */
   showAddStudent = false
   loadingAddStudent = false
+  showMessage!: CallableFunction
 
   name = ''
   email = ''
@@ -206,6 +212,7 @@ export default class ClassroomStudents extends Vue {
     this.$store.dispatch('classroom/addStudents', [payload])
       .then(() => {
         (this.$refs.addStudentForm as VForm).reset()
+        this.showMessage('Student added.')
       })
       .catch(err => {
         if (assertErrCode(err, status.HTTP_400_BAD_REQUEST)) {
@@ -249,6 +256,7 @@ export default class ClassroomStudents extends Vue {
     this.$store.dispatch('classroom/removeStudents', [payload])
       .then(() => {
         this.removeConfirm = false
+        this.showMessage('Student removed.')
       })
       .catch(unexpectedExc)
       .finally(() => {
@@ -263,6 +271,9 @@ export default class ClassroomStudents extends Vue {
     Api.classroom.resendPasswordEmail(this.classroom.pk, {
       email: student.email
     })
+      .then(() => {
+        this.showMessage('Email sent.')
+      })
       .catch(unexpectedExc)
   }
 }

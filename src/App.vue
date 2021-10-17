@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <v-app id="keep-learning-app">
     <component v-if="initDone" :is="layout"/>
-    <v-app v-else>
-      <v-progress-linear indeterminate></v-progress-linear>
-    </v-app>
-  </div>
+    <v-progress-linear
+      v-else
+      indeterminate
+    ></v-progress-linear>
+  </v-app>
 </template>
 
 <script lang="ts">
