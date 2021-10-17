@@ -45,7 +45,10 @@
             </v-icon>
             Edit exercise
           </v-btn>
-          <div v-html="exercise.content"></div>
+          <div
+            v-html="exercise.content"
+            class="mt-1"
+          ></div>
         </v-col>
         <v-col
           cols="6"
@@ -147,8 +150,14 @@ import { Mixins, Component } from 'vue-property-decorator'
 import { ReadingExerciseMixin } from '@/mixins/reading-exercise-mixin'
 import { unexpectedExc } from '@/utils'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import { mapMutations } from 'vuex'
 
 @Component({
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
+    })
+  },
   components: {
     KLDialogConfirm
   }
@@ -184,6 +193,7 @@ export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) 
    */
   confirmDelete = false
   deleting = false
+  showMessage!: CallableFunction
 
   deleteExercise (): void {
     if (this.deleting) return
@@ -191,6 +201,7 @@ export default class ReadingExerciseDetail extends Mixins(ReadingExerciseMixin) 
 
     this.$store.dispatch('readingExercise/delete', this.exercise.pk)
       .then(() => {
+        this.showMessage('Exercise deleted.')
         this.$router.push({ name: 'ReadingExerciseList' })
       })
       .catch(unexpectedExc)

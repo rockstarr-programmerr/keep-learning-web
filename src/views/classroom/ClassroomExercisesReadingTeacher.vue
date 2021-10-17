@@ -105,7 +105,7 @@ import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { unexpectedExc } from '@/utils'
 import { PAGE_SIZE } from '@/utils/constants'
 import { Vue, Component } from 'vue-property-decorator'
-import { mapState } from 'vuex'
+import { mapMutations, mapState } from 'vuex'
 
 declare interface _Exercise extends ReadingExercise {
   isChosen: boolean
@@ -120,6 +120,11 @@ declare interface _Exercise extends ReadingExercise {
     ...mapState('classroom', {
       classroom: 'currentClassroom'
     })
+  },
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
+    })
   }
 })
 export default class ClassroomExercisesReadingTeacher extends Vue {
@@ -133,6 +138,7 @@ export default class ClassroomExercisesReadingTeacher extends Vue {
   pagination!: PaginatedRes
   classroom!: Classroom
   page = 1
+  showMessage!: CallableFunction
 
   created (): void {
     this.setExercises()
@@ -180,6 +186,9 @@ export default class ClassroomExercisesReadingTeacher extends Vue {
     promises = promises.filter(promise => promise !== null)
 
     Promise.all(promises)
+      .then(() => {
+        this.showMessage('Exercises saved.')
+      })
       .catch(unexpectedExc)
       .finally(() => {
         this.saving = false

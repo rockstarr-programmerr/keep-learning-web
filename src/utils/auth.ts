@@ -18,10 +18,11 @@ export function loadRefreshToken (): string {
 }
 
 export function getAuthorizationHeaderValue (accessToken?: string): string {
-  if (accessToken !== undefined) {
-    return `Bearer ${accessToken}`
+  const token = accessToken || loadAccessToken()
+  if (token === undefined || token === null || token === '') {
+    return ''
   } else {
-    return `Bearer ${loadAccessToken()}`
+    return `Bearer ${token}`
   }
 }
 

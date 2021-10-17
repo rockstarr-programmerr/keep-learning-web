@@ -68,9 +68,9 @@ Vue.use(Plugin)
 export default Plugin
 
 function setAuthenticationHeader (headers) {
-  const accessToken = Store.getters['account/accessToken']
+  const accessToken = getAuthorizationHeaderValue()
   if (accessToken !== '') {
-    headers.Authorization = getAuthorizationHeaderValue(accessToken)
+    headers.Authorization = accessToken
   } else {
     delete headers.Authorization
   }

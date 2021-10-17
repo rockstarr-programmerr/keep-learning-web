@@ -138,6 +138,9 @@ import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
   methods: {
     ...mapMutations('classroom', {
       setCurrentClassroom: 'SET_CURRENT_CLASSROOM'
+    }),
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
     })
   }
 })
@@ -147,6 +150,7 @@ export default class LayoutClassroomTeacher extends Vue {
 
   classroom!: Classroom
   setCurrentClassroom!: CallableFunction
+  showMessage!: CallableFunction
 
   get breadcrumbs (): unknown[] {
     if (this.classroom === undefined) return []
@@ -199,6 +203,7 @@ export default class LayoutClassroomTeacher extends Vue {
     this.$store.dispatch('classroom/delete', this.classroom.pk)
       .then(() => {
         this.$router.push({ name: 'ClassroomList' })
+        this.showMessage('Classroom deleted.')
       })
       .catch(unexpectedExc)
       .finally(() => {

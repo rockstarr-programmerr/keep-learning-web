@@ -5,16 +5,34 @@
       v-else
       indeterminate
     ></v-progress-linear>
+
+    <v-snackbar
+      :value="messageShow"
+      @input="setMessage"
+    >
+      {{ messageText }}
+      <template #action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="hideMessage"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 import LayoutDefault from '@/layouts/LayoutDefault.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations, mapState } from 'vuex'
 import { User } from './interfaces/user'
 import { unexpectedExc } from './utils'
 import { assertErrCode, status } from './utils/status-codes'
+import { noAuthenRoutes } from './router'
 
 @Component({
   components: {
@@ -23,20 +41,26 @@ import { assertErrCode, status } from './utils/status-codes'
   computed: {
     ...mapGetters('account', {
       user: 'loggedInUser'
+    }),
+    ...mapState('message', {
+      messageShow: 'show',
+      messageText: 'text'
+    })
+  },
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE',
+      hideMessage: 'HIDE_MESSAGE'
     })
   }
 })
 export default class App extends Vue {
+  /**
+   * Init
+   */
   user!: User
   loading = false
   initDone = false
-
-  noAuthenRoutes = [
-    'Login',
-    'Register',
-    'ResetPassword',
-    'NewPassword'
-  ]
 
   created (): void {
     this.setUserInfo()
@@ -44,7 +68,7 @@ export default class App extends Vue {
 
   setUserInfo (): void {
     const routeName = this.$route.name
-    if (this.noAuthenRoutes.includes(routeName as string)) {
+    if (noAuthenRoutes.includes(routeName as string)) {
       this.initDone = true
       return
     }
@@ -63,6 +87,10 @@ export default class App extends Vue {
         this.initDone = true
       })
   }
+
+  /**
+   * Layout
+   */
 
   get layout (): typeof Vue {
     const meta = this.$route.meta
@@ -88,6 +116,22 @@ export default class App extends Vue {
     }
 
     return LayoutDefault
+  }
+
+  /**
+   * Message
+   */
+  messageShow!: boolean
+  messageText!: string
+  showMessage!: CallableFunction
+  hideMessage!: CallableFunction
+
+  setMessage (show: boolean): void {
+    if (show) {
+      this.showMessage()
+    } else {
+      this.hideMessage()
+    }
   }
 }
 </script>

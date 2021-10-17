@@ -45,23 +45,6 @@
       </slot>
     </v-main>
 
-    <v-snackbar
-      :value="messageShow"
-      @input="setMessage"
-    >
-      {{ messageText }}
-      <template #action="{ attrs }">
-        <v-btn
-          color="pink"
-          text
-          v-bind="attrs"
-          @click="hideMessage"
-        >
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
-
     <!--  TODO: is this needed?
     <v-bottom-navigation
       app
@@ -88,16 +71,6 @@ import KLAvatar from '@/components/KLAvatar.vue'
   computed: {
     ...mapGetters({
       user: 'account/loggedInUser'
-    }),
-    ...mapState('message', {
-      messageShow: 'show',
-      messageText: 'text'
-    })
-  },
-  methods: {
-    ...mapMutations('message', {
-      showMessage: 'SHOW_MESSAGE',
-      hideMessage: 'HIDE_MESSAGE'
     })
   },
   components: {
@@ -106,19 +79,6 @@ import KLAvatar from '@/components/KLAvatar.vue'
 })
 export default class LayoutDefault extends Vue {
   user!: User
-
-  messageShow!: boolean
-  messageText!: string
-  showMessage!: CallableFunction
-  hideMessage!: CallableFunction
-
-  setMessage (show: boolean): void {
-    if (show) {
-      this.showMessage()
-    } else {
-      this.hideMessage()
-    }
-  }
 }
 </script>
 

@@ -46,11 +46,18 @@
 
 <script lang="ts">
 import { Api } from '@/api'
-import { snakeCaseToCamelCase } from '@/utils'
+import { snakeCaseToCamelCase, unexpectedExc } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
+import { mapMutations } from 'vuex'
 
-@Component
+@Component({
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
+    })
+  }
+})
 export default class ChangePassword extends Vue {
   // eslint-disable-next-line no-undef
   [key: string]: unknown
@@ -70,6 +77,7 @@ export default class ChangePassword extends Vue {
   showCurrentPassword = false
   showNewPassword = false
   loading = false
+  showMessage!: CallableFunction
 
   changePassword (): void {
     if (this.loading) return
@@ -80,6 +88,7 @@ export default class ChangePassword extends Vue {
       new_password: this.newPassword
     })
       .then(() => {
+        this.showMessage('Password changed.')
         this.$router.push({ name: 'MyInfo' })
       })
       .catch(err => {
@@ -91,6 +100,8 @@ export default class ChangePassword extends Vue {
           })
         } else if (assertErrCode(err, status.HTTP_403_FORBIDDEN)) {
           this.currentPasswordErrs = [err.response.data.detail]
+        } else {
+          unexpectedExc(err)
         }
       })
       .finally(() => {

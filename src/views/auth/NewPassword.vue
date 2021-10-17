@@ -45,14 +45,22 @@ import { Api } from '@/api'
 import { snakeCaseToCamelCase } from '@/utils'
 import { assertErrCode, status } from '@/utils/status-codes'
 import { Vue, Component } from 'vue-property-decorator'
+import { mapMutations } from 'vuex'
 
-@Component
+@Component({
+  methods: {
+    ...mapMutations('message', {
+      showMessage: 'SHOW_MESSAGE'
+    })
+  }
+})
 export default class NewPassword extends Vue {
   // eslint-disable-next-line no-undef
   [index: string]: unknown
 
   token = ''
   uid = ''
+  showMessage!: CallableFunction
 
   created (): void {
     this.token = (this.$route.query.token as string) || ''
@@ -74,6 +82,7 @@ export default class NewPassword extends Vue {
       password: this.password
     })
       .then(() => {
+        this.showMessage('Password reset completed. You can login with your new password.')
         this.$router.push({ name: 'Login' })
       })
       .catch(err => {
