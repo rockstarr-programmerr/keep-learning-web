@@ -134,9 +134,9 @@ export default class ReadingExerciseCreate extends Vue {
 }
 
 .ck-content {
-  border-bottom: 1px solid rgb(196, 196, 196);
-  border-left: 1px solid rgb(196, 196, 196);
-  border-right: 1px solid rgb(196, 196, 196);
+  border-bottom: 1px solid rgb(196, 196, 196) !important;
+  border-left: 1px solid rgb(196, 196, 196) !important;
+  border-right: 1px solid rgb(196, 196, 196) !important;
   min-height: 300px;
 }
 

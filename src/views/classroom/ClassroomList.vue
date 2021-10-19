@@ -16,6 +16,7 @@
       </v-icon>
       New classroom
     </v-btn>
+    <br>
 
     <v-progress-circular
       v-if="loading"
