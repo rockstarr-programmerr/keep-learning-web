@@ -89,7 +89,10 @@ export default class ProfileUpdate extends Vue {
     this.phoneNumber = this.user.phone_number
 
     if (this.user.avatar !== null) {
-      Vue.axios.get(this.user.avatar)
+      Vue.axios.get(this.user.avatar, {
+        // @ts-expect-error this is our custom config
+        noAuthorization: true
+      })
         .then(res => {
           if (this.user.avatar !== null) {
             const parts = this.user.avatar.split('/')
