@@ -27,7 +27,12 @@ const _axios = axios.create(config)
 _axios.interceptors.request.use(
   function (config) {
     // Do something before request is sent
-    setAuthenticationHeader(config.headers.common)
+    if (
+      config.noAuthorization === undefined ||
+      config.noAuthorization === false
+    ) {
+      setAuthenticationHeader(config.headers.common)
+    }
     return config
   },
   function (error) {
