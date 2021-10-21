@@ -14,10 +14,10 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.6607dba6d4086a3b9172e631486b04e2.js"
+  "/precache-manifest.c9a6a8c0adfbf7ebfb373a387cbc45dd.js"
 );
 
-workbox.core.setCacheNameDetails({prefix: "kl_web"});
+workbox.core.setCacheNameDetails({prefix: "tango"});
 
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {

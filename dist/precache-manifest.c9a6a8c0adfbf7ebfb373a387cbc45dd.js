@@ -20,7 +20,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/img/default-tango.f3573521.svg"
   },
   {
-    "revision": "bce81c18a79d626dacafe6e6a3f0e190",
+    "revision": "410cb9480e3f4e527f6f0cc94e8e6d8f",
     "url": "/index.html"
   },
   {
@@ -32,7 +32,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/js/chunk-vendors.fa1b011d.js"
   },
   {
-    "revision": "0fbee17a86a9e1538e0251923a710178",
+    "revision": "37b7d61326199d24a0944ea70c52f577",
     "url": "/manifest.json"
   },
   {
