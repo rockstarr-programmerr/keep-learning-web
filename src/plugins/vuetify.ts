@@ -15,7 +15,7 @@ export default new Vuetify({
           base: colors.pink.lighten1
         },
         secondary: {
-          base: colors.pink.lighten2
+          base: colors.purple.lighten1
         },
         anchor: colors.pink.darken2,
         success: colors.green.base,

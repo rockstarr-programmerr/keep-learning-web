@@ -19,4 +19,5 @@ export declare interface ReadingAnswer {
   content: string;
   question_type?: ReadingQuestion['question_type'];
   choices?: _AnswerChoice[];
+  passage?: number;
 }

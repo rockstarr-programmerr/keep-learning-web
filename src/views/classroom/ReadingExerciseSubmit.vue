@@ -48,7 +48,10 @@
           <div v-html="exercise.content"></div>
         </v-col>
         <v-col cols="6" class="exercise-col">
-          <p class="mb-0">Your answers</p>
+          <p class="font-weight-bold mb-0">
+            Passage {{ currentPassage }}:
+            questions {{ firstQuestionNum }}-{{ lastQuestionNum }}
+          </p>
           <v-row>
             <v-col
               v-for="(answers, index) of [answersCol1, answersCol2]"
@@ -81,6 +84,44 @@
               </v-simple-table>
             </v-col>
           </v-row>
+
+          <v-stepper
+            v-model="currentPassage"
+            non-linear
+            class="mt-7"
+          >
+            <v-stepper-header>
+              <v-stepper-step
+                step="1"
+                editable
+                :complete="passage1Completed"
+                :color="passage1Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 1
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step
+                step="2"
+                editable
+                :complete="passage2Completed"
+                :color="passage2Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 2
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step
+                step="3"
+                editable
+                :complete="passage3Completed"
+                :color="passage3Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 3
+              </v-stepper-step>
+            </v-stepper-header>
+          </v-stepper>
         </v-col>
       </v-row>
       <v-divider></v-divider>
@@ -180,6 +221,7 @@ export default class ReadingExerciseSubmit extends Vue {
    * Answers
    */
   answers: ReadingAnswer[] = []
+  currentPassage = '1'
 
   setAnswers (): void {
     this.answers = this.questions.map(question => {
@@ -207,21 +249,62 @@ export default class ReadingExerciseSubmit extends Vue {
         question_number: question.number,
         content: '',
         question_type: question.question_type,
-        choices
+        choices,
+        passage: question.passage
       }
     })
   }
 
+  get currentPassageAnswers (): ReadingAnswer[] {
+    return this.answers.filter(answer => answer.passage?.toString() === this.currentPassage)
+  }
+
+  get firstQuestionNum (): string {
+    const firstQuestion = this.currentPassageAnswers[0]
+    if (firstQuestion !== undefined) {
+      return firstQuestion.question_number.toString()
+    } else {
+      return ''
+    }
+  }
+
+  get lastQuestionNum (): string {
+    const lastQuestion = this.currentPassageAnswers[this.currentPassageAnswers.length - 1]
+    if (lastQuestion !== undefined) {
+      return lastQuestion.question_number.toString()
+    } else {
+      return ''
+    }
+  }
+
   get answersCol1 (): ReadingAnswer[] {
-    return this.answers.filter(answer => answer.question_number <= 20)
+    return this.currentPassageAnswers.slice(0, Math.ceil(this.currentPassageAnswers.length / 2))
   }
 
   get answersCol2 (): ReadingAnswer[] {
-    return this.answers.filter(answer => answer.question_number > 20)
+    return this.currentPassageAnswers.slice(Math.ceil(this.currentPassageAnswers.length / 2))
   }
 
   get allAnswered (): boolean {
     return this.answers.every(answer => answer.content !== '')
+  }
+
+  get passage1Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 1)
+      .every(answer => answer.content !== '')
+  }
+
+  get passage2Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 2)
+      .every(answer => answer.content !== '')
+  }
+
+  get passage3Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 3)
+      .every(answer => answer.content !== '')
   }
 
   /**
@@ -241,6 +324,7 @@ export default class ReadingExerciseSubmit extends Vue {
       .map(answer => {
         delete answer.question_type
         delete answer.choices
+        delete answer.passage
         return answer
       })
 
