@@ -34,7 +34,7 @@ export const readingExercise = {
     await Vue.axios.delete(endpoint)
   },
 
-  async submitAnswers (pk: ReadingExercise['pk'], payload: ReadingExerciseSubmitAnswersReq[]): Promise<void> {
+  async submitAnswers (pk: ReadingExercise['pk'], payload: ReadingExerciseSubmitAnswersReq): Promise<void> {
     const endpoint = replacePk(endpoints.readingExercise.submitAnswers, pk)
     await Vue.axios.post(endpoint, payload)
   }

@@ -11,13 +11,29 @@
     </p>
 
     <div v-else>
-      <h1>{{ report.exercise.identifier }}</h1>
-      <p
-        v-if="isTeacher && student !== null"
-        class="mb-2"
+      <v-row
+        justify="space-between"
+        align="center"
       >
-        <strong>{{ student.name }} ({{ student.email }})</strong>
-      </p>
+        <v-col cols="auto">
+          <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+        </v-col>
+        <v-col
+          v-if="isTeacher && student !== null"
+          cols="auto"
+        >
+          <v-list-item>
+            <v-list-item-avatar>
+              <KLAvatar :user="student"></KLAvatar>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="font-weight-bold">
+                {{ student.name }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-col>
+      </v-row>
       <v-divider></v-divider>
 
       <v-row class="mt-0">
@@ -34,6 +50,14 @@
                 Overall
               </v-card-title>
               <v-card-text>
+                <v-row class="font-weight-bold">
+                  <v-col cols="6">
+                    Time taken: {{ report.time_taken }}
+                  </v-col>
+                  <v-col cols="6">
+                    Submitted at: {{ formatDatetime(report.submit_datetime) }}
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col cols="6">
                     <v-row>
@@ -85,7 +109,9 @@
                     <tr>
                       <th>Question</th>
                       <th>Result</th>
-                      <th>Your answer</th>
+                      <th>
+                        {{ isTeacher ? "Student's answer" : "Your answer" }}
+                      </th>
                       <th>Correct answer</th>
                     </tr>
                   </thead>
@@ -131,22 +157,29 @@
 
 <script lang="ts">
 import { Api } from '@/api'
-import { ReadingExerciseReport } from '@/interfaces/classroom'
+import { Classroom, ReadingExerciseReport } from '@/interfaces/classroom'
 import { ReadingExercise } from '@/interfaces/reading-exercise'
 import { User } from '@/interfaces/user'
 import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { Location } from 'vue-router'
 import { mapGetters, mapState } from 'vuex'
+import KLAvatar from '@/components/KLAvatar.vue'
 
 @Component({
   computed: {
     ...mapState('readingExercise', {
       exercise: 'currentReadingExercise'
     }),
+    ...mapState('classroom', {
+      classroom: 'currentClassroom'
+    }),
     ...mapGetters('account', [
       'isTeacher'
     ])
+  },
+  components: {
+    KLAvatar
   }
 })
 export default class ReadingExerciseSubmitResult extends Vue {
@@ -154,12 +187,46 @@ export default class ReadingExerciseSubmitResult extends Vue {
   @Prop(Number) readonly exercisePk!: number
   @Prop(Number) readonly studentPk!: number
 
-  exercise!: ReadingExercise
-  report: ReadingExerciseReport | null = null
-  student: User | null = null
-  isTeacher!: boolean
+  get breadcrumbs (): unknown[] {
+    if (this.exercise === undefined) return []
 
+    let classroomLink
+    if (this.isTeacher) {
+      classroomLink = {
+        text: this.classroomName,
+        to: {
+          name: 'ClassroomOverviewStudentReport',
+          params: {
+            pk: this.pk,
+            studentPk: this.studentPk
+          }
+        },
+        exact: true
+      }
+    } else {
+      classroomLink = {
+        text: this.classroomName,
+        to: {
+          name: 'ClassroomExercisesReading',
+          params: { pk: this.pk }
+        },
+        exact: true
+      }
+    }
+
+    return [
+      { text: 'Home', to: { name: 'Home' }, exact: true },
+      { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true },
+      classroomLink,
+      { text: this.exercise.identifier, disabled: true }
+    ]
+  }
+
+  /**
+   * Init
+   */
   loading = false
+  isTeacher!: boolean
 
   async created (): Promise<void> {
     this.loading = true
@@ -179,9 +246,38 @@ export default class ReadingExerciseSubmitResult extends Vue {
     }
   }
 
+  /**
+   * Classroom
+   */
+  classroom!: Classroom
+
+  setClassroom (): void {
+    if (this.classroom !== undefined) {
+      this.$store.dispatch('classroom/detail', this.pk)
+    }
+  }
+
+  get classroomName (): string {
+    if (this.classroom !== undefined) {
+      return this.classroom.name
+    } else {
+      return 'Classroom'
+    }
+  }
+
+  /**
+   * Exercise
+   */
+  exercise!: ReadingExercise
+
   setExercise (): Promise<unknown> {
     return this.$store.dispatch('readingExercise/detail', this.exercisePk)
   }
+
+  /**
+   * Report
+   */
+  report: ReadingExerciseReport | null = null
 
   setReport (): Promise<ReadingExerciseReport[]> {
     return Api.classroom.getStudentReport(this.pk, {
@@ -191,6 +287,11 @@ export default class ReadingExerciseSubmitResult extends Vue {
     })
   }
 
+  /**
+   * Student
+   */
+  student: User | null = null
+
   setStudent (): void {
     Api.account.userDetail(this.studentPk)
       .then(data => {
@@ -199,6 +300,9 @@ export default class ReadingExerciseSubmitResult extends Vue {
       .catch(unexpectedExc)
   }
 
+  /**
+   * Utils
+   */
   formatAnswer (answer: string): string {
     if (answer === 'NOT_GIVEN') {
       answer = 'NOT GIVEN'
@@ -214,6 +318,11 @@ export default class ReadingExerciseSubmitResult extends Vue {
       return answer
     })
     return answers.join(' / ')
+  }
+
+  formatDatetime (dt: string): string {
+    const datetime = new Date(dt)
+    return datetime.toLocaleString()
   }
 
   get goBackLink (): Location {

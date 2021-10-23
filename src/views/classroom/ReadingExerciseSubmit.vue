@@ -23,7 +23,7 @@
               Time taken:
             </v-col>
             <v-col cols="auto" class="ml-3 mr-5">
-              <KLTimer></KLTimer>
+              <KLTimer v-model="timeTaken"></KLTimer>
             </v-col>
             <v-divider vertical></v-divider>
             <v-col cols="auto" class="ml-5">
@@ -356,12 +356,13 @@ export default class ReadingExerciseSubmit extends Vue {
   confirmSubmit = false
   loadingSubmit = false
   user!: User
+  timeTaken = 0
 
   submitAnswers (): void {
     if (this.loadingSubmit) return
     this.loadingSubmit = true
 
-    const payload: ReadingExerciseSubmitAnswersReq[] = this.answers
+    const answers: ReadingAnswer[] = this.answers
       .filter(answer => answer.content !== '')
       .map(answer => {
         delete answer.question_type
@@ -369,6 +370,11 @@ export default class ReadingExerciseSubmit extends Vue {
         delete answer.passage
         return answer
       })
+
+    const payload: ReadingExerciseSubmitAnswersReq = {
+      time_taken: this.timeTaken,
+      answers
+    }
 
     Api.readingExercise.submitAnswers(this.exercise.pk, payload)
       .catch(unexpectedExc)

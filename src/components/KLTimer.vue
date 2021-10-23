@@ -10,12 +10,27 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component
 export default class KLTimer extends Vue {
-  minutes = 0
-  seconds = 0
+  @Prop({ type: Number, default: 0 }) readonly value!: number
+
+  get secondsElapsed (): number {
+    return this.value
+  }
+
+  set secondsElapsed (seconds: number) {
+    this.$emit('input', seconds)
+  }
+
+  get minutes (): number {
+    return Math.floor(this.secondsElapsed / 60)
+  }
+
+  get seconds (): number {
+    return Math.floor(this.secondsElapsed - (this.minutes * 60))
+  }
 
   padZero (num: number): string {
     return num.toString().padStart(2, '0')
@@ -29,9 +44,8 @@ export default class KLTimer extends Vue {
     const start = Date.now()
     setInterval(() => {
       const delta = Date.now() - start // Miliseconds elapsed since `start`
-      this.minutes = Math.floor(delta / 1000 / 60)
-      this.seconds = Math.floor((delta / 1000) - (this.minutes * 60))
-    }, 500)
+      this.secondsElapsed = Math.floor(delta / 1000)
+    }, 100)
   }
 }
 </script>

@@ -27,6 +27,7 @@ export declare interface ReadingSubmissionResult {
 
 export declare interface ReadingExerciseReport {
   exercise: _ReadingExercise;
+  time_taken: string;
   passage_1_total: number;
   passage_2_total: number;
   passage_3_total: number;
