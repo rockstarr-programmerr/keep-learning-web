@@ -158,4 +158,8 @@ export default class App extends Vue {
 .container-xs {
   width: 720px;
 }
+
+.v-breadcrumbs {
+  padding-left: 0 !important;
+}
 </style>

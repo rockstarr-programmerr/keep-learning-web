@@ -7,15 +7,58 @@
     ></v-progress-circular>
 
     <div v-else>
-      <h1>{{ exercise.identifier }}</h1>
+      <v-row
+        justify="space-between"
+        align="center"
+      >
+        <v-col cols="auto">
+          <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+        </v-col>
+        <v-col cols="auto">
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col cols="auto">
+              Time taken:
+            </v-col>
+            <v-col cols="auto" class="ml-3 mr-5">
+              <KLTimer v-model="timeTaken"></KLTimer>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col cols="auto" class="ml-5">
+              <v-btn
+                link
+                text
+                :to="{
+                  name: 'ClassroomExercisesReading',
+                  params: { pk }
+                }"
+              >
+                Back
+              </v-btn>
+              <v-btn
+                class="ml-3"
+                color="primary"
+                @click="confirmSubmit = true"
+              >
+                Submit
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <v-divider></v-divider>
 
-      <v-row class="mt-0">
+      <v-row class="my-0">
         <v-col cols="6" class="exercise-col">
           <div v-html="exercise.content"></div>
         </v-col>
         <v-col cols="6" class="exercise-col">
-          <p class="mb-0">Your answers</p>
+          <p class="font-weight-bold mb-0">
+            Passage {{ currentPassage }}:
+            questions {{ firstQuestionNum }}-{{ lastQuestionNum }}
+          </p>
           <v-row>
             <v-col
               v-for="(answers, index) of [answersCol1, answersCol2]"
@@ -43,21 +86,52 @@
                       ></v-text-field>
                     </td>
                   </tr>
+                  <tr></tr>  <!-- Work around to show last row's input entirely -->
                 </tbody>
               </v-simple-table>
             </v-col>
           </v-row>
 
-          <v-btn
-            color="primary"
-            class="d-block mx-auto mt-7"
-            width="150"
-            @click="confirmSubmit = true"
+          <v-stepper
+            v-model="currentPassage"
+            non-linear
+            class="mt-7"
           >
-            Submit
-          </v-btn>
+            <v-stepper-header>
+              <v-stepper-step
+                step="1"
+                editable
+                :complete="passage1Completed"
+                :color="passage1Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 1
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step
+                step="2"
+                editable
+                :complete="passage2Completed"
+                :color="passage2Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 2
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step
+                step="3"
+                editable
+                :complete="passage3Completed"
+                :color="passage3Completed ? 'secondary' : 'primary'"
+                edit-icon="mdi-check"
+              >
+                Passage 3
+              </v-stepper-step>
+            </v-stepper-header>
+          </v-stepper>
         </v-col>
       </v-row>
+      <v-divider></v-divider>
     </div>
 
     <KLDialogConfirm
@@ -80,6 +154,15 @@
       Are you sure to submit?
       You cannot edit your answers after this.
     </KLDialogConfirm>
+
+    <KLDialogConfirm
+      v-model="confirmLeave"
+      @confirm="goNextRoute"
+      @cancel="confirmLeave = false"
+    >
+      Are you sure to leave this page?
+      <strong>Your current progress will be lost!</strong>
+    </KLDialogConfirm>
   </v-container>
 </template>
 
@@ -93,6 +176,8 @@ import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import KLTimer from '@/components/KLTimer.vue'
+import { Classroom } from '@/interfaces/classroom'
 
 @Component({
   computed: {
@@ -102,12 +187,16 @@ import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
     ...mapState('readingExercise', {
       questions: 'currentQuestions'
     }),
+    ...mapState('classroom', {
+      classroom: 'currentClassroom'
+    }),
     ...mapState('account', {
       user: 'loggedInUser'
     })
   },
   components: {
-    KLDialogConfirm
+    KLDialogConfirm,
+    KLTimer
   }
 })
 export default class ReadingExerciseSubmit extends Vue {
@@ -115,8 +204,39 @@ export default class ReadingExerciseSubmit extends Vue {
   @Prop(Number) readonly exercisePk!: number
 
   async created (): Promise<void> {
+    this.preventLeavePage()
     await this.setQuestions()
     this.setAnswers()
+    this.setClassroom()
+  }
+
+  get breadcrumbs (): unknown[] {
+    if (this.exercise === undefined) return []
+    return [
+      { text: 'Home', to: { name: 'Home' }, exact: true },
+      { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true },
+      { text: this.classroomName, to: { name: 'ClassroomExercisesReading', params: { pk: this.pk } }, exact: true },
+      { text: this.exercise.identifier, disabled: true }
+    ]
+  }
+
+  /**
+   * Classroom
+   */
+  classroom!: Classroom
+
+  setClassroom (): void {
+    if (this.classroom !== undefined) {
+      this.$store.dispatch('classroom/detail', this.pk)
+    }
+  }
+
+  get classroomName (): string {
+    if (this.classroom !== undefined) {
+      return this.classroom.name
+    } else {
+      return 'Classroom'
+    }
   }
 
   /**
@@ -143,6 +263,7 @@ export default class ReadingExerciseSubmit extends Vue {
    * Answers
    */
   answers: ReadingAnswer[] = []
+  currentPassage = '1'
 
   setAnswers (): void {
     this.answers = this.questions.map(question => {
@@ -170,38 +291,90 @@ export default class ReadingExerciseSubmit extends Vue {
         question_number: question.number,
         content: '',
         question_type: question.question_type,
-        choices
+        choices,
+        passage: question.passage
       }
     })
   }
 
+  get currentPassageAnswers (): ReadingAnswer[] {
+    return this.answers.filter(answer => answer.passage?.toString() === this.currentPassage)
+  }
+
+  get firstQuestionNum (): string {
+    const firstQuestion = this.currentPassageAnswers[0]
+    if (firstQuestion !== undefined) {
+      return firstQuestion.question_number.toString()
+    } else {
+      return ''
+    }
+  }
+
+  get lastQuestionNum (): string {
+    const lastQuestion = this.currentPassageAnswers[this.currentPassageAnswers.length - 1]
+    if (lastQuestion !== undefined) {
+      return lastQuestion.question_number.toString()
+    } else {
+      return ''
+    }
+  }
+
   get answersCol1 (): ReadingAnswer[] {
-    return this.answers.filter(answer => answer.question_number <= 20)
+    return this.currentPassageAnswers.slice(0, Math.ceil(this.currentPassageAnswers.length / 2))
   }
 
   get answersCol2 (): ReadingAnswer[] {
-    return this.answers.filter(answer => answer.question_number > 20)
+    return this.currentPassageAnswers.slice(Math.ceil(this.currentPassageAnswers.length / 2))
   }
 
   get allAnswered (): boolean {
     return this.answers.every(answer => answer.content !== '')
   }
 
+  get passage1Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 1)
+      .every(answer => answer.content !== '')
+  }
+
+  get passage2Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 2)
+      .every(answer => answer.content !== '')
+  }
+
+  get passage3Completed (): boolean {
+    return this.answers
+      .filter(answer => answer.passage === 3)
+      .every(answer => answer.content !== '')
+  }
+
+  /**
+   * Submit
+   */
+
   confirmSubmit = false
   loadingSubmit = false
   user!: User
+  timeTaken = 0
 
   submitAnswers (): void {
     if (this.loadingSubmit) return
     this.loadingSubmit = true
 
-    const payload: ReadingExerciseSubmitAnswersReq[] = this.answers
+    const answers: ReadingAnswer[] = this.answers
       .filter(answer => answer.content !== '')
       .map(answer => {
         delete answer.question_type
         delete answer.choices
+        delete answer.passage
         return answer
       })
+
+    const payload: ReadingExerciseSubmitAnswersReq = {
+      time_taken: this.timeTaken,
+      answers
+    }
 
     Api.readingExercise.submitAnswers(this.exercise.pk, payload)
       .catch(unexpectedExc)
@@ -209,7 +382,7 @@ export default class ReadingExerciseSubmit extends Vue {
         this.confirmSubmit = false
         this.loadingSubmit = false
         this.$router.push({
-          name: 'ReadingExerciseSubmitResult',
+          name: this.submitRouteName,
           params: {
             pk: this.pk.toString(),
             exercisePk: this.exercisePk.toString(),
@@ -218,12 +391,49 @@ export default class ReadingExerciseSubmit extends Vue {
         })
       })
   }
+
+  /**
+   * Make sure student don't accidentally leave route when they haven't finished
+   */
+  confirmLeave = false
+  nextRoute: CallableFunction | null = null
+  submitRouteName = 'ReadingExerciseSubmitResult'
+
+  goNextRoute (): void {
+    this.allowLeavePage()
+    if (this.nextRoute !== null) {
+      this.nextRoute()
+    }
+  }
+
+  // @ts-expect-error: don't care
+  // eslint-disable-next-line
+  beforeRouteLeave (to, from, next): void {
+    if (
+      !this.confirmLeave &&
+      to.name !== this.submitRouteName
+    ) {
+      this.confirmLeave = true
+      this.nextRoute = next
+    } else {
+      this.allowLeavePage()
+      next()
+    }
+  }
+
+  preventLeavePage (): void {
+    window.onbeforeunload = () => ''
+  }
+
+  allowLeavePage (): void {
+    window.onbeforeunload = () => undefined
+  }
 }
 </script>
 
 <style scoped lang="scss">
 .exercise-col {
-  height: 80vh;
+  height: 84vh;
   overflow-y: auto;
   overflow-x: hidden;
 }

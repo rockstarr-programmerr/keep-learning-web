@@ -19,4 +19,7 @@ export declare interface ReadingExerciseUpdateReq {
   content: string;
 }
 
-export declare interface ReadingExerciseSubmitAnswersReq extends ReadingAnswer {}
+export declare interface ReadingExerciseSubmitAnswersReq {
+  time_taken: number;
+  answers: ReadingAnswer[];
+}
