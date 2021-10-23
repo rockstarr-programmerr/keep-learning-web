@@ -7,10 +7,43 @@
     ></v-progress-circular>
 
     <div v-else>
-      <h1>{{ exercise.identifier }}</h1>
+      <v-row
+        justify="space-between"
+        align="center"
+      >
+        <v-col cols="auto">
+          <h1>{{ exercise.identifier }}</h1>
+        </v-col>
+        <v-col cols="auto">
+          <v-row
+            no-gutters
+            align="center"
+          >
+            <v-col cols="auto">
+              Time taken:
+            </v-col>
+            <v-col cols="auto" class="ml-3 mr-5">
+              <KLTimer></KLTimer>
+            </v-col>
+            <v-divider vertical></v-divider>
+            <v-col cols="auto" class="ml-5">
+              <v-btn @click="confirmBack = true">
+                Back
+              </v-btn>
+              <v-btn
+                class="ml-3"
+                color="primary"
+                @click="confirmSubmit = true"
+              >
+                Submit
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
       <v-divider></v-divider>
 
-      <v-row class="mt-0">
+      <v-row class="my-0">
         <v-col cols="6" class="exercise-col">
           <div v-html="exercise.content"></div>
         </v-col>
@@ -43,21 +76,14 @@
                       ></v-text-field>
                     </td>
                   </tr>
+                  <tr></tr>  <!-- Work around to show last row's input entirely -->
                 </tbody>
               </v-simple-table>
             </v-col>
           </v-row>
-
-          <v-btn
-            color="primary"
-            class="d-block mx-auto mt-7"
-            width="150"
-            @click="confirmSubmit = true"
-          >
-            Submit
-          </v-btn>
         </v-col>
       </v-row>
+      <v-divider></v-divider>
     </div>
 
     <KLDialogConfirm
@@ -80,6 +106,15 @@
       Are you sure to submit?
       You cannot edit your answers after this.
     </KLDialogConfirm>
+
+    <KLDialogConfirm
+      v-model="confirmBack"
+      @confirm="backToClass"
+      @cancel="confirmBack = false"
+    >
+      Are you sure to go back?
+      <strong>All progress will be lost!</strong>
+    </KLDialogConfirm>
   </v-container>
 </template>
 
@@ -93,6 +128,7 @@ import { unexpectedExc } from '@/utils'
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
+import KLTimer from '@/components/KLTimer.vue'
 
 @Component({
   computed: {
@@ -107,7 +143,8 @@ import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
     })
   },
   components: {
-    KLDialogConfirm
+    KLDialogConfirm,
+    KLTimer
   }
 })
 export default class ReadingExerciseSubmit extends Vue {
@@ -187,6 +224,10 @@ export default class ReadingExerciseSubmit extends Vue {
     return this.answers.every(answer => answer.content !== '')
   }
 
+  /**
+   * Submit
+   */
+
   confirmSubmit = false
   loadingSubmit = false
   user!: User
@@ -218,12 +259,26 @@ export default class ReadingExerciseSubmit extends Vue {
         })
       })
   }
+
+  /**
+   * Go back
+   */
+  confirmBack = false
+
+  backToClass (): void {
+    this.$router.push({
+      name: 'ClassroomExercisesReading',
+      params: {
+        pk: this.pk.toString()
+      }
+    })
+  }
 }
 </script>
 
 <style scoped lang="scss">
 .exercise-col {
-  height: 80vh;
+  height: 84vh;
   overflow-y: auto;
   overflow-x: hidden;
 }
