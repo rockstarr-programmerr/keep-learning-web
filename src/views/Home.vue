@@ -58,12 +58,6 @@ export default class Home extends Vue {
   isTeacher!: boolean
   isStudent!: boolean
 
-  created (): void {
-    if (this.isStudent) {
-      this.$router.push({ name: 'ClassroomList' })
-    }
-  }
-
   // eslint-disable-next-line
   get links () {
     const classroomTeacherDescription = 'Create classrooms, add students, track their progress.'

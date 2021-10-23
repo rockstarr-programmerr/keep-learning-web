@@ -27,7 +27,14 @@
             </v-col>
             <v-divider vertical></v-divider>
             <v-col cols="auto" class="ml-5">
-              <v-btn @click="confirmBack = true">
+              <v-btn
+                link
+                text
+                :to="{
+                  name: 'ClassroomExercisesReading',
+                  params: { pk }
+                }"
+              >
                 Back
               </v-btn>
               <v-btn
@@ -149,12 +156,12 @@
     </KLDialogConfirm>
 
     <KLDialogConfirm
-      v-model="confirmBack"
-      @confirm="backToClass"
-      @cancel="confirmBack = false"
+      v-model="confirmLeave"
+      @confirm="nextRoute"
+      @cancel="confirmLeave = false"
     >
-      Are you sure to go back?
-      <strong>All progress will be lost!</strong>
+      Are you sure to leave this page?
+      <strong>Your current progress will be lost!</strong>
     </KLDialogConfirm>
   </v-container>
 </template>
@@ -193,6 +200,7 @@ export default class ReadingExerciseSubmit extends Vue {
   @Prop(Number) readonly exercisePk!: number
 
   async created (): Promise<void> {
+    this.preventLeavePage()
     await this.setQuestions()
     this.setAnswers()
   }
@@ -345,17 +353,24 @@ export default class ReadingExerciseSubmit extends Vue {
   }
 
   /**
-   * Go back
+   * Make sure student don't accidentally leave route when they haven't finished
    */
-  confirmBack = false
+  confirmLeave = false
+  nextRoute: CallableFunction | null = null
 
-  backToClass (): void {
-    this.$router.push({
-      name: 'ClassroomExercisesReading',
-      params: {
-        pk: this.pk.toString()
-      }
-    })
+  // @ts-expect-error: don't care
+  // eslint-disable-next-line
+  beforeRouteLeave (to, from, next): void {
+    if (!this.confirmLeave) {
+      this.confirmLeave = true
+      this.nextRoute = next
+    } else {
+      next()
+    }
+  }
+
+  preventLeavePage (): void {
+    window.onbeforeunload = () => ''
   }
 }
 </script>
