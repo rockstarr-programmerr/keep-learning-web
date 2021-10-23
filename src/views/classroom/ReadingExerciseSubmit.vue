@@ -376,7 +376,7 @@ export default class ReadingExerciseSubmit extends Vue {
         this.confirmSubmit = false
         this.loadingSubmit = false
         this.$router.push({
-          name: 'ReadingExerciseSubmitResult',
+          name: this.submitRouteName,
           params: {
             pk: this.pk.toString(),
             exercisePk: this.exercisePk.toString(),
@@ -391,6 +391,7 @@ export default class ReadingExerciseSubmit extends Vue {
    */
   confirmLeave = false
   nextRoute: CallableFunction | null = null
+  submitRouteName = 'ReadingExerciseSubmitResult'
 
   goNextRoute (): void {
     this.allowLeavePage()
@@ -402,10 +403,14 @@ export default class ReadingExerciseSubmit extends Vue {
   // @ts-expect-error: don't care
   // eslint-disable-next-line
   beforeRouteLeave (to, from, next): void {
-    if (!this.confirmLeave) {
+    if (
+      !this.confirmLeave &&
+      to.name !== this.submitRouteName
+    ) {
       this.confirmLeave = true
       this.nextRoute = next
     } else {
+      this.allowLeavePage()
       next()
     }
   }
