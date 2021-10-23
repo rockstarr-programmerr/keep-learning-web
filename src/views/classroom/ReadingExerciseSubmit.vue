@@ -12,7 +12,7 @@
         align="center"
       >
         <v-col cols="auto">
-          <h1>{{ exercise.identifier }}</h1>
+          <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
         </v-col>
         <v-col cols="auto">
           <v-row
@@ -157,7 +157,7 @@
 
     <KLDialogConfirm
       v-model="confirmLeave"
-      @confirm="nextRoute"
+      @confirm="goNextRoute"
       @cancel="confirmLeave = false"
     >
       Are you sure to leave this page?
@@ -177,6 +177,7 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 import { mapState } from 'vuex'
 import KLDialogConfirm from '@/components/KLDialogConfirm.vue'
 import KLTimer from '@/components/KLTimer.vue'
+import { Classroom } from '@/interfaces/classroom'
 
 @Component({
   computed: {
@@ -185,6 +186,9 @@ import KLTimer from '@/components/KLTimer.vue'
     }),
     ...mapState('readingExercise', {
       questions: 'currentQuestions'
+    }),
+    ...mapState('classroom', {
+      classroom: 'currentClassroom'
     }),
     ...mapState('account', {
       user: 'loggedInUser'
@@ -203,6 +207,36 @@ export default class ReadingExerciseSubmit extends Vue {
     this.preventLeavePage()
     await this.setQuestions()
     this.setAnswers()
+    this.setClassroom()
+  }
+
+  get breadcrumbs (): unknown[] {
+    if (this.exercise === undefined) return []
+    return [
+      { text: 'Home', to: { name: 'Home' }, exact: true },
+      { text: 'Classrooms', to: { name: 'ClassroomList' }, exact: true },
+      { text: this.classroomName, to: { name: 'ClassroomExercisesReading', params: { pk: this.pk } }, exact: true },
+      { text: this.exercise.identifier, disabled: true }
+    ]
+  }
+
+  /**
+   * Classroom
+   */
+  classroom!: Classroom
+
+  setClassroom (): void {
+    if (this.classroom !== undefined) {
+      this.$store.dispatch('classroom/detail', this.pk)
+    }
+  }
+
+  get classroomName (): string {
+    if (this.classroom !== undefined) {
+      return this.classroom.name
+    } else {
+      return 'Classroom'
+    }
   }
 
   /**
@@ -358,6 +392,13 @@ export default class ReadingExerciseSubmit extends Vue {
   confirmLeave = false
   nextRoute: CallableFunction | null = null
 
+  goNextRoute (): void {
+    this.allowLeavePage()
+    if (this.nextRoute !== null) {
+      this.nextRoute()
+    }
+  }
+
   // @ts-expect-error: don't care
   // eslint-disable-next-line
   beforeRouteLeave (to, from, next): void {
@@ -371,6 +412,10 @@ export default class ReadingExerciseSubmit extends Vue {
 
   preventLeavePage (): void {
     window.onbeforeunload = () => ''
+  }
+
+  allowLeavePage (): void {
+    window.onbeforeunload = () => undefined
   }
 }
 </script>
